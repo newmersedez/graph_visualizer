@@ -1,61 +1,66 @@
 from utils.defines import VERTEX_RADIUS
+from PyQt5.QtWidgets import QLabel
 
 
-class Vertex:
+class Vertex(QLabel):
     def __init__(self, x: int, y: int, name: str, color: str):
-        self.x = x
-        self.y = y
-        self.name = name
-        self.color = color
-        self.adjacentVertexList = list()
-        self.dragging = False
+        super().__init__()
+        self._x = x
+        self._y = y
+        self._name = name
+        self._color = color
+        self._adjacentVertexList = list()
+        self._dragging = False
+        self.setAcceptDrops(True)
 
     def getPos(self):
-        return self.x, self.y
+        return self._x, self._y
 
     def getName(self):
-        return self.name
+        return self._name
 
     def getColor(self):
-        return self.color
+        return self._color
 
     def getAdjacentVertexList(self):
-        return self.adjacentVertexList
+        return self._adjacentVertexList
 
     def setPos(self, x: int, y: int):
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
 
     def setName(self, name: str):
-        self.name = name
+        self._name = name
 
     def setColor(self, color: str):
-        self.color = color
+        self._color = color
 
     def addAdjacentVertex(self, vertex):
-        self.adjacentVertexList.append(vertex)
+        self._adjacentVertexList.append(vertex)
 
     def removeAdjacentVertex(self, vertex):
-        if vertex in self.adjacentVertexList:
-            self.adjacentVertexList.remove(vertex)
+        if vertex in self._adjacentVertexList:
+            self._adjacentVertexList.remove(vertex)
 
     def findAdjacentVertex(self, vertex):
-        if vertex in self.adjacentVertexList:
+        if vertex in self._adjacentVertexList:
             return True
         return False
 
     def draggingStatus(self):
-        return self.dragging
+        return self._dragging
 
     def draggingStart(self):
-        self.dragging = True
+        print('dragging start')
+        self._dragging = True
 
     def draggingStop(self):
-        self.dragging = False
+        print('dragging end')
+        self._dragging = False
 
     def collidePoint(self, x: int, y: int):
-        dist_x = abs(self.x - x)
-        dist_y = abs(self.y - y)
+        dist_x = abs(self._x - x)
+        dist_y = abs(self._y - y)
 
         if (dist_x <= VERTEX_RADIUS) and (dist_y <= VERTEX_RADIUS):
             return True
@@ -63,8 +68,8 @@ class Vertex:
 
     def collide_vertex(self, vertex):
         center_x, center_y = vertex.getPos()
-        dist_x = abs(self.x - center_x)
-        dist_y = abs(self.y - center_y)
+        dist_x = abs(self._x - center_x)
+        dist_y = abs(self._y - center_y)
 
         if (dist_x <= 2 * VERTEX_RADIUS) and (dist_y <= 2 * VERTEX_RADIUS):
             return True
