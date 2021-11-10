@@ -19,45 +19,28 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         return self._name
 
 
-class DrawField(QtWidgets.QGraphicsView):
+class SceneView(QtWidgets.QGraphicsView):
     def __init__(self):
-        super(DrawField, self).__init__()
+        super(SceneView, self).__init__()
         # Graph utils
         self._vertexList = list()
         self._vergeList = list()
 
-        # Field settings
+        # Scene settings
         self._scene = QtWidgets.QGraphicsScene(self)
         self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
+        self.setMouseTracking(True)
 
-        self._view = QtWidgets.QGraphicsView(self._scene, self)
-        self._view.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
-        self._view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self._view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self._view.setStyleSheet('background-color: #151515;')
+        # View settings
+        self.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setStyleSheet('background-color: #151515;')
+        self.setMouseTracking(True)
 
-    def addVertex(self, x: int, y: int):
-        if (10 <= x <= WIN_WIDTH - 10) and (10 <= y <= WIN_HEIGHT - 10):
-            if len(self._vertexList) == 0:
-                name = '1'
-            else:
-                name = str(int(self._vertexList[-1].getName()) + 1)
-
-            vertex = Vertex(x + OFFSET / 2, y + OFFSET,  name, VERTEX_COLOR)
-            self._vertexList.append(vertex)
-
-            pos_x, pos_y = vertex.getPos()
-            brush = QtGui.QBrush(QtGui.QColor(VERTEX_COLOR))
-            pen = QtGui.QPen(QtGui.QColor(FIELD_COLOR))
-            ellipse = self._scene.addEllipse(pos_x - OFFSET, pos_y - OFFSET, VERTEX_SIZE, VERTEX_SIZE, pen, brush)
-            ellipse.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
-
-    def deleteVertex(self, mouse_x, mouse_y):
-        item = self._scene.itemAt(mouse_x, mouse_y, QtGui.QTransform())
-
-        if item is not None:
-            print('found')
-            self._scene.removeItem(item)
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            print(event.pos().x(), event.pos().y())
 
 
 class Window(QtWidgets.QMainWindow):
@@ -71,7 +54,7 @@ class Window(QtWidgets.QMainWindow):
         self.setStyleSheet('background-color: #282828;')
 
         # Drawing field settings
-        self._view = DrawField()
+        self._view = SceneView()
         self.button = QtWidgets.QPushButton('text', self)                           # delete after
         self.button.setFixedSize(395, 1200)
 
@@ -90,17 +73,6 @@ class Window(QtWidgets.QMainWindow):
 
         self._mainWidget.setLayout(self._mainLayout)
         self.setCentralWidget(self._mainWidget)
-
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
-            mouse_x = event.pos().x() - OFFSET
-            mouse_y = event.pos().y() - OFFSET
-            self._view.addVertex(mouse_x, mouse_y)
-
-        elif event.button() == QtCore.Qt.RightButton:
-            mouse_x = event.pos().x() - OFFSET
-            mouse_y = event.pos().y() - OFFSET
-            self._view.deleteVertex(mouse_x, mouse_y)
 
 
 def main():
