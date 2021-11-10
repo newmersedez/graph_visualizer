@@ -9,6 +9,7 @@ WIN_TITLE = "PyQt5 Graph Vizualizer"
 # Vertex defaults
 VERTEX_COLOR = 'salmon'
 VERTEX_SIZE = 50
+OFFSET = VERTEX_SIZE / 2
 
 # Verge defaults
 VERGE_COLOR = 'white'
