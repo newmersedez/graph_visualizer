@@ -1,13 +1,3 @@
-# from PyQt5 import QtGui, QtCore, QtWidgets
-# from classes.window import *
-# import sys
-#
-# if __name__ == '__main__':
-#     app = QtWidgets.QApplication(sys.argv)
-#     window = Window()
-#     window.show()
-#     sys.exit(app.exec())
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from utils.defines import *
 import sys
@@ -29,44 +19,19 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         return self._name
 
 
-class DrawField(QtWidgets.QGraphicsView):
+class Scene(QtWidgets.QGraphicsScene):
     def __init__(self):
-        super(DrawField, self).__init__()
-        # Graph utils
+        super(Scene, self).__init__()
         self._vertexList = list()
         self._vergeList = list()
+        self.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
 
-        # Field settings
-        self._scene = QtWidgets.QGraphicsScene(self)
-        self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
+    def getVertexList(self):
+        return self._vertexList
 
-        self._view = QtWidgets.QGraphicsView(self._scene, self)
-        self._view.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
-        self._view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self._view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self._view.setStyleSheet('background-color: #151515;')
+    def getVergeList(self):
+        return self._vergeList
 
-    def addVertex(self, x: int, y: int):
-        if (10 <= x <= WIN_WIDTH - 10) and (10 <= y <= WIN_HEIGHT - 10):
-            if len(self._vertexList) == 0:
-                name = '1'
-            else:
-                name = str(int(self._vertexList[-1].getName()) + 1)
-
-            vertex = Vertex(x + OFFSET / 2, y + OFFSET,  name, VERTEX_COLOR)
-            self._vertexList.append(vertex)
-
-            pos_x, pos_y = vertex.getPos()
-            brush = QtGui.QBrush(QtGui.QColor(VERTEX_COLOR))
-            pen = QtGui.QPen(QtGui.QColor(FIELD_COLOR))
-            ellipse = self._scene.addEllipse(pos_x - OFFSET, pos_y - OFFSET, VERTEX_SIZE, VERTEX_SIZE, pen, brush)
-            ellipse.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
-
-    def deleteVertex(self, mouse_x, mouse_y):
-        item = self._scene.itemAt(mouse_x, mouse_y)
-
-        if item is not None:
-            print('found')
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -79,7 +44,14 @@ class Window(QtWidgets.QMainWindow):
         self.setStyleSheet('background-color: #282828;')
 
         # Drawing field settings
-        self._view = DrawField()
+        self._scene = Scene()
+        self._view = QtWidgets.QGraphicsView(self._scene)
+        self._view.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
+        self._view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self._view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self._view.setStyleSheet('background-color: #151515;')
+        self._view.setMouseTracking(True)
+
         self.button = QtWidgets.QPushButton('text', self)                           # delete after
         self.button.setFixedSize(395, 1200)
 
@@ -101,14 +73,16 @@ class Window(QtWidgets.QMainWindow):
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
-            mouse_x = event.pos().x() - OFFSET
-            mouse_y = event.pos().y() - OFFSET
-            self._view.addVertex(mouse_x, mouse_y)
+            item = QtWidgets.QGraphicsEllipseItem(event.pos().x() - OFFSET, event.pos().y() - OFFSET, 50, 50)
+
+            item.setBrush(QtCore.Qt.red)
+            item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
+            self._scene.addItem(item)
 
         elif event.button() == QtCore.Qt.RightButton:
-            mouse_x = event.pos().x() - OFFSET
-            mouse_y = event.pos().y() - OFFSET
-            self._view.deleteVertex(mouse_x, mouse_y)
+            item = self._scene.itemAt(event.pos().x() + OFFSET + 2, event.pos().y() + OFFSET * 2, QtGui.QTransform())
+            if item is not None:
+                self._scene.removeItem(item)
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
