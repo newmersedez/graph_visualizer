@@ -14,14 +14,6 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._name = name
         self._color = color
 
-    def getPos(self):
-        return self._x, self._y
-
-    def setPos(self, x: float, y: float):
-        self._x = x
-        self._y = y
-        self.update()
-
     def getName(self):
         return self._name
 

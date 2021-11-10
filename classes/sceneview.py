@@ -33,7 +33,13 @@ class SceneView(QtWidgets.QGraphicsView):
 
     def addVertex(self):
         print('add new item')
-        vertex = Vertex(20, 20, '1', VERTEX_COLOR)
+        vertexList = self._scene.items()
+        if len(vertexList) == 0:
+            name = '1'
+        else:
+            name = str(int(vertexList[-1].getName()) + 1)
+
+        vertex = Vertex(20, 20, name, VERTEX_COLOR)
         self._scene.addItem(vertex)
         self._vertexList.append(vertex)
 
@@ -60,17 +66,17 @@ class SceneView(QtWidgets.QGraphicsView):
             self.setStyleSheet('background-color: #151515;')
 
     # def mousePressEvent(self, event):
-    #     pos_x, pos_y = event.pos().x(), event.pos().y()
-    #     if event.button() == QtCore.Qt.LeftButton:
-    #         item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
-    #
-    #         if item is None:
-    #             self._addVertex(pos_x, pos_y)
-    #         else:
-    #             item.setAcceptDrops(True)
-    #
-    #     if event.button() == QtCore.Qt.RightButton:
-    #         item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
-    #
-    #         if item is not None:
-    #             self._deleteVertex(item)
+        pos_x, pos_y = event.pos().x(), event.pos().y()
+        # if event.button() == QtCore.Qt.LeftButton:
+        #     item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+        #
+        #     if item is None:
+        #         self._addVertex(pos_x, pos_y)
+        #     else:
+        #         item.setAcceptDrops(True)
+        #
+        # if event.button() == QtCore.Qt.RightButton:
+        #     item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+        #
+        #     if item is not None:
+        #         self._deleteVertex(item)
