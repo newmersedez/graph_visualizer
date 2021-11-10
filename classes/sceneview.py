@@ -1,10 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from utils.defines import *
+from classes.vertex import *
 
 
 class SceneView(QtWidgets.QGraphicsView):
     def __init__(self):
         super(SceneView, self).__init__()
+
         # Graph utils
         self._vertexList = list()
         self._vergeList = list()
@@ -29,22 +31,27 @@ class SceneView(QtWidgets.QGraphicsView):
             self._backgroundColor = FIELD_DARK_COLOR
             self.setStyleSheet('background-color: #151515;')
 
-    def _addVertex(self, event, x: int, y: int):
-        pass
+    def _addVertex(self, x: int, y: int):
+        print('add new item')
+        vertex = Vertex(x, y, '1', VERTEX_COLOR)
+        self._scene.addItem(vertex)
+        self._vertexList.append(vertex)
 
-    def _deleteVertex(self):
-        pass
+    def _deleteVertex(self, item):
+        print('delete vertex')
+        self._vertexList.remove(item)
+        self._scene.removeItem(item)
 
     def mousePressEvent(self, event):
+        pos_x, pos_y = event.pos().x(), event.pos().y()
         if event.button() == QtCore.Qt.LeftButton:
-            pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+
             if item is None:
-                print('add new vertex')
-                self._addVertex(event, pos_x, pos_y)
+                self._addVertex(pos_x, pos_y)
 
         elif event.button() == QtCore.Qt.RightButton:
-            item = self._scene.itemAt(event.pos().x(), event.pos().y(), QtGui.QTransform())
+            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+
             if item is not None:
-                print('delete vertex')
-                self._scene.removeItem(item)
+                self._deleteVertex(item)
