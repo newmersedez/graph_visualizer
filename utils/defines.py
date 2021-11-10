@@ -1,13 +1,14 @@
 # Window defaults
-WIN_WIDTH = 1280
-WIN_HEIGHT = 800
-FIELD_SIZE = 800
+WIN_WIDTH = 1440
+WIN_HEIGHT = 900
+FIELD_WIDTH = 1020
+FIELD_HEIGHT = 880
 FIELD_COLOR = '#151515'
 WIN_TITLE = "PyQt5 Graph Vizualizer"
 
 # Vertex defaults
 VERTEX_COLOR = 'salmon'
-VERTEX_RADIUS = 40
+VERTEX_SIZE = 50
 
 # Verge defaults
 VERGE_COLOR = 'white'
