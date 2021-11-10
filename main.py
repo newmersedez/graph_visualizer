@@ -3,14 +3,15 @@ from utils.defines import *
 import sys
 
 
-class Vertex(QtWidgets.QGraphicsEllipseItem):
-    def __init__(self, x: int, y: int, name: str, color: str):
+class Vertex:
+    def __init__(self, x: int, y: int, item: QtWidgets.QGraphicsEllipseItem, name: str, color: str):
         super(Vertex, self).__init__()
         self._x = x
         self._y = y
         self._name = name
         self._color = color
         self.adjacentVertexList = list()
+        self.graphicsItem = item
 
     def getPos(self):
         return self._x, self._y
@@ -29,18 +30,32 @@ class SceneView(QtWidgets.QGraphicsView):
         # Scene settings
         self._scene = QtWidgets.QGraphicsScene(self)
         self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
-        self.setMouseTracking(True)
 
         # View settings
+        self.setScene(self._scene)
         self.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setStyleSheet('background-color: #151515;')
         self.setMouseTracking(True)
 
-    def mousePressEvent(self, event):
+        # brush = QtGui.QBrush(QtGui.QColor(VERTEX_COLOR))
+        # pen = QtGui.QPen(QtGui.QColor(FIELD_COLOR))
+        # ellipse = self._scene.addEllipse(100, 100, VERTEX_SIZE, VERTEX_SIZE, pen, brush)
+        # ellipse.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
+
+    def mouseReleaseEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton:
-            print(event.pos().x(), event.pos().y())
+            circle = QtWidgets.QGraphicsEllipseItem(event.pos().x(), event.pos().y(), VERTEX_SIZE, VERTEX_SIZE)
+            circle.setBrush(QtGui.QColor(VERTEX_COLOR))
+            self._scene.addItem(circle)
+            circle.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
+
+        elif event.button() == QtCore.Qt.RightButton:
+            item = self._scene.itemAt(event.pos().x(), event.pos().y(), QtGui.QTransform())
+
+            if item is not None:
+                self._scene.removeItem(item)
 
 
 class Window(QtWidgets.QMainWindow):
@@ -49,12 +64,12 @@ class Window(QtWidgets.QMainWindow):
         # Window settings
         self._width = WIN_WIDTH
         self._height = WIN_HEIGHT
-        self.setWindowTitle("Pyside2 QGraphic View")
+        self._view = SceneView()
+
+        self.setWindowTitle("Graph Visualizer")
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
         self.setStyleSheet('background-color: #282828;')
 
-        # Drawing field settings
-        self._view = SceneView()
         self.button = QtWidgets.QPushButton('text', self)                           # delete after
         self.button.setFixedSize(395, 1200)
 
