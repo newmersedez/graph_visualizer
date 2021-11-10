@@ -36,11 +36,13 @@ class Window(QtWidgets.QMainWindow):
         button1.setFixedSize(395, 100)
         button1.clicked.connect(self.changeColorTheme)
 
-        button2 = QtWidgets.QPushButton('button2', self)
+        button2 = QtWidgets.QPushButton('Create vertex', self)
         button2.setFixedSize(395, 100)
+        button2.clicked.connect(self._view.addVertex)
 
-        button3 = QtWidgets.QPushButton('button3', self)
+        button3 = QtWidgets.QPushButton('Delete vertex', self)
         button3.setFixedSize(395, 100)
+        button3.clicked.connect(self._view.deleteVertex)
 
         self._menuLayout.addWidget(button1)
         self._menuLayout.addWidget(button2)

@@ -1,17 +1,13 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import VERTEX_SIZE
 
-# class Vertex(QtWidgets.QGraphicsEllipseItem):
-#     def __init__(self, x: int, y: int, name: str, color: str):
-#         super(Vertex, self).__init__(x, y, VERTEX_SIZE, VERTEX_SIZE)
-
 
 class Vertex(QtWidgets.QGraphicsEllipseItem):
     def __init__(self, x: int, y: int, name: str, color: str):
         super(Vertex, self).__init__(x, y, VERTEX_SIZE, VERTEX_SIZE)
         self.setPos(x, y)
         self.setBrush(QtGui.QColor(color))
-        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtWidgets.QGraphicsEllipseItem.ItemIsMovable)
         self.setAcceptHoverEvents(True)
         self._x = x
         self._y = y
