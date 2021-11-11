@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPainter, QTransform, QColor, QPen
-from PyQt5.QtCore import Qt, QRectF, QPointF
+from PyQt5.QtCore import Qt, QRectF, QPointF, QSizeF, QLineF
 from PyQt5.QtWidgets import (QAction, QMenu, QApplication, QWidget, QHBoxLayout, QVBoxLayout,
                              QGraphicsView, QGraphicsScene, QPushButton,
                              QGraphicsRectItem, QGraphicsEllipseItem, QGraphicsItem, QGraphicsLineItem, QMainWindow)
@@ -7,11 +7,60 @@ from utils.defines import *
 
 
 class Vertex(QGraphicsEllipseItem):
-    pass
+    def __init__(self, x: int, y: int, name: str, color: str):
+        super(Vertex, self).__init__(x, y, VERTEX_SIZE, VERTEX_SIZE)
+
+        self.setPos(x, y)
+        self.setBrush(QColor(color))
+        self.setFlag(QGraphicsEllipseItem.ItemIsMovable)
+        self.setFlag(QGraphicsLineItem.ItemSendsGeometryChanges)
+        self.setAcceptHoverEvents(True)
+        self._x = x
+        self._y = y
+        self._name = name
+        self._color = color
+        self.acceptHoverEvents()
+
+    def hoverEnterEvent(self, event):
+        self.setBrush(Qt.red)
+
+    def hoverLeaveEvent(self, event):
+        self.setBrush(QColor(VERTEX_COLOR))
 
 
-class Verge(QGraphicsLineItem):
-    pass
+class Verge(QGraphicsItem):
+
+    def __init__(self, startItem, endItem, parent=None, scene=None):
+        super().__init__(parent)
+
+        self.startItem = startItem
+        self.endItem = endItem
+
+    def boundingRect(self):
+        p1 = self.startItem.pos() + self.startItem.rect().center()
+        p3 = self.endItem.pos() + self.endItem.rect().center()
+        bounds = p3 - p1
+        size = QSizeF(bounds.x(), bounds.y())
+        return QRectF(p1, size)
+
+    def paint(self, painter, option, widget=None):
+
+        p1 = self.startItem.pos() + self.startItem.rect().center()
+        p3 = self.endItem.pos() + self.endItem.rect().center()
+
+        pen = QPen()
+        pen.setWidth(VERGE_WIDTH)
+        pen.setColor(Qt.white)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        if self.isSelected():
+            pen.setStyle(Qt.DashLine)
+        else:
+            pen.setStyle(Qt.SolidLine)
+
+        painter.setPen(pen)
+        painter.drawLine(QLineF(p1, p3))
+        painter.setBrush(Qt.NoBrush)
 
 
 class View(QGraphicsView):
@@ -42,9 +91,12 @@ class View(QGraphicsView):
             return
         obj = ret.objectName()
         if obj == 'add vertex':
-            item = QGraphicsEllipseItem(0, 0, 50, 50)
-            item.setBrush(QColor(VERTEX_COLOR))
-            item.setFlags(QGraphicsItem.ItemIsMovable)
+            item = Vertex(0, 0, 'name', VERTEX_COLOR)
+
+            # item = QGraphicsEllipseItem(0, 0, 50, 50)
+            # item.setBrush(QColor(VERTEX_COLOR))
+            # item.setFlags(QGraphicsItem.ItemIsMovable)
+
             self.scene.addItem(item)
             item.setPos(self.mapToScene(pos))
 
@@ -80,14 +132,20 @@ class View(QGraphicsView):
                 self._end = item
                 if self._start.type() == 4 and self._end.type() == 4:
                     print(self._start.pos().x() + 25, self._start.pos().y() + 25, ' -> ', self._end.pos().x() + 25, self._end.pos().y() + 25)
-                    pen = QPen(Qt.white)
-                    pen.setWidth(VERGE_WIDTH)
-                    line = QGraphicsLineItem(self._start.pos().x() + 25, self._start.pos().y() + 25, self._end.pos().x() + 25, self._end.pos().y() + 25)
-                    line.setPen(pen)
-                    self.scene.addItem(line)
+
+                    # pen = QPen(Qt.white)
+                    # pen.setWidth(VERGE_WIDTH)
+                    # line = QGraphicsLineItem(self._start.pos().x() + 25, self._start.pos().y() + 25, self._end.pos().x() + 25, self._end.pos().y() + 25)
+                    # line.setPen(pen)
+
+                    verge = Verge(self._start, self._end)
+                    self.scene.addItem(verge)
 
         super(View, self).mouseReleaseEvent(event)
 
+    # def mouseMoveEvent(self, event):
+    #     print('move')
+    #     super(View, self).mouseMoveEvent(event)
 
 class Window(QMainWindow):
     def __init__(self):
