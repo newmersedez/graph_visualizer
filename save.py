@@ -1,3 +1,13 @@
+# from classes.window import *
+# import sys
+#
+# if __name__ == '__main__':
+#     app = QtWidgets.QApplication(sys.argv)
+#     window = Window()
+#     window.show()
+#     sys.exit(app.exec())
+#
+
 # from PyQt5 import QtGui, QtCore, QtWidgets
 # from classes.window import *
 # import sys
@@ -130,6 +140,14 @@ class Scene(QtWidgets.QGraphicsScene):
                 self.newVerge = Verge(item, event.scenePos())
                 self.addItem(self.newVerge)
                 return
+            else:
+                item = self.itemAt(event.pos().x(), event.pos().y(), QtGui.QTransform())
+                if item is None:
+                    self.addItem(Vertex(left=True))
+        elif event.button() == QtCore.Qt.RightButton:
+            item = self.itemAt(event.pos().x(), event.pos().y(), QtGui.QTransform())
+            if item is not None:
+                self.removeItem(item)
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -162,28 +180,42 @@ class Scene(QtWidgets.QGraphicsScene):
         super().mouseReleaseEvent(event)
 
 
+class Window(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(Window, self).__init__()
+
+        self.scene = Scene()
+        self.view = QtWidgets.QGraphicsView(self.scene)
+        self.view.setScene(self.scene)
+        self.setFixedSize(1000, 1000)
+        self.view.setRenderHints(QtGui.QPainter.Antialiasing)
+        self.setCentralWidget(self.view)
+        self.show()
+
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    scene = Scene()
-
-    scene.addItem(Vertex(left=True))
-    scene.addItem(Vertex(left=True))
-
-    scene.addItem(Vertex(right=True))
-    scene.addItem(Vertex(right=True))
-
-    scene.addItem(Vertex(right=True))
-    scene.addItem(Vertex(right=True))
-
-    view = QtWidgets.QGraphicsView(scene)
-    view.setRenderHints(QtGui.QPainter.Antialiasing)
-
-    view.show()
-
+    window = Window()
+    # scene = Scene()
+    #
+    # scene.addItem(Vertex(left=True))
+    # scene.addItem(Vertex(left=True))
+    #
+    # scene.addItem(Vertex(right=True))
+    # scene.addItem(Vertex(right=True))
+    #
+    # scene.addItem(Vertex(right=True))
+    # scene.addItem(Vertex(right=True))
+    #
+    # view = QtWidgets.QGraphicsView(scene)
+    # view.setRenderHints(QtGui.QPainter.Antialiasing)
+    #
+    # view.show()
+    window.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
     main()
+
 

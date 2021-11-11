@@ -25,3 +25,6 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self.setBrush(QtGui.QBrush(QtGui.QColor(self._color)))
         super(Vertex, self).hoverLeaveEvent(event)
 
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.RightButton:
+            print('clicked')

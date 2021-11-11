@@ -8,8 +8,10 @@ class Window(QtWidgets.QMainWindow):
         self._width = WIN_WIDTH
         self._height = WIN_HEIGHT
         self._backgroundColor = WIN_DARK_COLOR
-        self._view = SceneView()
+        self._scene = Scene()
+        self._view = QtWidgets.QGraphicsView(self._scene)
 
+        self._view.setScene(self._scene)
         self.setWindowTitle("Graph Visualizer")
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
         self.setStyleSheet('background-color: #282828;')
@@ -34,15 +36,15 @@ class Window(QtWidgets.QMainWindow):
     def initUI(self):
         button1 = QtWidgets.QPushButton('Change color theme', self)
         button1.setFixedSize(395, 100)
-        button1.clicked.connect(self.changeColorTheme)
+        # button1.clicked.connect(self.changeColorTheme)
 
         button2 = QtWidgets.QPushButton('Create vertex', self)
         button2.setFixedSize(395, 100)
-        button2.clicked.connect(self._view.addVertex)
+        # button2.clicked.connect(self._view.addVertex)
 
         button3 = QtWidgets.QPushButton('Delete vertex', self)
         button3.setFixedSize(395, 100)
-        button3.clicked.connect(self._view.deleteVertex)
+        # button3.clicked.connect(self._view.deleteVertex)
 
         self._menuLayout.addWidget(button1)
         self._menuLayout.addWidget(button2)
