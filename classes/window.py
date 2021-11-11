@@ -1,20 +1,20 @@
-from classes.sceneview import *
+from PyQt5 import QtWidgets, QtGui, QtCore
+from utils.defines import *
+from classes.view import *
 
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
-        super().__init__()
-        # Window settings
-        self._width = WIN_WIDTH
-        self._height = WIN_HEIGHT
-        self._backgroundColor = WIN_DARK_COLOR
-        self._scene = Scene()
-        self._view = QtWidgets.QGraphicsView(self._scene)
+        super(Window, self).__init__()
 
-        self._view.setScene(self._scene)
-        self.setWindowTitle("Graph Visualizer")
+        # View settings
+        self._view = View()
+
+        # Window settings
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
-        self.setStyleSheet('background-color: #282828;')
+        self.setWindowTitle('Graph Visualizer')
+        self.setStyleSheet('background-color: #303030;')
+        self.setCentralWidget(self._view)
 
         # Layout management
         self._mainWidget = QtWidgets.QWidget()
@@ -36,27 +36,13 @@ class Window(QtWidgets.QMainWindow):
     def initUI(self):
         button1 = QtWidgets.QPushButton('Change color theme', self)
         button1.setFixedSize(395, 100)
-        # button1.clicked.connect(self.changeColorTheme)
 
         button2 = QtWidgets.QPushButton('Create vertex', self)
         button2.setFixedSize(395, 100)
-        # button2.clicked.connect(self._view.addVertex)
 
         button3 = QtWidgets.QPushButton('Delete vertex', self)
         button3.setFixedSize(395, 100)
-        # button3.clicked.connect(self._view.deleteVertex)
 
         self._menuLayout.addWidget(button1)
         self._menuLayout.addWidget(button2)
         self._menuLayout.addWidget(button3)
-
-    def changeColorTheme(self):
-        if self._backgroundColor == WIN_DARK_COLOR:
-            self._backgroundColor = WIN_BRIGHT_COLOR
-            self.setStyleSheet('background-color: white;')
-            self._view.changeViewColor()
-
-        elif self._backgroundColor == WIN_BRIGHT_COLOR:
-            self._backgroundColor = WIN_DARK_COLOR
-            self.setStyleSheet('background-color: #282828;')
-            self._view.changeViewColor()
