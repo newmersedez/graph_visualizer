@@ -68,7 +68,7 @@ class View(QGraphicsView):
         super().__init__()
         self.scene = QGraphicsScene(self)
         self.scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
-        self.setStyleSheet('background-color: #151515;')
+        self.setStyleSheet('background-color: #202020;')
         self.setScene(self.scene)
         self.setRenderHint(QPainter.Antialiasing)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
@@ -157,7 +157,7 @@ class Window(QMainWindow):
         # Window settings
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
         self.setWindowTitle('Graph Visualizer')
-        self.setStyleSheet('background-color: #282828;')
+        self.setStyleSheet('background-color: #303030;')
         self.setCentralWidget(self._view)
 
         # Layout management
