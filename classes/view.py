@@ -8,7 +8,7 @@ class View(QtWidgets.QGraphicsView):
     def __init__(self, window):
         super().__init__()
 
-        # Graph cariables
+        # Graph variables
         self._vertexList = list()
         self._vergeList = list()
         self._start = None
@@ -19,7 +19,7 @@ class View(QtWidgets.QGraphicsView):
         self._scene = QtWidgets.QGraphicsScene(self)
         self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
         self.setScene(self._scene)
-        self.setGeometry(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
+        self.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
         self.setStyleSheet('background-color: #202020;')
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
@@ -37,7 +37,7 @@ class View(QtWidgets.QGraphicsView):
         vertex.setPos(self.mapToScene(x, y))
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
         print('after add vertex: ')
         for i in self._vertexList:
@@ -57,7 +57,7 @@ class View(QtWidgets.QGraphicsView):
         self._scene.removeItem(vertex)
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
         print('after remove vertex: ')
         for i in self._vertexList:
@@ -83,7 +83,7 @@ class View(QtWidgets.QGraphicsView):
         self._end = None
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
         print('after add verge: ')
         for i in self._vergeList:
@@ -94,7 +94,7 @@ class View(QtWidgets.QGraphicsView):
         item.toggleDirection()
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
     def _setVergeWeight(self, item, x, y):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -119,7 +119,7 @@ class View(QtWidgets.QGraphicsView):
         self.scene().removeItem(item)
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
         print('after remove verge: ')
         for i in self._vergeList:
@@ -134,7 +134,7 @@ class View(QtWidgets.QGraphicsView):
             self._scene.removeItem(item)
 
         # Update table
-        self._mainWindow._updateAdjacentTable()
+        self._mainWindow.updateAdjacentTable()
 
         print('after clean all: ')
         for i in self._vertexList:
@@ -154,13 +154,16 @@ class View(QtWidgets.QGraphicsView):
         pos = event.pos()
         mnu = QtWidgets.QMenu()
 
+        mnu.addSection('Vertex:')
         mnu.addAction('Add vertex').setObjectName('add vertex')
         mnu.addAction('Delete vertex').setObjectName('delete vertex')
-        mnu.addSeparator()
-        mnu.addAction('Toggle verge direction').setObjectName('toggle verge direction')
-        mnu.addAction('Set verge weight').setObjectName('set verge weight')
+
+        mnu.addSection('Verge:')
+        mnu.addAction('Toggle direction').setObjectName('toggle direction')
+        mnu.addAction('Set weight').setObjectName('set weight')
         mnu.addAction('Delete verge').setObjectName('delete verge')
-        mnu.addSeparator()
+
+        mnu.addSection('Utils:')
         mnu.addAction('Clear all').setObjectName('clear all')
 
         ret = mnu.exec_(self.mapToGlobal(pos))
@@ -179,14 +182,14 @@ class View(QtWidgets.QGraphicsView):
                 if isinstance(item, Vertex):
                     self._removeVertex(item)
 
-        elif obj == 'toggle verge direction':
+        elif obj == 'toggle direction':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Verge):
                     self._toggleVergeDirection(item)
 
-        elif obj == 'set verge weight':
+        elif obj == 'set weight':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:

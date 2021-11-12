@@ -42,5 +42,8 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         if vertex in self._adjacentVertexList:
             self._adjacentVertexList.remove(vertex)
 
+    def getAdjacentVertexList(self):
+        return self._adjacentVertexList
+
     def getName(self):
         return self._name
