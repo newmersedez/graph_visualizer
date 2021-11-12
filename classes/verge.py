@@ -10,12 +10,17 @@ class Verge(QtWidgets.QGraphicsItem):
         super().__init__(parent)
 
         # Verge variables
-        self.startVertex = startVertex
-        self.endVertex = endVertex
+        self._startVertex = startVertex
+        self._endVertex = endVertex
+        self._direction = False
+
+    def toggleDirection(self):
+        self._direction = not self._direction
+        print(self._direction)
 
     def boundingRect(self):
-        start_x, start_y = self.startVertex.pos().x(), self.startVertex.pos().y()
-        end_x, end_y = self.endVertex.pos().x(), self.endVertex.pos().y()
+        start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
+        end_x, end_y = self._endVertex.pos().x(), self._endVertex.pos().y()
 
         a = end_x - start_x
         b = start_y - end_y
@@ -35,8 +40,8 @@ class Verge(QtWidgets.QGraphicsItem):
         start = QtCore.QPointF(start_x, start_y)
         end = QtCore.QPointF(end_x, end_y)
 
-        p1 = start + self.startVertex.rect().center()
-        p3 = end + self.endVertex.rect().center()
+        p1 = start + self._startVertex.rect().center()
+        p3 = end + self._endVertex.rect().center()
 
         bounds = p3 - p1
         size = QtCore.QSizeF(bounds.x(), bounds.y())
@@ -44,8 +49,8 @@ class Verge(QtWidgets.QGraphicsItem):
 
     def paint(self, painter, option, widget=None):
 
-        start_x, start_y = self.startVertex.pos().x(), self.startVertex.pos().y()
-        end_x, end_y = self.endVertex.pos().x(), self.endVertex.pos().y()
+        start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
+        end_x, end_y = self._endVertex.pos().x(), self._endVertex.pos().y()
 
         a = end_x - start_x
         b = start_y - end_y
@@ -65,19 +70,28 @@ class Verge(QtWidgets.QGraphicsItem):
         start = QtCore.QPointF(start_x, start_y)
         end = QtCore.QPointF(end_x, end_y)
 
-        p1 = start + self.startVertex.rect().center()
-        p3 = end + self.endVertex.rect().center()
+        p1 = start + self._startVertex.rect().center()
+        p3 = end + self._endVertex.rect().center()
 
         pen = QtGui.QPen()
         pen.setWidth(VERGE_WIDTH)
         pen.setColor(QtCore.Qt.white)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.setPen(pen)
+
+        if self._direction:
+            print('on')
+
+
+        elif not self._direction:
+            print('off')
+            pass
+
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.drawLine(QtCore.QLineF(p1, p3))
         painter.setBrush(QtCore.Qt.NoBrush)
 
     def getStartVertex(self):
-        return self.startVertex
+        return self._startVertex
 
     def getEndVertex(self):
-        return self.endVertex
+        return self._endVertex

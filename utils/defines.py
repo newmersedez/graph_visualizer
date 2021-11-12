@@ -17,6 +17,7 @@ OFFSET = VERTEX_SIZE / 2
 # Verge defaults
 VERGE_COLOR = 'white'
 VERGE_WIDTH = 8
+ARROW_SIZE = 15
 
 # Mouse codes
 MOUSE_LEFT = 1

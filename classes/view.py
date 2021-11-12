@@ -78,6 +78,10 @@ class View(QtWidgets.QGraphicsView):
             print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         print('\n')
 
+    @staticmethod
+    def _toggleVergeDirection(item):
+        item.toggleDirection()
+
     def _removeVerge(self, item):
         startVertex = item.getStartVertex()
         endVertex = item.getEndVertex()
@@ -111,6 +115,7 @@ class View(QtWidgets.QGraphicsView):
 
         mnu.addAction('Add vertex').setObjectName('add vertex')
         mnu.addAction('Delete vertex').setObjectName('delete vertex')
+        mnu.addAction('Toggle verge direction').setObjectName('toggle verge direction')
         mnu.addAction('Delete verge').setObjectName('delete verge')
         mnu.addAction('Clear all').setObjectName('clear all')
 
@@ -129,6 +134,13 @@ class View(QtWidgets.QGraphicsView):
             if item is not None:
                 if isinstance(item, Vertex):
                     self._removeVertex(item)
+
+        elif obj == 'toggle verge direction':
+            pos_x, pos_y = event.pos().x(), event.pos().y()
+            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+            if item is not None:
+                if isinstance(item, Verge):
+                    self._toggleVergeDirection(item)
 
         elif obj == 'delete verge':
             pos_x, pos_y = event.pos().x(), event.pos().y()
