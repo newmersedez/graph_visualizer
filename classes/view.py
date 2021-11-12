@@ -27,7 +27,7 @@ class View(QtWidgets.QGraphicsView):
     # Vertex methods
     def _addVertex(self, x, y):
         if len(self._vertexList) == 0:
-            name = 1
+            name = '1'
         else:
             name = str(int(self._vertexList[-1].getName()) + 1)
         vertex = Vertex(0, 0, name, VERTEX_COLOR)

@@ -76,20 +76,21 @@ class Window(QtWidgets.QMainWindow):
         vertexList = self._viewGetVertexList()
         vergeList = self._viewGetVergeList()
 
-        self.adjacentTable.setColumnCount(len(vertexList))
-        self.adjacentTable.setRowCount(len(vertexList))
+        columnCount = rowCount = len(vertexList)
+        self.adjacentTable.setColumnCount(columnCount)
+        self.adjacentTable.setRowCount(rowCount)
 
         i = 0
-        for vertex1 in vertexList:
-            j = 0
-            for vertex2 in vertexList:
-                if vertex1.findAdjacentVertex(vertex2):
-                    self.adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('1'))
-
-                else:
-                    self.adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
-                j += 1
+        for item in vertexList:
+            self.adjacentTable.setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
+            self.adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
             i += 1
+
+        for i in range(columnCount):
+            for j in range(rowCount):
+                self.adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
+
+        # for verge in vergeList:
 
     def _initUI(self):
         # Realtime adjacency matrix
