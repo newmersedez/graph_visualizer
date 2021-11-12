@@ -26,7 +26,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         painter.drawEllipse(self._x, self._y, VERTEX_SIZE, VERTEX_SIZE)
 
         painter.setPen(QtCore.Qt.white)
-        painter.setFont(QtGui.QFont('Arial', 14))
+        painter.setFont(QtGui.QFont('Arial', 17))
         painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
         painter.setBrush(QtCore.Qt.NoBrush)
 
