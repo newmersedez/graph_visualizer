@@ -90,7 +90,15 @@ class Window(QtWidgets.QMainWindow):
             for j in range(rowCount):
                 self.adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
 
-        # for verge in vergeList:
+        for verge in vergeList:
+            startName = verge.getStartVertex().getName()
+            endName = verge.getEndVertex().getName()
+
+            if verge.isDirected():
+                pass
+
+            else:
+                pass
 
     def _initUI(self):
         # Realtime adjacency matrix
