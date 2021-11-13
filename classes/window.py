@@ -12,8 +12,8 @@ class Window(QtWidgets.QMainWindow):
         self.close()
 
         # Window settings
-        self.resize(WIN_WIDTH, WIN_HEIGHT)
-        # self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
+        # self.resize(WIN_WIDTH, WIN_HEIGHT)
+        self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
         self.setWindowTitle(WIN_TITLE)
         self.setFont(QtGui.QFont('Arial', 15))
         self.setStyleSheet('background-color: #303030; color: white; QMainWindow::separator {width: 20px};')
