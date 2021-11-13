@@ -148,10 +148,6 @@ class Window(QtWidgets.QMainWindow):
             self._adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
             i += 1
 
-        for i in range(columnCount):
-            for j in range(rowCount):
-                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
-
         n = len(vertexList)
         matrix = np.array([['0'] * n] * n)
         for verge in vergeList:
@@ -162,24 +158,61 @@ class Window(QtWidgets.QMainWindow):
             posEnd = vertexList.index(endVertex)
 
             if verge.isDirected():
-
                 matrix[posStart][posEnd] = '1'
 
             else:
                 matrix[posStart][posEnd] = '1'
                 matrix[posEnd][posStart] = '1'
 
+        for i in range(columnCount):
+            for j in range(rowCount):
+                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(matrix[i][j]))
+
     # Buttons actions
     def _undoButtonAction(self):
-        # self._cache.getDecreasedState()
         vertexList, vergeList = self._cache.getDecreasedState()
+
+        scene = self._view.getScene()
+        oldVertexList = self._view.getVertexList()
+        oldVergeList = self._view.getVergeLise()
+
+        for vertex in oldVertexList:
+            scene.removeItem(vertex)
+
+        for verge in oldVergeList:
+            scene.removeItem(verge)
+
         self._view.setVertexList(vertexList)
         self._view.setVergeList(vergeList)
-        self._view.getScene().update()   
+
+        for vertex in vertexList:
+            scene.addItem(vertex)
+
+        for verge in vergeList:
+            scene.addItem(verge)
+
+        self.updateAdjacentTable()
 
     def _redoButtonAction(self):
-        # self._cache.getIncreasedState()
         vertexList, vergeList = self._cache.getIncreasedState()
+
+        scene = self._view.getScene()
+        oldVertexList = self._view.getVertexList()
+        oldVergeList = self._view.getVergeLise()
+
+        for vertex in oldVertexList:
+            scene.removeItem(vertex)
+
+        for verge in oldVergeList:
+            scene.removeItem(verge)
+
         self._view.setVertexList(vertexList)
         self._view.setVergeList(vergeList)
-        self._view.getScene().update()
+
+        for vertex in vertexList:
+            scene.addItem(vertex)
+
+        for verge in vergeList:
+            scene.addItem(verge)
+
+        self.updateAdjacentTable()

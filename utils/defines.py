@@ -15,7 +15,7 @@ WIN_TITLE = "Graph Vizualizer"
 DIALOG_WIDTH = 300
 DIALOG_HEIGHT = 200
 
-CACHE_SIZE = 3
+CACHE_SIZE = 10
 
 # Vertex defaults
 VERTEX_COLOR = 'salmon'
