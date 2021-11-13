@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.view import *
+from classes.cache import *
+import numpy as np
 
 
 class Window(QtWidgets.QMainWindow):
@@ -9,7 +11,7 @@ class Window(QtWidgets.QMainWindow):
 
         # View settings
         self._view = View(self)
-        self.close()
+        self._cache = Cache(CACHE_SIZE)
 
         # Window settings
         # self.resize(WIN_WIDTH, WIN_HEIGHT)
@@ -23,15 +25,14 @@ class Window(QtWidgets.QMainWindow):
         self._mainWidget = QtWidgets.QWidget()
         self._mainLayout = QtWidgets.QHBoxLayout()
 
-        # 2 main layouts
+        # Main layouts
         self._sceneLayout = QtWidgets.QVBoxLayout()
         self._menuLayout = QtWidgets.QVBoxLayout()
 
-        # Menu layouts
+        # Menu layout
         self._tableWidget = QtWidgets.QWidget()
         self._tableLayout = QtWidgets.QVBoxLayout()
         self._tableWidget.setLayout(self._tableLayout)
-        # self._tableWidget.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
         self._tableWidget.setGeometry(0, 0, 100, 100)
 
         self._buttonsWidget = QtWidgets.QWidget()
@@ -51,87 +52,30 @@ class Window(QtWidgets.QMainWindow):
 
         self._initUI()
 
-    def _viewGetVertexList(self):
-        return self._view.getVertexList()
-
-    def _viewGetVergeList(self):
-        return self._view.getVergeLise()
-
-    @staticmethod
-    def _createAdjacentTable():
-        adjacentTable = QtWidgets.QTableWidget()
-        adjacentTable.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
-        adjacentTable.horizontalHeader().setDefaultSectionSize(30)
-        adjacentTable.verticalHeader().setDefaultSectionSize(30)
-        adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        adjacentTable.setStyleSheet('QWidget'
-                                    '{'
-                                    'background-color: #333333;'
-                                    'color: #fffff8;'
-                                    '}'
-                                    'QHeaderView::section'
-                                    '{'
-                                    'background-color: #646464;'
-                                    'padding: 4px;'
-                                    'border: 1px solid #fffff8;'
-                                    'font-size: 14pt;'
-                                    '}'
-                                    'QTableWidget'
-                                    '{'
-                                    'gridline-color: #fffff8;'
-                                    'font-size: 12pt;'
-                                    '}'
-                                    'QTableWidget QTableCornerButton::section'
-                                    '{'
-                                    'background-color: #646464;'
-                                    'border: 1px solid #fffff8;'
-                                    '}')
-        return adjacentTable
-
-    def updateAdjacentTable(self):
-        vertexList = self._viewGetVertexList()
-        vergeList = self._viewGetVergeList()
-
-        columnCount = rowCount = len(vertexList)
-        self.adjacentTable.setColumnCount(columnCount)
-        self.adjacentTable.setRowCount(rowCount)
-
-        i = 0
-        for item in vertexList:
-            self.adjacentTable.setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
-            self.adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
-            i += 1
-
-        for i in range(columnCount):
-            for j in range(rowCount):
-                self.adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
-
-        for verge in vergeList:
-            startVertex = verge.getStartVertex()
-            endVertex = verge.getEndVertex()
-
-            posStart = vertexList.index(startVertex)
-            posEnd = vertexList.index(endVertex)
-
-            if verge.isDirected():
-                self.adjacentTable.setItem(posStart, posEnd, QtWidgets.QTableWidgetItem('1'))
-                self.adjacentTable.setItem(posEnd, posStart, QtWidgets.QTableWidgetItem('0'))
-
-            else:
-                self.adjacentTable.setItem(posStart, posEnd, QtWidgets.QTableWidgetItem('1'))
-                self.adjacentTable.setItem(posEnd, posStart, QtWidgets.QTableWidgetItem('1'))
-
     def _initUI(self):
+        # Menubar
+        self.statusBar()
+        self.menuBar = self.menuBar()
+        self.menuBar.setNativeMenuBar(False)
+        self.menuBar.addMenu('&File')
+        self.menuBar.addMenu('|').setDisabled(True)
+        self.menuBar.addMenu('&Tasks')
+        self.menuBar.addMenu('|').setDisabled(True)
+        self.menuBar.addMenu('&?')
+        self.menuBar.addSeparator()
+
         # Realtime adjacency matrix
-        self.adjacentTable = self._createAdjacentTable()
-        self._tableLayout.addWidget(self.adjacentTable)
+        self._adjacentTable = self._createAdjacentTable()
+        self._tableLayout.addWidget(self._adjacentTable)
 
         # Buttons
-        button1 = QtWidgets.QPushButton('dummy button', self)
+        button1 = QtWidgets.QPushButton('Undo', self)
         button1.setFixedSize(400, 70)
+        button1.clicked.connect(self._undoButtonAction)
 
-        button2 = QtWidgets.QPushButton('dummy button', self)
+        button2 = QtWidgets.QPushButton('Redo', self)
         button2.setFixedSize(400, 70)
+        button2.clicked.connect(self._redoButtonAction)
 
         button3 = QtWidgets.QPushButton('dummy button', self)
         button3.setFixedSize(400, 70)
@@ -147,3 +91,95 @@ class Window(QtWidgets.QMainWindow):
         self._buttonsLayout.addWidget(button3)
         self._buttonsLayout.addWidget(button4)
         self._buttonsLayout.addWidget(button5)
+
+    # Additional functions
+    def _viewGetVertexList(self):
+        return self._view.getVertexList()
+
+    def _viewGetVergeList(self):
+        return self._view.getVergeLise()
+
+    def getCache(self):
+        return self._cache
+
+    # Widget creation
+    @staticmethod
+    def _createAdjacentTable():
+        _adjacentTable = QtWidgets.QTableWidget()
+        _adjacentTable.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
+        _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
+        _adjacentTable.verticalHeader().setDefaultSectionSize(30)
+        _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        _adjacentTable.setStyleSheet('QWidget'
+                                     '{'
+                                     'background-color: #333333;'
+                                     'color: #fffff8;'
+                                     '}'
+                                     'QHeaderView::section'
+                                     '{'
+                                     'background-color: #646464;'
+                                     'padding: 4px;'
+                                     'border: 1px solid #fffff8;'
+                                     'font-size: 14pt;'
+                                     '}'
+                                     'QTableWidget'
+                                     '{'
+                                     'gridline-color: #fffff8;'
+                                     'font-size: 12pt;'
+                                     '}'
+                                     'QTableWidget QTableCornerButton::section'
+                                     '{'
+                                     'background-color: #646464;'
+                                     'border: 1px solid #fffff8;'
+                                     '}')
+        return _adjacentTable
+
+    def updateAdjacentTable(self):
+        vertexList = self._viewGetVertexList()
+        vergeList = self._viewGetVergeList()
+
+        columnCount = rowCount = len(vertexList)
+        self._adjacentTable.setColumnCount(columnCount)
+        self._adjacentTable.setRowCount(rowCount)
+
+        i = 0
+        for item in vertexList:
+            self._adjacentTable.setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
+            self._adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
+            i += 1
+
+        for i in range(columnCount):
+            for j in range(rowCount):
+                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem('0'))
+
+        n = len(vertexList)
+        matrix = np.array([['0'] * n] * n)
+        for verge in vergeList:
+            startVertex = verge.getStartVertex()
+            endVertex = verge.getEndVertex()
+
+            posStart = vertexList.index(startVertex)
+            posEnd = vertexList.index(endVertex)
+
+            if verge.isDirected():
+
+                matrix[posStart][posEnd] = '1'
+
+            else:
+                matrix[posStart][posEnd] = '1'
+                matrix[posEnd][posStart] = '1'
+
+    # Buttons actions
+    def _undoButtonAction(self):
+        # self._cache.getDecreasedState()
+        vertexList, vergeList = self._cache.getDecreasedState()
+        self._view.setVertexList(vertexList)
+        self._view.setVergeList(vergeList)
+        self._view.getScene().update()   
+
+    def _redoButtonAction(self):
+        # self._cache.getIncreasedState()
+        vertexList, vergeList = self._cache.getIncreasedState()
+        self._view.setVertexList(vertexList)
+        self._view.setVergeList(vergeList)
+        self._view.getScene().update()

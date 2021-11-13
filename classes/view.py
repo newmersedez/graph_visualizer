@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.vertex import *
 from classes.verge import *
+from classes.cache import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -39,10 +40,14 @@ class View(QtWidgets.QGraphicsView):
         # Update table
         self._mainWindow.updateAdjacentTable()
 
-        print('after add vertex: ')
-        for i in self._vertexList:
-            print(i.getName())
-        print('\n')
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
+        # print('after add vertex: ')
+        # for i in self._vertexList:
+        #     print(i.getName())
+        # print('\n')
 
     def _removeVertex(self, vertex):
         for vert in self._vertexList:
@@ -59,12 +64,16 @@ class View(QtWidgets.QGraphicsView):
         # Update table
         self._mainWindow.updateAdjacentTable()
 
-        print('after remove vertex: ')
-        for i in self._vertexList:
-            print(i.getName())
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
+        # print('after remove vertex: ')
+        # for i in self._vertexList:
+        #     print(i.getName())
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
 
     # Verge methods
     def _addVerge(self, startVertex, endVertex):
@@ -85,16 +94,24 @@ class View(QtWidgets.QGraphicsView):
         # Update table
         self._mainWindow.updateAdjacentTable()
 
-        print('after add verge: ')
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
+        # print('after add verge: ')
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
 
     def _toggleVergeDirection(self, item):
         item.toggleDirection()
 
         # Update table
         self._mainWindow.updateAdjacentTable()
+
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
 
     def _setVergeWeight(self, item, x, y):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -109,6 +126,10 @@ class View(QtWidgets.QGraphicsView):
         if ok:
             item.setWeight(weight)
 
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
     def _removeVerge(self, item):
         startVertex = item.getStartVertex()
         endVertex = item.getEndVertex()
@@ -121,10 +142,14 @@ class View(QtWidgets.QGraphicsView):
         # Update table
         self._mainWindow.updateAdjacentTable()
 
-        print('after remove verge: ')
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
+        # print('after remove verge: ')
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
 
     # Utils
     def _clearScene(self):
@@ -136,18 +161,31 @@ class View(QtWidgets.QGraphicsView):
         # Update table
         self._mainWindow.updateAdjacentTable()
 
-        print('after clean all: ')
-        for i in self._vertexList:
-            print(i.getName())
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # Update cache
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
+
+        # print('after clean all: ')
+        # for i in self._vertexList:
+        #     print(i.getName())
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
+
+    def getScene(self):
+        return self.scene()
 
     def getVertexList(self):
         return self._vertexList
 
     def getVergeLise(self):
         return self._vergeList
+
+    def setVertexList(self, vertexList):
+        self._vertexList = vertexList.copy()
+
+    def setVergeList(self, vergeList):
+        self._vergeList = vergeList.copy()
 
     # Events
     def contextMenuEvent(self, event):
