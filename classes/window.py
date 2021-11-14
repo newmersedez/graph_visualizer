@@ -90,34 +90,33 @@ class Window(QtWidgets.QMainWindow):
         fileOpenMenu = QtWidgets.QMenu('Загрузить граф из файла', self)
         fileMenu.addMenu(fileOpenMenu)
 
-        adjMatrixLoadAction = QtWidgets.QAction('Загрузить матрицу смежности', self)
+        adjMatrixLoadAction = QtWidgets.QAction('&Загрузить матрицу смежности', self)
         adjMatrixLoadAction.triggered.connect(self._loadAdjacentMatrixFromFile)
         fileOpenMenu.addAction(adjMatrixLoadAction)
 
-        incMatrixLoadAction = QtWidgets.QAction('Загрузить матрицу инцидентности', self)
+        incMatrixLoadAction = QtWidgets.QAction('&Загрузить матрицу инцидентности', self)
         incMatrixLoadAction.triggered.connect(self._loadIncidenceMatrixFromFile)
         fileOpenMenu.addAction(incMatrixLoadAction)
 
-        configLoadAction = QtWidgets.QAction('Загрузить файл конфигурации', self)
+        configLoadAction = QtWidgets.QAction('&Загрузить файл конфигурации', self)
         configLoadAction.triggered.connect(self._loadConfigurationFromFile)
         fileOpenMenu.addAction(configLoadAction)
 
         # Save to file
-        fileSaveAction = QtWidgets.QMenu('&Сохранить граф в файл', self)
-        fileMenu.addMenu(fileSaveAction)
+        fileSaveMenu = QtWidgets.QMenu('Сохранить граф в файл', self)
+        fileMenu.addMenu(fileSaveMenu)
 
-        adjMatrixSaveAction = QtWidgets.QAction('Сохранить матрицу смежности', self)
+        adjMatrixSaveAction = QtWidgets.QAction('&Сохранить матрицу смежности', self)
         adjMatrixSaveAction.triggered.connect(self._saveAdjacentMatrixToFile)
-        fileSaveAction.addAction(adjMatrixSaveAction)
+        fileSaveMenu.addAction(adjMatrixSaveAction)
 
-        incMatrixSaveAction = QtWidgets.QAction('Сохранить матрицу инцидентности', self)
-        incMatrixLoadAction.triggered.connect(self._saveIncidenceMatrixToFile)
-        fileSaveAction.addAction(incMatrixSaveAction)
+        incMatrixSaveAction = QtWidgets.QAction('&Сохранить матрицу инцидентности', self)
+        incMatrixSaveAction.triggered.connect(self._saveIncidenceMatrixToFile)
+        fileSaveMenu.addAction(incMatrixSaveAction)
 
-        configSaveAction = QtWidgets.QAction('Сохранить'
-                                             ' файл конфигурации', self)
-        configLoadAction.triggered.connect(self._saveConfigurationToFile)
-        fileSaveAction.addAction(configSaveAction)
+        configSaveAction = QtWidgets.QAction('&Сохранить файл конфигурации', self)
+        configSaveAction.triggered.connect(self._saveConfigurationToFile)
+        fileSaveMenu.addAction(configSaveAction)
 
         # Save as image
         fileSaveImageAction = QtWidgets.QAction('&Сохранить граф в виде изображения', self)
@@ -151,9 +150,7 @@ class Window(QtWidgets.QMainWindow):
         return fileName
 
     def _saveCSVFileDialog(self):
-        dialog = QtWidgets.QFileDialog()
-        dialog.setDefaultSuffix('.csv')
-        options = dialog.Options()
+        options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл для сохранения", "",
                                                             "Matrix file (*.csv)", options=options)
@@ -191,28 +188,7 @@ class Window(QtWidgets.QMainWindow):
                 adjMatrix = np.array(lst).astype('int')
                 adjMatrixSize = len(adjMatrix)
 
-                if self._isSquareNumpyMatrix(adjMatrix):
-                    self._clearAll()
-                    for i in range(0, adjMatrixSize):
-                        pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - VERTEX_SIZE)
-                        pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - VERTEX_SIZE)
-                        self._view.addVertex(pos_x, pos_y)
-
-                    # for i in range(0, adjMatrixSize):
-                    #     for j in range(0, adjMatrixSize):
-                    #         if adjMatrix[i][j] == 1:
-                    #             if adjMatrix[j][i] == 1:
-                    #                 startVertex = self._view.findVertexByName(str(i + 1))
-                    #                 endVertex = self._view.findVertexByName(str(j + 1))
-                    #                 self._view.addVerge(startVertex, endVertex)
-                    #
-                    #             elif adjMatrix[j][i] == 0:
-                    #                 startVertex = self._view.findVertexByName(str(i + 1))
-                    #                 endVertex = self._view.findVertexByName(str(j + 1))
-                    #                 self._view.addVerge(startVertex, endVertex)
-                    #                 verge = self._view.findVerge(startVertex, endVertex)
-                    #                 if verge is not None:
-                    #                     verge.toggleDirection()
+                pass
 
             except ValueError:
                 print('incorrect file')                # throw message window in future
@@ -245,6 +221,7 @@ class Window(QtWidgets.QMainWindow):
         self._cache.clear()
 
     def _saveAdjacentMatrixToFile(self):
+        print('save adj')
         fileName = self._saveCSVFileDialog()
 
         if len(fileName) != 0:
@@ -262,8 +239,42 @@ class Window(QtWidgets.QMainWindow):
             stream.close()
 
     def _saveIncidenceMatrixToFile(self):
-        print('save adj matrix to file')
-        # self._saveCSVFileDialog()
+        print('save inc')
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            stream = open(fileName, 'w')
+            delimiter = ','
+            columnCount = rowCount = self._adjacentTable.columnCount()
+            vertexList = self._view.getVertexList()
+            vergeList = self._view.getVergeList()
+
+            for vertex in vertexList:
+                for verge in vergeList:
+                    if verge.isDirected():
+                        if vertex == verge.getStartVertex():
+                            stream.write('1')
+                            stream.write(delimiter)
+
+                        elif vertex == verge.getEndVertex():
+                            stream.write('-1')
+                            stream.write(delimiter)
+
+                        else:
+                            stream.write('0')
+                            stream.write(delimiter)
+
+                    else:
+                        if (vertex == verge.getStartVertex()) or (vertex == verge.getEndVertex()):
+                            stream.write('1')
+                            stream.write(delimiter)
+
+                        else:
+                            stream.write('0')
+                            stream.write(delimiter)
+
+                stream.write('\n')
+            stream.close()
 
     def _saveConfigurationToFile(self):
         print('save adj matrix to file')
