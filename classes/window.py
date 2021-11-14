@@ -6,6 +6,7 @@ from classes.verge import *
 from classes.cache import *
 import numpy as np
 import csv
+import random
 
 
 class Window(QtWidgets.QMainWindow):
@@ -61,7 +62,7 @@ class Window(QtWidgets.QMainWindow):
         self.menuBar = self._createMenuBar()
 
         # Cache
-        cacheItem = CacheItem(self._view.getVertexList(), self._view.getVergeLise())
+        cacheItem = CacheItem(self._view.getVertexList(), self._view.getVergeList())
         self._cache.updateCache(cacheItem)
 
         # Realtime adjacency matrix
@@ -70,13 +71,6 @@ class Window(QtWidgets.QMainWindow):
 
         # Buttons
         self._createButtons()
-
-    # View methods
-    def _viewGetVertexList(self):
-        return self._view.getVertexList()
-
-    def _viewGetVergeList(self):
-        return self._view.getVergeLise()
 
     # Cache methods
     def getCache(self):
@@ -165,7 +159,7 @@ class Window(QtWidgets.QMainWindow):
     def _clearAll(self):
         scene = self._view.getScene()
         vertexList = self._view.getVertexList()
-        vergeList = self._viewGetVergeList()
+        vergeList = self._view.getVertexList()
 
         scene.clear()
         vertexList.clear()
@@ -173,23 +167,59 @@ class Window(QtWidgets.QMainWindow):
         self.updateAdjacentTable()
         self._cache.clear()
 
+    @staticmethod
+    def _isSquareNumpyMatrix(matrix):
+        if matrix is not None:
+            matrixSize = len(matrix)
+            for item in matrix:
+                itemSize = len(item)
+                if itemSize != matrixSize:
+                    return False
+        return True
+
     def _loadAdjacentMatrixFromFile(self):
         fileName = self._openCSVFileDialog()
 
         if len(fileName) != 0:
-            self._clearAll()
-
             reader = csv.reader(open(fileName, "rt"), delimiter=',')
             lst = list(reader)
-            adjMatrix = np.array(lst).astype('int')
-            print(adjMatrix)
-            vertex = Vertex(0, 0, '1', VERTEX_COLOR)
+
+            try:
+                adjMatrix = np.array(lst).astype('int')
+                adjMatrixSize = len(adjMatrix)
+
+                if self._isSquareNumpyMatrix(adjMatrix):
+                    self._clearAll()
+                    for i in range(0, adjMatrixSize):
+                        pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - VERTEX_SIZE)
+                        pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - VERTEX_SIZE)
+                        self._view.addVertex(pos_x, pos_y)
+
+                    for i in range(0, adjMatrixSize):
+                        for j in range(0, adjMatrixSize):
+                            if adjMatrix[i][j] == 1:
+                                if adjMatrix[j][i] == 1:
+                                    startVertex = self._view.findVertexByName(str(i + 1))
+                                    endVertex = self._view.findVertexByName(str(j + 1))
+                                    self._view.addVerge(startVertex, endVertex)
+
+                                elif adjMatrix[j][i] == 0:
+                                    startVertex = self._view.findVertexByName(str(i + 1))
+                                    endVertex = self._view.findVertexByName(str(j + 1))
+                                    self._view.addVerge(startVertex, endVertex)
+                                    verge = self._view.findVerge(startVertex, endVertex)
+                                    if verge is not None:
+                                        verge.toggleDirection()
+
+            except ValueError:
+                print('incorrect file')                # throw message window in future
+
 
     def _loadIncidenceMatrixFromFile(self):
         print('incidence matrix from file')
 
         vertexList = self._view.getVertexList()
-        vergeList = self._viewGetVergeList()
+        vergeList = self._view.getVertexList()
 
         self._view.clearScene()
         self.updateAdjacentTable()
@@ -201,7 +231,7 @@ class Window(QtWidgets.QMainWindow):
 
         scene = self._view.getScene()
         vertexList = self._view.getVertexList()
-        vergeList = self._viewGetVergeList()
+        vergeList = self._view.getVertexList()
 
         scene.clear()
         vertexList.clear()
@@ -258,8 +288,8 @@ class Window(QtWidgets.QMainWindow):
         return _adjacentTable
 
     def updateAdjacentTable(self, adjMatrix=None):
-        vertexList = self._viewGetVertexList()
-        vergeList = self._viewGetVergeList()
+        vertexList = self._view.getVertexList()
+        vergeList = self._view.getVergeList()
 
         columnCount = rowCount = len(vertexList)
         self._adjacentTable.setColumnCount(columnCount)
@@ -277,15 +307,18 @@ class Window(QtWidgets.QMainWindow):
             startVertex = verge.getStartVertex()
             endVertex = verge.getEndVertex()
 
-            posStart = vertexList.index(startVertex)
-            posEnd = vertexList.index(endVertex)
+            if startVertex in vertexList:
+                posStart = vertexList.index(startVertex)
+            if endVertex in vertexList:
+                posEnd = vertexList.index(endVertex)
 
-            if verge.isDirected():
-                matrix[posStart][posEnd] = '1'
+            if (posStart is not None) and (posEnd is not None):
+                if verge.isDirected():
+                    matrix[posStart][posEnd] = '1'
 
-            else:
-                matrix[posStart][posEnd] = '1'
-                matrix[posEnd][posStart] = '1'
+                else:
+                    matrix[posStart][posEnd] = '1'
+                    matrix[posEnd][posStart] = '1'
 
         for i in range(columnCount):
             for j in range(rowCount):
@@ -320,7 +353,7 @@ class Window(QtWidgets.QMainWindow):
         vertexList, vergeList = self._cache.getDecreasedState()
         scene = self._view.getScene()
         oldVertexList = self._view.getVertexList()
-        oldVergeList = self._view.getVergeLise()
+        oldVergeList = self._view.getVergeList()
 
         if vertexList is not None:
             for vertex in oldVertexList:
@@ -345,7 +378,7 @@ class Window(QtWidgets.QMainWindow):
         vertexList, vergeList = self._cache.getIncreasedState()
         scene = self._view.getScene()
         oldVertexList = self._view.getVertexList()
-        oldVergeList = self._view.getVergeLise()
+        oldVergeList = self._view.getVergeList()
 
         if vertexList is not None:
             for vertex in oldVertexList:

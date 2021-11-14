@@ -17,7 +17,7 @@ class Verge(QtWidgets.QGraphicsItem):
         self._isWeight = False
 
     def toggleDirection(self):
-        print('toggle ')
+        print('toggle in verge class')
         self._isDirection = not self._isDirection
 
     def isDirected(self):

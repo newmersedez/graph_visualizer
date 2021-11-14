@@ -75,6 +75,12 @@ class View(QtWidgets.QGraphicsView):
         #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         # print('\n')
 
+    def findVertexByName(self, name):
+        for vertex in self._vertexList:
+            if vertex.getName() == name:
+                return vertex
+        return None
+
     # Verge methods
     def addVerge(self, startVertex, endVertex):
         verge = Verge(startVertex, endVertex)
@@ -91,6 +97,7 @@ class View(QtWidgets.QGraphicsView):
         self._start = None
         self._end = None
 
+
         # Update table
         self._mainWindow.updateAdjacentTable()
 
@@ -102,6 +109,12 @@ class View(QtWidgets.QGraphicsView):
         # for i in self._vergeList:
         #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         # print('\n')
+
+    def findVerge(self, startVertex, endVertex):
+        for verge in self._vergeList:
+            if (verge.getStartVertex() == startVertex) and (verge.getEndVertex() == endVertex):
+                return verge
+        return None
 
     def toggleVergeDirection(self, item):
         item.toggleDirection()
@@ -178,7 +191,7 @@ class View(QtWidgets.QGraphicsView):
     def getVertexList(self):
         return self._vertexList
 
-    def getVergeLise(self):
+    def getVergeList(self):
         return self._vergeList
 
     def setVertexList(self, vertexList):
