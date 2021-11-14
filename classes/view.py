@@ -97,7 +97,6 @@ class View(QtWidgets.QGraphicsView):
         self._start = None
         self._end = None
 
-
         # Update table
         self._mainWindow.updateAdjacentTable()
 
@@ -117,7 +116,11 @@ class View(QtWidgets.QGraphicsView):
         return None
 
     def toggleVergeDirection(self, item):
-        item.toggleDirection()
+        if item is None:
+            print('ahahhaha ne popal')
+        else:
+            print('popal')
+            item.toggleDirection()
 
         # Update table
         self._mainWindow.updateAdjacentTable()
@@ -239,6 +242,15 @@ class View(QtWidgets.QGraphicsView):
             if item is not None:
                 if isinstance(item, Verge):
                     self.toggleVergeDirection(item)
+                else:
+                    print('eto vertex debil')
+            else:
+                print('ne popal')
+                print('curr = ', pos_x, pos_y)
+                for verge in self._vergeList:
+                    print(verge.getStartVertex().x(), verge.getStartVertex().y(),
+                          ' -> ',
+                          verge.getEndVertex().x(), verge.getEndVertex().y())
 
         elif obj == 'set weight':
             pos_x, pos_y = event.pos().x(), event.pos().y()

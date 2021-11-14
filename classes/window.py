@@ -1,3 +1,4 @@
+import numpy
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.view import *
@@ -145,21 +146,23 @@ class Window(QtWidgets.QMainWindow):
     def _openCSVFileDialog(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Выберите файл с матрицей", "",
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Откройте файл с матрицей", "",
                                                             "Matrix file (*.csv)", options=options)
         return fileName
 
     def _saveCSVFileDialog(self):
-        options = QtWidgets.QFileDialog.Options()
+        dialog = QtWidgets.QFileDialog()
+        dialog.setDefaultSuffix('.csv')
+        options = dialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "",
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл для сохранения", "",
                                                             "Matrix file (*.csv)", options=options)
         return fileName
 
     def _clearAll(self):
         scene = self._view.getScene()
         vertexList = self._view.getVertexList()
-        vergeList = self._view.getVertexList()
+        vergeList = self._view.getVergeList()
 
         scene.clear()
         vertexList.clear()
@@ -195,43 +198,45 @@ class Window(QtWidgets.QMainWindow):
                         pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - VERTEX_SIZE)
                         self._view.addVertex(pos_x, pos_y)
 
-                    for i in range(0, adjMatrixSize):
-                        for j in range(0, adjMatrixSize):
-                            if adjMatrix[i][j] == 1:
-                                if adjMatrix[j][i] == 1:
-                                    startVertex = self._view.findVertexByName(str(i + 1))
-                                    endVertex = self._view.findVertexByName(str(j + 1))
-                                    self._view.addVerge(startVertex, endVertex)
-
-                                elif adjMatrix[j][i] == 0:
-                                    startVertex = self._view.findVertexByName(str(i + 1))
-                                    endVertex = self._view.findVertexByName(str(j + 1))
-                                    self._view.addVerge(startVertex, endVertex)
-                                    verge = self._view.findVerge(startVertex, endVertex)
-                                    if verge is not None:
-                                        verge.toggleDirection()
+                    # for i in range(0, adjMatrixSize):
+                    #     for j in range(0, adjMatrixSize):
+                    #         if adjMatrix[i][j] == 1:
+                    #             if adjMatrix[j][i] == 1:
+                    #                 startVertex = self._view.findVertexByName(str(i + 1))
+                    #                 endVertex = self._view.findVertexByName(str(j + 1))
+                    #                 self._view.addVerge(startVertex, endVertex)
+                    #
+                    #             elif adjMatrix[j][i] == 0:
+                    #                 startVertex = self._view.findVertexByName(str(i + 1))
+                    #                 endVertex = self._view.findVertexByName(str(j + 1))
+                    #                 self._view.addVerge(startVertex, endVertex)
+                    #                 verge = self._view.findVerge(startVertex, endVertex)
+                    #                 if verge is not None:
+                    #                     verge.toggleDirection()
 
             except ValueError:
                 print('incorrect file')                # throw message window in future
 
-
     def _loadIncidenceMatrixFromFile(self):
-        print('incidence matrix from file')
+        fileName = self._openCSVFileDialog()
 
-        vertexList = self._view.getVertexList()
-        vergeList = self._view.getVertexList()
+        if len(fileName) != 0:
+            reader = csv.reader(open(fileName, "rt"), delimiter=',')
+            lst = list(reader)
 
-        self._view.clearScene()
-        self.updateAdjacentTable()
-        self._cache.clear()
-        self._openCSVFileDialog()
+            try:
+                IncMatrix = np.array(lst).astype('int')
+                print(IncMatrix)
+
+            except ValueError:
+                print('incorrect file')  # throw message window in future
 
     def _loadConfigurationFromFile(self):
         print('config file')
 
         scene = self._view.getScene()
         vertexList = self._view.getVertexList()
-        vergeList = self._view.getVertexList()
+        vergeList = self._view.getVergeList()
 
         scene.clear()
         vertexList.clear()
@@ -240,8 +245,21 @@ class Window(QtWidgets.QMainWindow):
         self._cache.clear()
 
     def _saveAdjacentMatrixToFile(self):
-        print('save adj matrix to file')
-        self._saveCSVFileDialog()
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            stream = open(fileName, 'w')
+            delimiter = ','
+            columnCount = rowCount = self._adjacentTable.columnCount()
+
+            for i in range(0, columnCount):
+                for j in range(0, rowCount):
+                    stream.write(self._adjacentTable.item(i, j).text())
+                    if j != rowCount - 1:
+                        stream.write(delimiter)
+                if i != columnCount - 1:
+                    stream.write('\n')
+            stream.close()
 
     def _saveIncidenceMatrixToFile(self):
         print('save adj matrix to file')
@@ -262,7 +280,7 @@ class Window(QtWidgets.QMainWindow):
         _adjacentTable.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
         _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
         _adjacentTable.verticalHeader().setDefaultSectionSize(30)
-        _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        # _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         _adjacentTable.setStyleSheet('QWidget'
                                      '{'
                                      'background-color: #333333;'
@@ -306,6 +324,7 @@ class Window(QtWidgets.QMainWindow):
         for verge in vergeList:
             startVertex = verge.getStartVertex()
             endVertex = verge.getEndVertex()
+            posStart, posEnd = None, None
 
             if startVertex in vertexList:
                 posStart = vertexList.index(startVertex)
