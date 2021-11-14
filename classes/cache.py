@@ -34,28 +34,34 @@ class Cache:
         if self._cacheQueue.qsize() < self._size:
             self._cacheQueue.put(cacheItem)
             self._pos += 1
-            print(self._pos)
         else:
             self._cacheQueue.get()
             self._cacheQueue.put(cacheItem)
-            print(self._pos)
         # print('Updated cache, current size = ', self._cacheQueue.qsize())
         # for item in self._cacheQueue.queue:
         #     if item is not None:
         #         item.print()
 
+    def clear(self):
+        self._pos = -1
+        self._cacheQueue.queue.clear()
+
     def getIncreasedState(self):
+        vertexList = None
+        vergeList = None
+
         if self._pos < self._cacheQueue.qsize() - 1:
             self._pos += 1
-        print(self._pos)
-        vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
-        vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
+            vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
+            vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
         return vertexList, vergeList
 
     def getDecreasedState(self):
+        vertexList = None
+        vergeList = None
+
         if self._pos > 0:
             self._pos -= 1
-        print(self._pos)
-        vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
-        vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
+            vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
+            vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
         return vertexList, vergeList

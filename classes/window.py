@@ -1,8 +1,11 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.view import *
+from classes.vertex import *
+from classes.verge import *
 from classes.cache import *
 import numpy as np
+import csv
 
 
 class Window(QtWidgets.QMainWindow):
@@ -53,56 +56,176 @@ class Window(QtWidgets.QMainWindow):
         self._initUI()
 
     def _initUI(self):
-        # Menubar
+        # Menu bar
         self.statusBar()
-        self.menuBar = self.menuBar()
-        self.menuBar.setNativeMenuBar(False)
-        self.menuBar.addMenu('&File')
-        self.menuBar.addMenu('|').setDisabled(True)
-        self.menuBar.addMenu('&Tasks')
-        self.menuBar.addMenu('|').setDisabled(True)
-        self.menuBar.addMenu('&?')
-        self.menuBar.addSeparator()
+        self.menuBar = self._createMenuBar()
+
+        # Cache
+        cacheItem = CacheItem(self._view.getVertexList(), self._view.getVergeLise())
+        self._cache.updateCache(cacheItem)
 
         # Realtime adjacency matrix
         self._adjacentTable = self._createAdjacentTable()
         self._tableLayout.addWidget(self._adjacentTable)
 
         # Buttons
-        button1 = QtWidgets.QPushButton('Undo', self)
-        button1.setFixedSize(400, 70)
-        button1.clicked.connect(self._undoButtonAction)
+        self._createButtons()
 
-        button2 = QtWidgets.QPushButton('Redo', self)
-        button2.setFixedSize(400, 70)
-        button2.clicked.connect(self._redoButtonAction)
-
-        button3 = QtWidgets.QPushButton('dummy button', self)
-        button3.setFixedSize(400, 70)
-
-        button4 = QtWidgets.QPushButton('dummy button', self)
-        button4.setFixedSize(400, 70)
-
-        button5 = QtWidgets.QPushButton('dummy button', self)
-        button5.setFixedSize(400, 70)
-
-        self._buttonsLayout.addWidget(button1)
-        self._buttonsLayout.addWidget(button2)
-        self._buttonsLayout.addWidget(button3)
-        self._buttonsLayout.addWidget(button4)
-        self._buttonsLayout.addWidget(button5)
-
-    # Additional functions
+    # View methods
     def _viewGetVertexList(self):
         return self._view.getVertexList()
 
     def _viewGetVergeList(self):
         return self._view.getVergeLise()
 
+    # Cache methods
     def getCache(self):
         return self._cache
 
-    # Widget creation
+    # Menu bar and menu methods
+    def _createMenuBar(self):
+        # Menu initialization
+        menuBar = self.menuBar()
+        menuBar.setNativeMenuBar(False)
+        fileMenu = menuBar.addMenu('&Файл')
+        tasksMenu = menuBar.addMenu('&Задачи теории графов')
+        qaMenu = menuBar.addMenu('&?')
+
+        # Load from file
+        fileOpenMenu = QtWidgets.QMenu('Загрузить граф из файла', self)
+        fileMenu.addMenu(fileOpenMenu)
+
+        adjMatrixLoadAction = QtWidgets.QAction('Загрузить матрицу смежности', self)
+        adjMatrixLoadAction.triggered.connect(self._loadAdjacentMatrixFromFile)
+        fileOpenMenu.addAction(adjMatrixLoadAction)
+
+        incMatrixLoadAction = QtWidgets.QAction('Загрузить матрицу инцидентности', self)
+        incMatrixLoadAction.triggered.connect(self._loadIncidenceMatrixFromFile)
+        fileOpenMenu.addAction(incMatrixLoadAction)
+
+        configLoadAction = QtWidgets.QAction('Загрузить файл конфигурации', self)
+        configLoadAction.triggered.connect(self._loadConfigurationFromFile)
+        fileOpenMenu.addAction(configLoadAction)
+
+        # Save to file
+        fileSaveAction = QtWidgets.QMenu('&Сохранить граф в файл', self)
+        fileMenu.addMenu(fileSaveAction)
+
+        adjMatrixSaveAction = QtWidgets.QAction('Сохранить матрицу смежности', self)
+        adjMatrixSaveAction.triggered.connect(self._saveAdjacentMatrixToFile)
+        fileSaveAction.addAction(adjMatrixSaveAction)
+
+        incMatrixSaveAction = QtWidgets.QAction('Сохранить матрицу инцидентности', self)
+        incMatrixLoadAction.triggered.connect(self._saveIncidenceMatrixToFile)
+        fileSaveAction.addAction(incMatrixSaveAction)
+
+        configSaveAction = QtWidgets.QAction('Сохранить'
+                                             ' файл конфигурации', self)
+        configLoadAction.triggered.connect(self._saveConfigurationToFile)
+        fileSaveAction.addAction(configSaveAction)
+
+        # Save as image
+        fileSaveImageAction = QtWidgets.QAction('&Сохранить граф в виде изображения', self)
+        fileSaveImageAction.triggered.connect(self._saveToImage)
+        fileMenu.addAction(fileSaveImageAction)
+
+        # Exit from app
+        fileExitAction = QtWidgets.QAction('&Выйти из программы', self)
+        fileExitAction.triggered.connect(QtWidgets.qApp.quit)
+        fileMenu.addAction(fileExitAction)
+
+        # Tasks menu
+        # fill when program is finished
+
+        # QA menu
+        qaProgramAction = QtWidgets.QAction('&О программе', self)
+        qaProgramAction.setStatusTip('Program info')
+        qaMenu.addAction(qaProgramAction)
+
+        qaAuthorAction = QtWidgets.QAction('&Об авторе', self)
+        qaAuthorAction.setStatusTip('Program author')
+        qaMenu.addAction(qaAuthorAction)
+
+        return menuBar
+
+    def _openCSVFileDialog(self):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Выберите файл с матрицей", "",
+                                                            "Matrix file (*.csv)", options=options)
+        return fileName
+
+    def _saveCSVFileDialog(self):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "",
+                                                            "Matrix file (*.csv)", options=options)
+        return fileName
+
+    def _clearAll(self):
+        scene = self._view.getScene()
+        vertexList = self._view.getVertexList()
+        vergeList = self._viewGetVergeList()
+
+        scene.clear()
+        vertexList.clear()
+        vergeList.clear()
+        self.updateAdjacentTable()
+        self._cache.clear()
+
+    def _loadAdjacentMatrixFromFile(self):
+        fileName = self._openCSVFileDialog()
+
+        if len(fileName) != 0:
+            self._clearAll()
+
+            reader = csv.reader(open(fileName, "rt"), delimiter=',')
+            lst = list(reader)
+            adjMatrix = np.array(lst).astype('int')
+            print(adjMatrix)
+            vertex = Vertex(0, 0, '1', VERTEX_COLOR)
+
+    def _loadIncidenceMatrixFromFile(self):
+        print('incidence matrix from file')
+
+        vertexList = self._view.getVertexList()
+        vergeList = self._viewGetVergeList()
+
+        self._view.clearScene()
+        self.updateAdjacentTable()
+        self._cache.clear()
+        self._openCSVFileDialog()
+
+    def _loadConfigurationFromFile(self):
+        print('config file')
+
+        scene = self._view.getScene()
+        vertexList = self._view.getVertexList()
+        vergeList = self._viewGetVergeList()
+
+        scene.clear()
+        vertexList.clear()
+        vergeList.clear()
+        self.updateAdjacentTable()
+        self._cache.clear()
+
+    def _saveAdjacentMatrixToFile(self):
+        print('save adj matrix to file')
+        self._saveCSVFileDialog()
+
+    def _saveIncidenceMatrixToFile(self):
+        print('save adj matrix to file')
+        # self._saveCSVFileDialog()
+
+    def _saveConfigurationToFile(self):
+        print('save adj matrix to file')
+        # self._saveCSVFileDialog()
+
+    def _saveToImage(self):
+        print('save to image')
+        # self._saveCSVFileDialog()
+
+    # Table methods
     @staticmethod
     def _createAdjacentTable():
         _adjacentTable = QtWidgets.QTableWidget()
@@ -134,7 +257,7 @@ class Window(QtWidgets.QMainWindow):
                                      '}')
         return _adjacentTable
 
-    def updateAdjacentTable(self):
+    def updateAdjacentTable(self, adjMatrix=None):
         vertexList = self._viewGetVertexList()
         vergeList = self._viewGetVergeList()
 
@@ -168,51 +291,77 @@ class Window(QtWidgets.QMainWindow):
             for j in range(rowCount):
                 self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(matrix[i][j]))
 
-    # Buttons actions
+    # Buttons methods
+    def _createButtons(self):
+        button1 = QtWidgets.QPushButton('Undo', self)
+        button1.setFixedSize(400, 70)
+        button1.clicked.connect(self._undoButtonAction)
+
+        button2 = QtWidgets.QPushButton('Redo', self)
+        button2.setFixedSize(400, 70)
+        button2.clicked.connect(self._redoButtonAction)
+
+        button3 = QtWidgets.QPushButton('dummy button', self)
+        button3.setFixedSize(400, 70)
+
+        button4 = QtWidgets.QPushButton('dummy button', self)
+        button4.setFixedSize(400, 70)
+
+        button5 = QtWidgets.QPushButton('dummy button', self)
+        button5.setFixedSize(400, 70)
+
+        self._buttonsLayout.addWidget(button1)
+        self._buttonsLayout.addWidget(button2)
+        self._buttonsLayout.addWidget(button3)
+        self._buttonsLayout.addWidget(button4)
+        self._buttonsLayout.addWidget(button5)
+
     def _undoButtonAction(self):
         vertexList, vergeList = self._cache.getDecreasedState()
-
         scene = self._view.getScene()
         oldVertexList = self._view.getVertexList()
         oldVergeList = self._view.getVergeLise()
 
-        for vertex in oldVertexList:
-            scene.removeItem(vertex)
+        if vertexList is not None:
+            for vertex in oldVertexList:
+                scene.removeItem(vertex)
 
-        for verge in oldVergeList:
-            scene.removeItem(verge)
+            self._view.setVertexList(vertexList)
 
-        self._view.setVertexList(vertexList)
-        self._view.setVergeList(vergeList)
+            for vertex in vertexList:
+                scene.addItem(vertex)
 
-        for vertex in vertexList:
-            scene.addItem(vertex)
+        if vergeList is not None:
+            for verge in oldVergeList:
+                scene.removeItem(verge)
+            self._view.setVergeList(vergeList)
 
-        for verge in vergeList:
-            scene.addItem(verge)
+            for verge in vergeList:
+                scene.addItem(verge)
 
         self.updateAdjacentTable()
 
     def _redoButtonAction(self):
         vertexList, vergeList = self._cache.getIncreasedState()
-
         scene = self._view.getScene()
         oldVertexList = self._view.getVertexList()
         oldVergeList = self._view.getVergeLise()
 
-        for vertex in oldVertexList:
-            scene.removeItem(vertex)
+        if vertexList is not None:
+            for vertex in oldVertexList:
+                scene.removeItem(vertex)
 
-        for verge in oldVergeList:
-            scene.removeItem(verge)
+            self._view.setVertexList(vertexList)
 
-        self._view.setVertexList(vertexList)
-        self._view.setVergeList(vergeList)
+            for vertex in vertexList:
+                scene.addItem(vertex)
 
-        for vertex in vertexList:
-            scene.addItem(vertex)
+        if vergeList is not None:
+            for verge in oldVergeList:
+                scene.removeItem(verge)
+            self._view.setVergeList(vergeList)
 
-        for verge in vergeList:
-            scene.addItem(verge)
+            for verge in vergeList:
+                scene.addItem(verge)
 
         self.updateAdjacentTable()

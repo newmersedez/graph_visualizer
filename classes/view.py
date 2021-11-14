@@ -26,7 +26,7 @@ class View(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
     # Vertex methods
-    def _addVertex(self, x, y):
+    def addVertex(self, x, y):
         if len(self._vertexList) == 0:
             name = '1'
         else:
@@ -49,7 +49,7 @@ class View(QtWidgets.QGraphicsView):
         #     print(i.getName())
         # print('\n')
 
-    def _removeVertex(self, vertex):
+    def removeVertex(self, vertex):
         for vert in self._vertexList:
             vert.removeAdjacentVertex(vertex)
 
@@ -76,7 +76,7 @@ class View(QtWidgets.QGraphicsView):
         # print('\n')
 
     # Verge methods
-    def _addVerge(self, startVertex, endVertex):
+    def addVerge(self, startVertex, endVertex):
         verge = Verge(startVertex, endVertex)
 
         self._vergeList.append(verge)
@@ -103,17 +103,17 @@ class View(QtWidgets.QGraphicsView):
         #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         # print('\n')
 
-    def _toggleVergeDirection(self, item):
+    def toggleVergeDirection(self, item):
         item.toggleDirection()
 
         # Update table
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
+        # newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        # self._mainWindow.getCache().updateCache(newCacheItem)
 
-    def _setVergeWeight(self, item, x, y):
+    def setVergeWeight(self, item, x, y):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.IntInput)
         inputDialog.setWindowTitle('Input')
@@ -130,7 +130,7 @@ class View(QtWidgets.QGraphicsView):
         newCacheItem = CacheItem(self._vertexList, self._vergeList)
         self._mainWindow.getCache().updateCache(newCacheItem)
 
-    def _removeVerge(self, item):
+    def removeVerge(self, item):
         startVertex = item.getStartVertex()
         endVertex = item.getEndVertex()
 
@@ -152,7 +152,7 @@ class View(QtWidgets.QGraphicsView):
         # print('\n')
 
     # Utils
-    def _clearScene(self):
+    def clearScene(self):
         self._vertexList.clear()
         self._vergeList.clear()
         for item in self._scene.items():
@@ -192,17 +192,17 @@ class View(QtWidgets.QGraphicsView):
         pos = event.pos()
         mnu = QtWidgets.QMenu()
 
-        mnu.addSection('Vertex:')
-        mnu.addAction('Add vertex').setObjectName('add vertex')
-        mnu.addAction('Delete vertex').setObjectName('delete vertex')
+        mnu.addSection('Вершина:')
+        mnu.addAction('Добавить вершину').setObjectName('add vertex')
+        mnu.addAction('Удалить вершину').setObjectName('delete vertex')
 
-        mnu.addSection('Verge:')
-        mnu.addAction('Toggle direction').setObjectName('toggle direction')
-        mnu.addAction('Set weight').setObjectName('set weight')
-        mnu.addAction('Delete verge').setObjectName('delete verge')
+        mnu.addSection('Ребро:')
+        mnu.addAction('Переключить направление ребра').setObjectName('toggle direction')
+        mnu.addAction('Установить вес ребра').setObjectName('set weight')
+        mnu.addAction('Удалить ребро').setObjectName('delete verge')
 
-        mnu.addSection('Utils:')
-        mnu.addAction('Clear all').setObjectName('clear all')
+        mnu.addSection('Дополнительно:')
+        mnu.addAction('Очистить экран').setObjectName('clear all')
 
         ret = mnu.exec_(self.mapToGlobal(pos))
         if not ret:
@@ -211,38 +211,38 @@ class View(QtWidgets.QGraphicsView):
         obj = ret.objectName()
         if obj == 'add vertex':
             pos_x, pos_y = event.pos().x(), event.pos().y()
-            self._addVertex(pos_x, pos_y)
+            self.addVertex(pos_x, pos_y)
 
         elif obj == 'delete vertex':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
-                    self._removeVertex(item)
+                    self.removeVertex(item)
 
         elif obj == 'toggle direction':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Verge):
-                    self._toggleVergeDirection(item)
+                    self.toggleVergeDirection(item)
 
         elif obj == 'set weight':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Verge):
-                    self._setVergeWeight(item, pos_x, pos_y)
+                    self.setVergeWeight(item, pos_x, pos_y)
 
         elif obj == 'delete verge':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Verge):
-                    self._removeVerge(item)
+                    self.removeVerge(item)
 
         elif obj == 'clear all':
-            self._clearScene()
+            self.clearScene()
 
     def resizeEvent(self, event):
         width, height = self.viewport().width(), self.viewport().height()
@@ -264,6 +264,6 @@ class View(QtWidgets.QGraphicsView):
             if item is not None:
                 self._end = item
                 if isinstance(self._start, Vertex) and isinstance(self._end, Vertex):
-                    self._addVerge(self._start, self._end)
+                    self.addVerge(self._start, self._end)
 
         super(View, self).mouseReleaseEvent(event)
