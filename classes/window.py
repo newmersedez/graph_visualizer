@@ -153,7 +153,7 @@ class Window(QtWidgets.QMainWindow):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл для сохранения", "",
-                                                            "Matrix file (*.csv)", options=options)
+                                                            "Matrix file (*.csv);;Image file (*png)", options=options)
         return fileName
 
     def _clearAll(self):
@@ -282,7 +282,11 @@ class Window(QtWidgets.QMainWindow):
 
     def _saveToImage(self):
         print('save to image')
-        # self._saveCSVFileDialog()
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            pixmap = self._view.grab(self._view.getScene().sceneRect().toRect())
+            pixmap.save(fileName)
 
     # Table methods
     @staticmethod
