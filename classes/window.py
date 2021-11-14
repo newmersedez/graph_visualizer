@@ -87,7 +87,7 @@ class Window(QtWidgets.QMainWindow):
         qaMenu = menuBar.addMenu('&?')
 
         # Load from file
-        fileOpenMenu = QtWidgets.QMenu('Загрузить граф из файла', self)
+        fileOpenMenu = QtWidgets.QMenu('Загрузить граф...', self)
         fileMenu.addMenu(fileOpenMenu)
 
         adjMatrixLoadAction = QtWidgets.QAction('&Загрузить матрицу смежности', self)
@@ -103,7 +103,7 @@ class Window(QtWidgets.QMainWindow):
         fileOpenMenu.addAction(configLoadAction)
 
         # Save to file
-        fileSaveMenu = QtWidgets.QMenu('Сохранить граф в файл', self)
+        fileSaveMenu = QtWidgets.QMenu('Сохранить граф...', self)
         fileMenu.addMenu(fileSaveMenu)
 
         adjMatrixSaveAction = QtWidgets.QAction('&Сохранить матрицу смежности', self)
