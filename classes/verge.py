@@ -15,7 +15,7 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = 1
         self._isDirection = False
         self._isWeight = False
-        self._name = name
+        self._name = '\'' + name + '\''
         self._curveFactor = factor
 
     def toggleDirection(self):
@@ -88,12 +88,12 @@ class Verge(QtWidgets.QGraphicsItem):
 
         factor = VERTEX_SIZE * self._curveFactor
         angle2 = radians(90) + angle
-        c2X = ((pointEnd.x() + pointStart.x()) / 2)
-        c2Y = ((pointEnd.y() + pointStart.y()) / 2)
+        point3X = ((pointEnd.x() + pointStart.x()) / 2)
+        point3Y = ((pointEnd.y() + pointStart.y()) / 2)
 
         myPath = QtGui.QPainterPath(pointStart)
-        myPath.cubicTo(QtCore.QPointF(c2X + factor * cos(-angle2), c2Y + factor * sin(-angle2)),
-                       QtCore.QPointF(c2X + factor * cos(-angle2), c2Y + factor * sin(-angle2)),
+        myPath.cubicTo(QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
+                       QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
                        pointEnd)
 
         pen = QtGui.QPen()
@@ -104,33 +104,41 @@ class Verge(QtWidgets.QGraphicsItem):
 
         pen.setColor(QtCore.Qt.red)
         painter.setPen(pen)
-        painter.drawText(c2X + factor * cos(-angle2), c2Y + factor * sin(-angle2), self._name)
+        painter.drawPoint(QtCore.QPointF(point3X + 3.0/4.0 * factor * cos(-angle2), point3Y + 3.0/4.0 * factor * sin(-angle2)))
+
+        print('center = (', point3X, point3Y, '), red point = (', point3X + factor * cos(-angle2),
+              point3Y + factor * sin(-angle2), ')\n')
+
+        # pen.setColor(QtGui.QColor(VERTEX_COLOR))
+        # painter.setPen(pen)
+        # painter.setFont(QtGui.QFont('Arial', 12))
+        # painter.drawText(c2X + 0.8 * factor * cos(-angle2), c2Y + 0.8 * factor * sin(-angle2), self._name)
 
         #
-        if self._isDirection:
-            startPoint = pointStart
-
-            endPoint = QtCore.QPointF(c2X + factor * 0.8 * cos(-angle2), c2Y + factor * 0.8 * sin(-angle2))
-
-            dx, dy = startPoint.x() - endPoint.x(), startPoint.y() - endPoint.y()
-            length = sqrt(dx ** 2 + dy ** 2)
-            normX, normY = dx / length, dy / length
-            perpX = -normY
-            perpY = normX
-
-            leftX = endPoint.x() + ARROW_SIZE * normX + ARROW_SIZE * perpX
-            leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY
-            rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX
-            rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY
-
-            point2 = QtCore.QPointF(leftX, leftY)
-            point3 = QtCore.QPointF(rightX, rightY)
-
-            newPen = QtGui.QPen()
-            newPen.setColor(QtCore.Qt.white)
-            newPen.setWidth(VERGE_WIDTH)
-            painter.setPen(newPen)
-            painter.drawPolygon(point2, endPoint, point3)
+        # if self._isDirection:
+        #     startPoint = pointStart
+        #
+        #     endPoint = QtCore.QPointF(c2X + factor * 0.8 * cos(-angle2), c2Y + factor * 0.8 * sin(-angle2))
+        #
+        #     dx, dy = startPoint.x() - endPoint.x(), startPoint.y() - endPoint.y()
+        #     length = sqrt(dx ** 2 + dy ** 2)
+        #     normX, normY = dx / length, dy / length
+        #     perpX = -normY
+        #     perpY = normX
+        #
+        #     leftX = endPoint.x() + ARROW_SIZE * normX + ARROW_SIZE * perpX
+        #     leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY
+        #     rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX
+        #     rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY
+        #
+        #     point2 = QtCore.QPointF(leftX, leftY)
+        #     point3 = QtCore.QPointF(rightX, rightY)
+        #
+        #     newPen = QtGui.QPen()
+        #     newPen.setColor(QtGui.QColor(VERTEX_COLOR))
+        #     newPen.setWidth(VERGE_WIDTH)
+        #     painter.setPen(newPen)
+        #     painter.drawPolygon(point2, endPoint, point3)
         #
         # if self._isWeight:
         #     start_x = (pointEnd.x() + pointStart.x()) / 2
@@ -140,8 +148,8 @@ class Verge(QtWidgets.QGraphicsItem):
         #     newPen = QtGui.QPen()
         #     newPen.setColor(QtGui.QColor(VERTEX_COLOR))
         #     painter.setPen(newPen)
-        #     painter.setFont(QtGui.QFont('Arial', 17))
-        #     painter.drawText(point, str(self._weight))
+        #     painter.setFont(QtGui.QFont('Arial', 12))
+        #     painter.drawText(point, self._name + ': ' + str(self._weight))
 
     def getStartVertex(self):
         return self._startVertex
