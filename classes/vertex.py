@@ -21,12 +21,16 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self.setAcceptHoverEvents(True)
 
     def paint(self, painter, option, widget=None):
+        pen = QtGui.QPen()
+        pen.setColor(QtCore.Qt.white)
+        pen.setWidth(3)
+        painter.setPen(pen)
+
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.setBrush(QtGui.QColor(VERTEX_COLOR))
         painter.drawEllipse(self._x, self._y, VERTEX_SIZE, VERTEX_SIZE)
 
-        painter.setPen(QtCore.Qt.white)
-        painter.setFont(QtGui.QFont('Arial', 17))
+        painter.setFont(QtGui.QFont('Arial', 14))
         painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
         painter.setBrush(QtCore.Qt.NoBrush)
 

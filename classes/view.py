@@ -83,7 +83,14 @@ class View(QtWidgets.QGraphicsView):
 
     # Verge methods
     def addVerge(self, startVertex, endVertex):
-        verge = Verge(startVertex, endVertex)
+        factor = 0
+        adjVertexList = endVertex.getAdjacentVertexList()
+        for vertex in adjVertexList:
+            if vertex == startVertex:
+                factor += 1
+
+        print('factor = ', factor)
+        verge = Verge(startVertex, endVertex, factor=factor)
 
         self._vergeList.append(verge)
         self._scene.addItem(verge)
@@ -104,10 +111,10 @@ class View(QtWidgets.QGraphicsView):
         newCacheItem = CacheItem(self._vertexList, self._vergeList)
         self._mainWindow.getCache().updateCache(newCacheItem)
 
-        # print('after add verge: ')
-        # for i in self._vergeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
+        print('after add verge: ')
+        for i in self._vergeList:
+            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        print('\n')
 
     def findVerge(self, startVertex, endVertex):
         for verge in self._vergeList:
