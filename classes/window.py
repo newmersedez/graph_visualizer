@@ -79,6 +79,7 @@ class Window(QtWidgets.QMainWindow):
 
     # Menu bar and menu methods
     def _createMenuBar(self):
+        self.statusBar()
         # Menu initialization
         menuBar = self.menuBar()
         menuBar.setNativeMenuBar(False)

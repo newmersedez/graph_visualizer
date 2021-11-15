@@ -83,11 +83,19 @@ class View(QtWidgets.QGraphicsView):
 
     # Verge methods
     def addVerge(self, startVertex, endVertex):
+        endAdjVertexList = endVertex.getAdjacentVertexList()
         factor = 0
-        adjVertexList = endVertex.getAdjacentVertexList()
-        for vertex in adjVertexList:
+        for vertex in endAdjVertexList:
             if vertex == startVertex:
                 factor += 1
+
+        if factor > 0 and factor % 2 == 0:
+            factor /= -2
+
+        elif factor > 0 and factor % 2 != 0:
+            factor = (factor + 1) / 2
+
+        print('factor = ', factor)
 
         if len(self._vergeList) == 0:
             name = '1'
@@ -115,10 +123,16 @@ class View(QtWidgets.QGraphicsView):
         newCacheItem = CacheItem(self._vertexList, self._vergeList)
         self._mainWindow.getCache().updateCache(newCacheItem)
 
-        print('after add verge: ')
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # print('after add verge: ')
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
+
+    def _findVergeByName(self, name):
+        for verge in self._vergeList:
+            if verge.getName() == name:
+                return verge
+        return None
 
     def findVerge(self, startVertex, endVertex):
         for verge in self._vergeList:
@@ -126,32 +140,57 @@ class View(QtWidgets.QGraphicsView):
                 return verge
         return None
 
-    def toggleVergeDirection(self, item):
-        if item is None:
-            print('ahahhaha ne popal')
-        else:
-            print('popal')
-            item.toggleDirection()
+    def toggleVergeDirection(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('Вкл/Выкл направление ребра')
+        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Название ребра:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        if ok:
+            verge = self._findVergeByName(name)
+            if verge is not None:
+                verge.toggleDirection()
 
         # Update table
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        # newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        # self._mainWindow.getCache().updateCache(newCacheItem)
+        newCacheItem = CacheItem(self._vertexList, self._vergeList)
+        self._mainWindow.getCache().updateCache(newCacheItem)
 
-    def setVergeWeight(self, item, x, y):
-        inputDialog = QtWidgets.QInputDialog(self)
-        inputDialog.setInputMode(QtWidgets.QInputDialog.IntInput)
-        inputDialog.setWindowTitle('Input')
-        inputDialog.setFont(QtGui.QFont('Arial', 15))
+    def setVergeWeight(self):
+        inputDialog = QtWidgets.QDialog(self)
+        inputDialog.setWindowTitle('Установить вес ребра')
         inputDialog.setStyleSheet('background-color: #303030; color: white;')
-        inputDialog.setLabelText('Verge weight')
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        form = QtWidgets.QFormLayout(inputDialog)
+
+        textBox1 = QtWidgets.QLineEdit()
+        form.addRow(QtWidgets.QLabel('Название ребра'))
+        form.addRow(textBox1)
+
+        textBox2 = QtWidgets.QSpinBox()
+        textBox2.setMaximum(10000)
+        form.addRow(QtWidgets.QLabel('Вес ребра'))
+        form.addRow(textBox2)
+
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        form.addRow(buttonBox)
+        buttonBox.accepted.connect(inputDialog.accept)
+        buttonBox.rejected.connect(inputDialog.reject)
+
         ok = inputDialog.exec_()
-        weight = inputDialog.intValue()
 
         if ok:
-            item.setWeight(weight)
+            name = textBox1.text()
+            weight = textBox2.text()
+            verge = self._findVergeByName(name)
+            if verge is not None:
+                verge.setWeight(weight)
 
         # Update cache
         newCacheItem = CacheItem(self._vertexList, self._vergeList)
@@ -224,9 +263,9 @@ class View(QtWidgets.QGraphicsView):
         mnu.addAction('Удалить вершину').setObjectName('delete vertex')
 
         mnu.addSection('Ребро:')
-        mnu.addAction('Переключить направление ребра').setObjectName('toggle direction')
-        mnu.addAction('Установить вес ребра').setObjectName('set weight')
-        mnu.addAction('Удалить ребро').setObjectName('delete verge')
+        mnu.addAction('Вкл/Выкл направление ребра...').setObjectName('toggle direction')
+        mnu.addAction('Установить вес ребра...').setObjectName('set weight')
+        mnu.addAction('Удалить ребро...').setObjectName('delete verge')
 
         mnu.addSection('Дополнительно:')
         mnu.addAction('Очистить экран').setObjectName('clear all')
@@ -251,31 +290,25 @@ class View(QtWidgets.QGraphicsView):
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
-                if isinstance(item, Verge):
-                    self.toggleVergeDirection(item)
-                else:
-                    print('eto vertex debil')
-            else:
-                print('ne popal')
-                print('curr = ', pos_x, pos_y)
-                for verge in self._vergeList:
-                    print(verge.getStartVertex().x(), verge.getStartVertex().y(),
-                          ' -> ',
-                          verge.getEndVertex().x(), verge.getEndVertex().y())
+                if isinstance(item, Vertex):
+                    print('toggle')
+                    self.toggleVergeDirection()
 
         elif obj == 'set weight':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
-                if isinstance(item, Verge):
-                    self.setVergeWeight(item, pos_x, pos_y)
+                if isinstance(item, Vertex):
+                    print('set weight')
+                    self.setVergeWeight()
 
         elif obj == 'delete verge':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
-                if isinstance(item, Verge):
-                    self.removeVerge(item)
+                if isinstance(item, Vertex):
+                    print('remove verge')
+                    # self.removeVerge(item)
 
         elif obj == 'clear all':
             self.clearScene()
