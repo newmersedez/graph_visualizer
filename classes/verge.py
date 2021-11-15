@@ -4,6 +4,7 @@ from classes.vertex import *
 from math import sqrt, sin, cos, acos, pi, fabs, degrees, radians
 from PyQt5.QtCore import qAbs
 
+
 class Verge(QtWidgets.QGraphicsItem):
 
     def __init__(self, startVertex, endVertex, name, factor=None, parent=None):
@@ -15,6 +16,7 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = 1
         self._isDirection = False
         self._isWeight = False
+        self._CycleVerge = False
         self._name = name
         self._curveFactor = factor
 
@@ -88,31 +90,59 @@ class Verge(QtWidgets.QGraphicsItem):
         pointEnd = QtCore.QPointF(end_x, end_y) + self._endVertex.rect().center()
 
         # Calculate bezier curves
-        point3X = ((pointEnd.x() + pointStart.x()) / 2)
-        point3Y = ((pointEnd.y() + pointStart.y()) / 2)
-        factor = VERTEX_SIZE * self._curveFactor
-        angle2 = radians(90) + angle
+        if self._startVertex == self._endVertex:
+            print('Cycle')
+            self._CycleVerge = True
 
-        myPath = QtGui.QPainterPath(pointStart)
-        myPath.cubicTo(QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
-                       QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
-                       pointEnd)
+            pointStartX = self._startVertex.x() + VERTEX_SIZE * 0.5
+            pointStartY = self._startVertex.y()
+            pointStart = QtCore.QPointF(pointStartX, pointStartY)
 
-        pen = QtGui.QPen()
-        pen.setColor(QtCore.Qt.white)
-        pen.setWidth(VERGE_WIDTH)
-        painter.setPen(pen)
-        painter.drawPath(myPath)
+            pointEndX = self._startVertex.x()
+            pointEndY = self._startVertex.y() + VERTEX_SIZE * 0.5
+            pointEnd = QtCore.QPointF(pointEndX, pointEndY)
 
-        pen.setColor(QtGui.QColor(VERTEX_COLOR))
-        painter.setPen(pen)
-        painter.setFont(QtGui.QFont('Arial', 14))
+            point1X = pointStart.x() - VERTEX_SIZE * 0.5
+            point1Y = pointStart.y() - VERTEX_SIZE * 2
 
-        # Update factor for text and arrow drawing
-        factor *= 3.0 / 4.0
-        textOffset = VERTEX_SIZE / 4
-        painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
-                         '\'' + self._name + '\'')
+            point2X = pointEnd.x() - VERTEX_SIZE * 2
+            point2Y = pointEnd.y() - VERTEX_SIZE * 0.5
+
+            myPath = QtGui.QPainterPath(pointStart)
+            myPath.cubicTo(QtCore.QPointF(point1X, point1Y), QtCore.QPointF(point2X, point2Y), pointEnd)
+
+            pen = QtGui.QPen()
+            pen.setColor(QtCore.Qt.white)
+            pen.setWidth(VERGE_WIDTH)
+            painter.setPen(pen)
+            painter.drawPath(myPath)
+
+        else:
+            point3X = ((pointEnd.x() + pointStart.x()) / 2)
+            point3Y = ((pointEnd.y() + pointStart.y()) / 2)
+            factor = VERTEX_SIZE * self._curveFactor
+            angle2 = radians(90) + angle
+
+            myPath = QtGui.QPainterPath(pointStart)
+            myPath.cubicTo(QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
+                           QtCore.QPointF(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2)),
+                           pointEnd)
+
+            pen = QtGui.QPen()
+            pen.setColor(QtCore.Qt.white)
+            pen.setWidth(VERGE_WIDTH)
+            painter.setPen(pen)
+            painter.drawPath(myPath)
+
+            pen.setColor(QtGui.QColor(VERTEX_COLOR))
+            painter.setPen(pen)
+            painter.setFont(QtGui.QFont('Arial', 14))
+
+            # Update factor for text and arrow drawing
+            factor *= 3.0 / 4.0
+            textOffset = VERTEX_SIZE / 4
+            painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
+                             '\'' + self._name + '\'')
 
         # Verge direction
         if self._isDirection:
@@ -142,6 +172,7 @@ class Verge(QtWidgets.QGraphicsItem):
             newPen.setColor(QtGui.QColor(VERTEX_COLOR))
             painter.setPen(newPen)
             painter.setFont(QtGui.QFont('Arial', 14))
+            textOffset = VERTEX_SIZE / 4
             painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
                              '\'' + self._name  + '\': ' + str(self._weight))
 
