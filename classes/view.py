@@ -89,8 +89,12 @@ class View(QtWidgets.QGraphicsView):
             if vertex == startVertex:
                 factor += 1
 
-        print('factor = ', factor)
-        verge = Verge(startVertex, endVertex, factor=factor)
+        if len(self._vergeList) == 0:
+            name = '1'
+        else:
+            name = str(len(self._vergeList) + 1)
+
+        verge = Verge(startVertex, endVertex, name, factor=factor)
 
         self._vergeList.append(verge)
         self._scene.addItem(verge)

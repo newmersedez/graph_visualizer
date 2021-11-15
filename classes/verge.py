@@ -2,11 +2,11 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.vertex import *
 from math import sqrt, sin, cos, acos, pi, fabs, degrees, radians
-
+from PyQt5.QtCore import qAbs
 
 class Verge(QtWidgets.QGraphicsItem):
 
-    def __init__(self, startVertex, endVertex, factor=None, parent=None):
+    def __init__(self, startVertex, endVertex, name, factor=None, parent=None):
         super().__init__(parent)
 
         # Verge variables
@@ -15,6 +15,7 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = 1
         self._isDirection = False
         self._isWeight = False
+        self._name = name
         self._curveFactor = factor
 
     def toggleDirection(self):
@@ -103,7 +104,7 @@ class Verge(QtWidgets.QGraphicsItem):
 
         pen.setColor(QtCore.Qt.red)
         painter.setPen(pen)
-        painter.drawText(c2X + factor * cos(-angle2), c2Y + factor * sin(-angle2), 'name')
+        painter.drawText(c2X + factor * cos(-angle2), c2Y + factor * sin(-angle2), self._name)
 
         #
         if self._isDirection:
