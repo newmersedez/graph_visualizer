@@ -196,14 +196,26 @@ class View(QtWidgets.QGraphicsView):
         newCacheItem = CacheItem(self._vertexList, self._vergeList)
         self._mainWindow.getCache().updateCache(newCacheItem)
 
-    def removeVerge(self, item):
-        startVertex = item.getStartVertex()
-        endVertex = item.getEndVertex()
+    def removeVerge(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('Удаление ребра')
+        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Название ребра:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
 
-        startVertex.removeAdjacentVertex(endVertex)
-        endVertex.removeAdjacentVertex(startVertex)
-        self._vergeList.remove(item)
-        self.scene().removeItem(item)
+        if ok:
+            verge = self._findVergeByName(name)
+            if verge is not None:
+                startVertex = verge.getStartVertex()
+                endVertex = verge.getEndVertex()
+
+                startVertex.removeAdjacentVertex(endVertex)
+                endVertex.removeAdjacentVertex(startVertex)
+                self._vergeList.remove(verge)
+                self.scene().removeItem(verge)
 
         # Update table
         self._mainWindow.updateAdjacentTable()
@@ -291,7 +303,6 @@ class View(QtWidgets.QGraphicsView):
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
-                    print('toggle')
                     self.toggleVergeDirection()
 
         elif obj == 'set weight':
@@ -299,7 +310,6 @@ class View(QtWidgets.QGraphicsView):
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
-                    print('set weight')
                     self.setVergeWeight()
 
         elif obj == 'delete verge':
@@ -307,8 +317,7 @@ class View(QtWidgets.QGraphicsView):
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
-                    print('remove verge')
-                    # self.removeVerge(item)
+                    self.removeVerge()
 
         elif obj == 'clear all':
             self.clearScene()
