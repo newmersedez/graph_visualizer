@@ -12,6 +12,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._name = name
         self._color = color
         self._adjacentVertexList = list()
+        self._isLoop = False
 
         # Vertex settings
         self.setPos(x, y)
@@ -19,20 +20,6 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self.setFlag(QtWidgets.QGraphicsEllipseItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsLineItem.ItemSendsGeometryChanges)
         self.setAcceptHoverEvents(True)
-
-    def paint(self, painter, option, widget=None):
-        pen = QtGui.QPen()
-        pen.setColor(QtCore.Qt.white)
-        pen.setWidth(3)
-        painter.setPen(pen)
-
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        painter.setBrush(QtGui.QColor(VERTEX_COLOR))
-        painter.drawEllipse(self._x, self._y, VERTEX_SIZE, VERTEX_SIZE)
-
-        painter.setFont(QtGui.QFont('Arial', 14))
-        painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
-        painter.setBrush(QtCore.Qt.NoBrush)
 
     def addAdjacentVertex(self, vertex):
         self._adjacentVertexList.append(vertex)
@@ -51,3 +38,23 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
 
     def getName(self):
         return self._name
+
+    def isLoopExist(self):
+        return self._isLoop
+
+    def setLoop(self, value: bool):
+        self._isLoop = value
+
+    def paint(self, painter, option, widget=None):
+        pen = QtGui.QPen()
+        pen.setColor(QtCore.Qt.white)
+        pen.setWidth(3)
+        painter.setPen(pen)
+
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter.setBrush(QtGui.QColor(VERTEX_COLOR))
+        painter.drawEllipse(self._x, self._y, VERTEX_SIZE, VERTEX_SIZE)
+
+        painter.setFont(QtGui.QFont('Arial', 14))
+        painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
+        painter.setBrush(QtCore.Qt.NoBrush)

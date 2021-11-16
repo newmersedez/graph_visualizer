@@ -91,11 +91,8 @@ class View(QtWidgets.QGraphicsView):
 
         if factor > 0 and factor % 2 == 0:
             factor /= -2
-
         elif factor > 0 and factor % 2 != 0:
             factor = (factor + 1) / 2
-
-        print('factor = ', factor)
 
         if len(self._vergeList) == 0:
             name = '1'
@@ -212,6 +209,9 @@ class View(QtWidgets.QGraphicsView):
                 startVertex = verge.getStartVertex()
                 endVertex = verge.getEndVertex()
 
+                if startVertex == endVertex:
+                    startVertex.setLoop(value=False)
+
                 startVertex.removeAdjacentVertex(endVertex)
                 endVertex.removeAdjacentVertex(startVertex)
                 self._vergeList.remove(verge)
@@ -272,6 +272,7 @@ class View(QtWidgets.QGraphicsView):
 
         mnu.addSection('Вершина:')
         mnu.addAction('Добавить вершину').setObjectName('add vertex')
+        mnu.addAction('Создать петлю').setObjectName('make loop')
         mnu.addAction('Удалить вершину').setObjectName('delete vertex')
 
         mnu.addSection('Ребро:')
@@ -297,6 +298,15 @@ class View(QtWidgets.QGraphicsView):
             if item is not None:
                 if isinstance(item, Vertex):
                     self.removeVertex(item)
+
+        elif obj == 'make loop':
+            pos_x, pos_y = event.pos().x(), event.pos().y()
+            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
+            if item is not None:
+                if isinstance(item, Vertex):
+                    if not item.isLoopExist():
+                        item.setLoop(value=True)
+                        self.addVerge(item, item)
 
         elif obj == 'toggle direction':
             pos_x, pos_y = event.pos().x(), event.pos().y()
@@ -342,6 +352,7 @@ class View(QtWidgets.QGraphicsView):
             if item is not None:
                 self._end = item
                 if isinstance(self._start, Vertex) and isinstance(self._end, Vertex):
-                    self.addVerge(self._start, self._end)
+                    if self._start != self._end:
+                        self.addVerge(self._start, self._end)
 
         super(View, self).mouseReleaseEvent(event)
