@@ -152,19 +152,23 @@ class Window(QtWidgets.QMainWindow):
         vertexList = self._view.getVertexList()
         vergeList = self._view.getVergeList()
 
-        scene.clear()
+        for vertex in vertexList:
+            scene.removeItem(vertex)
+        for verge in vergeList:
+            scene.removeItem(verge)
         vertexList.clear()
         vergeList.clear()
 
     @staticmethod
     def _isCorrectAdjacentMatrix(matrix):
-        if matrix is not None:
-
-            matrixSize = len(matrix)
-            for item in matrix:
-                itemSize = len(item)
-                if itemSize != matrixSize:
-                    return False
+        # if matrix is not None:
+        #
+        #     matrixSize = len(matrix)
+        #     for item in matrix:
+        #         itemSize = len(item)
+        #         if itemSize != matrixSize:
+        #             return False
+        # return True
         return True
 
     def _loadAdjacentMatrixFromFile(self):
@@ -172,6 +176,7 @@ class Window(QtWidgets.QMainWindow):
 
         if len(fileName) != 0:
             adjMatrix = np.array(pd.read_csv(fileName, header=None))
+
             adjMatrixSize = len(adjMatrix)
 
             if self._isCorrectAdjacentMatrix(adjMatrix):
@@ -189,13 +194,11 @@ class Window(QtWidgets.QMainWindow):
                             self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
                         else:
                             if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                                self._view.addVerge(vertexList[i], vertexList[j], direction=False,
-                                                    weight=int(adjMatrix[i][j]))
+                                self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=False)
                 for i in range(len(vertexList)):
                     for j in range(len(vertexList)):
                         if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                            self._view.addVerge(vertexList[i], vertexList[j], direction=True,
-                                                weight=int(adjMatrix[i][j]))
+                            self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=True)
 
     def _loadIncidenceMatrixFromFile(self):
         pass

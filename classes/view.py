@@ -254,6 +254,7 @@ class View(QtWidgets.QGraphicsView):
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
+                    print('event = ', event.pos().x(), event.pos().y(), 'item = ', item.pos().x(), item.pos().y())
                     self.removeVertex(item)
 
         elif obj == 'make loop':
