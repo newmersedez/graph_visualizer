@@ -181,7 +181,7 @@ class Verge(QtWidgets.QGraphicsItem):
             painter.setPen(pen)
             painter.setFont(QtGui.QFont('Arial', 14))
 
-            factor *= 3.0 / 4.0
+            factor *= 3 / 4
             textOffset = VERTEX_SIZE / 4
             painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
                              '\'' + self._name + '\'')

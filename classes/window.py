@@ -157,8 +157,9 @@ class Window(QtWidgets.QMainWindow):
         vergeList.clear()
 
     @staticmethod
-    def _isSquareNumpyMatrix(matrix):
+    def _isCorrectAdjacentMatrix(matrix):
         if matrix is not None:
+
             matrixSize = len(matrix)
             for item in matrix:
                 itemSize = len(item)
@@ -167,7 +168,34 @@ class Window(QtWidgets.QMainWindow):
         return True
 
     def _loadAdjacentMatrixFromFile(self):
-        pass
+        fileName = self._openCSVFileDialog()
+
+        if len(fileName) != 0:
+            adjMatrix = np.array(pd.read_csv(fileName, header=None))
+            adjMatrixSize = len(adjMatrix)
+
+            if self._isCorrectAdjacentMatrix(adjMatrix):
+                self._clearAll()
+                for i in range(0, adjMatrixSize):
+                    pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                    pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+                    self._view.addVertex(pos_x, pos_y)
+
+                vertexList = self._view.getVertexList()
+
+                for i in range(len(vertexList)):
+                    for j in range(i, len(vertexList)):
+                        if i == j and adjMatrix[i][j] != 0:
+                            self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
+                        else:
+                            if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                                self._view.addVerge(vertexList[i], vertexList[j], direction=False,
+                                                    weight=int(adjMatrix[i][j]))
+                for i in range(len(vertexList)):
+                    for j in range(len(vertexList)):
+                        if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                            self._view.addVerge(vertexList[i], vertexList[j], direction=True,
+                                                weight=int(adjMatrix[i][j]))
 
     def _loadIncidenceMatrixFromFile(self):
         pass
@@ -287,3 +315,6 @@ class Window(QtWidgets.QMainWindow):
 
     def _redoButtonAction(self):
         pass
+
+
+

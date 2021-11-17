@@ -23,9 +23,12 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
 
     def addAdjacentVertex(self, vertex):
         self._adjacentVertexList.append(vertex)
+        for item in self._adjacentVertexList:
+            print(item.getName())
 
     def removeAdjacentVertex(self, vertex):
-        if vertex in self._adjacentVertexList:
+        # if vertex in self._adjacentVertexList[:]:
+        for i in range(self._adjacentVertexList.count(vertex)):
             self._adjacentVertexList.remove(vertex)
 
     def getAdjacentVertexList(self):
@@ -52,4 +55,4 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
 
         painter.setFont(QtGui.QFont('Arial', 14))
         painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
-        painter.setBrush(QtCore.Qt.NoBrush)
+        # painter.setBrush(QtCore.Qt.NoBrush)

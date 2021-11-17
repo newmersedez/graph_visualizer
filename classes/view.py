@@ -53,12 +53,13 @@ class View(QtWidgets.QGraphicsView):
         self._vertexList.remove(vertex)
         self._scene.removeItem(vertex)
 
-        print('after remove vertex: ')
-        for i in self._vertexList:
-            print(i.getName())
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
+        # print('after remove vertex: ')
+        # for i in self._vertexList:
+        #     print(i.getName())
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
+        print("asdbewfaewfrasdfasdfasdf")
 
     def findVertexByName(self, name):
         for vertex in self._vertexList:
@@ -66,25 +67,40 @@ class View(QtWidgets.QGraphicsView):
                 return vertex
 
     # Verge methods
+    # SEG FAULT HERE
     def addVerge(self, startVertex, endVertex, weight=1, direction=False):
         # Count bezier factor
-        endAdjVertexList = endVertex.getAdjacentVertexList()
+        if startVertex.getName() > endVertex.getName():
+            factorStart = startVertex
+            factorEnd = endVertex
+        else:
+            factorStart = endVertex
+            factorEnd = startVertex
+
+        endAdjVertexList = factorEnd.getAdjacentVertexList().copy()
+        startAdjVertexList = factorStart.getAdjacentVertexList().copy()
+
         factor = 0
         for vertex in endAdjVertexList:
-            if vertex == startVertex:
+            if vertex == factorStart:
                 factor += 1
-
-        if factor % 2 == 0:
+                for i in range(startAdjVertexList.count(factorEnd)):
+                    startAdjVertexList.remove(factorEnd)
+        for vertex in startAdjVertexList:
+            if vertex == factorEnd:
+                factor += 1
+        if factor > 0 and factor % 2 == 0:
             factor /= -2
-        else:
+        elif factor > 0 and factor % 2 != 0:
             factor = (factor + 1) / 2
+        if startVertex.getName() > endVertex.getName():
+            factor = -factor
 
         # Create default name
         if len(self._vergeList) == 0:
             name = '1'
         else:
             name = str(len(self._vergeList) + 1)
-        print('factor = ', factor)
 
         verge = Verge(startVertex, endVertex, name, weight=weight, direction=direction, factor=factor)
 
@@ -205,11 +221,6 @@ class View(QtWidgets.QGraphicsView):
     def getVergeList(self):
         return self._vergeList
 
-    def setVertexList(self, vertexList):
-        self._vertexList = vertexList.copy()
-
-    def setVergeList(self, vergeList):
-        self._vergeList = vergeList.copy()
 
     # Events
     def contextMenuEvent(self, event):
