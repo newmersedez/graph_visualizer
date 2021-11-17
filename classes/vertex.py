@@ -24,11 +24,6 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
     def addAdjacentVertex(self, vertex):
         self._adjacentVertexList.append(vertex)
 
-    def findAdjacentVertex(self, vertex):
-        if vertex in self._adjacentVertexList:
-            return True
-        return False
-
     def removeAdjacentVertex(self, vertex):
         if vertex in self._adjacentVertexList:
             self._adjacentVertexList.remove(vertex)

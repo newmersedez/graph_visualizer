@@ -1,23 +1,24 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-from utils.defines import *
 from classes.vertex import *
-from math import sqrt, sin, cos, acos, pi, fabs, degrees, radians
-from PyQt5.QtCore import qAbs
+from math import sqrt, sin, cos, acos, pi, radians
 
 
 class Verge(QtWidgets.QGraphicsItem):
 
-    def __init__(self, startVertex, endVertex, name, factor=None, parent=None):
+    def __init__(self, startVertex, endVertex, name, weight=1, direction=False, factor=None, parent=None):
         super().__init__(parent)
 
         # Verge variables
         self._startVertex = startVertex
         self._endVertex = endVertex
-        self._weight = 1
-        self._isDirection = False
-        self._isWeight = False
         self._name = name
+        self._weight = weight
         self._curveFactor = factor
+        self._isDirection = direction
+
+        if self._weight == 1:
+            self._isWeight = False
+        else:
+            self._isWeight = True
 
     def toggleDirection(self):
         self._isDirection = not self._isDirection
@@ -29,14 +30,14 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = weight
         self._isWeight = True
 
-    def setFactor(self, factor):
-        self._curveFactor = factor
+    def getStartVertex(self):
+        return self._startVertex
+
+    def getEndVertex(self):
+        return self._endVertex
 
     def getName(self):
         return self._name
-
-    def isCycleExist(self):
-        return self._curveFactor
 
     def boundingRect(self):
         start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
@@ -82,15 +83,16 @@ class Verge(QtWidgets.QGraphicsItem):
         elif end_y >= start_y and c != 0:
             angle = 2 * pi - acos(a / c)
 
-        start_x += VERTEX_SIZE * 1.2 / 2 * cos(angle)
-        start_y -= VERTEX_SIZE * 1.2 / 2 * sin(angle)
-        end_x -= VERTEX_SIZE * 1.2 / 2 * cos(angle)
-        end_y += VERTEX_SIZE * 1.2 / 2 * sin(angle)
+        offset = 1.1
+        start_x += VERTEX_SIZE * offset / 2 * cos(angle)
+        start_y -= VERTEX_SIZE * offset / 2 * sin(angle)
+        end_x -= VERTEX_SIZE * offset / 2 * cos(angle)
+        end_y += VERTEX_SIZE * offset / 2 * sin(angle)
 
         pointStart = QtCore.QPointF(start_x, start_y) + self._startVertex.rect().center()
         pointEnd = QtCore.QPointF(end_x, end_y) + self._endVertex.rect().center()
 
-        # Calculate bezier curves
+        # Calculate bezier curves for loop
         if self._startVertex == self._endVertex:
 
             pointStartX = self._startVertex.x() + VERTEX_SIZE * 0.5
@@ -146,7 +148,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.drawPoint(endPoint)
                 painter.drawPolygon(point2, point3, endPoint)
 
-            # Verge weight
+            # Verge weight display
             if self._isWeight:
                 newPen = QtGui.QPen()
                 newPen.setColor(QtGui.QColor(VERTEX_COLOR))
@@ -156,6 +158,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE,
                                  '\'' + self._name + '\': ' + str(self._weight))
 
+        # Calculate bezier curve loop default verge
         else:
             point3X = ((pointEnd.x() + pointStart.x()) / 2)
             point3Y = ((pointEnd.y() + pointStart.y()) / 2)
@@ -205,7 +208,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.setBrush(newBrush)
                 painter.drawPolygon(point2, endPoint, point3)
 
-            # Verge weight
+            # Verge weight display
             if self._isWeight:
                 newPen = QtGui.QPen()
                 newPen.setColor(QtGui.QColor(VERTEX_COLOR))
@@ -214,9 +217,3 @@ class Verge(QtWidgets.QGraphicsItem):
                 textOffset = VERTEX_SIZE / 4
                 painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
                                  '\'' + self._name  + '\': ' + str(self._weight))
-
-    def getStartVertex(self):
-        return self._startVertex
-
-    def getEndVertex(self):
-        return self._endVertex

@@ -2,7 +2,6 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.vertex import *
 from classes.verge import *
-from classes.cache import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -37,17 +36,10 @@ class View(QtWidgets.QGraphicsView):
         self._scene.addItem(vertex)
         vertex.setPos(self.mapToScene(x, y))
 
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
-        # print('after add vertex: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # print('\n')
+        print('after add vertex: ')
+        for i in self._vertexList:
+            print(i.getName())
+        print('\n')
 
     def removeVertex(self, vertex):
         for vert in self._vertexList:
@@ -56,86 +48,65 @@ class View(QtWidgets.QGraphicsView):
         for verge in self._vergeList[:]:
             if (verge.getStartVertex() == vertex) or (verge.getEndVertex() == vertex):
                 self._vergeList.remove(verge)
-                self.scene().removeItem(verge)
+                self._scene.removeItem(verge)
 
         self._vertexList.remove(vertex)
         self._scene.removeItem(vertex)
 
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
-        # print('after remove vertex: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # for i in self._vergeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
+        print('after remove vertex: ')
+        for i in self._vertexList:
+            print(i.getName())
+        for i in self._vergeList:
+            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        print('\n')
 
     def findVertexByName(self, name):
         for vertex in self._vertexList:
             if vertex.getName() == name:
                 return vertex
-        return None
 
     # Verge methods
-    def addVerge(self, startVertex, endVertex):
+    def addVerge(self, startVertex, endVertex, weight=1, direction=False):
+        # Count bezier factor
         endAdjVertexList = endVertex.getAdjacentVertexList()
         factor = 0
         for vertex in endAdjVertexList:
             if vertex == startVertex:
                 factor += 1
 
-        if factor > 0 and factor % 2 == 0:
+        if factor % 2 == 0:
             factor /= -2
-        elif factor > 0 and factor % 2 != 0:
+        else:
             factor = (factor + 1) / 2
 
+        # Create default name
         if len(self._vergeList) == 0:
             name = '1'
         else:
             name = str(len(self._vergeList) + 1)
+        print('factor = ', factor)
 
-        verge = Verge(startVertex, endVertex, name, factor=factor)
+        verge = Verge(startVertex, endVertex, name, weight=weight, direction=direction, factor=factor)
+
+        if startVertex == endVertex:
+            startVertex.setLoop(value=True)
 
         self._vergeList.append(verge)
         self._scene.addItem(verge)
-
-        startVertex = verge.getStartVertex()
-        endVertex = verge.getEndVertex()
-
         startVertex.addAdjacentVertex(endVertex)
         endVertex.addAdjacentVertex(startVertex)
-
         self._start = None
         self._end = None
 
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
-        # print('after add verge: ')
-        # for i in self._vergeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
+        print('after add verge: ')
+        for i in self._vergeList:
+            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        print('\n')
 
     def _findVergeByName(self, name):
         for verge in self._vergeList:
             if verge.getName() == name:
                 return verge
-        return None
-
-    def findVerge(self, startVertex, endVertex):
-        for verge in self._vergeList:
-            if (verge.getStartVertex() == startVertex) and (verge.getEndVertex() == endVertex):
-                return verge
-        return None
 
     def toggleVergeDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -151,13 +122,6 @@ class View(QtWidgets.QGraphicsView):
             verge = self._findVergeByName(name)
             if verge is not None:
                 verge.toggleDirection()
-
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
 
     def setVergeWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -189,10 +153,6 @@ class View(QtWidgets.QGraphicsView):
             if verge is not None:
                 verge.setWeight(weight)
 
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
     def removeVerge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -215,19 +175,12 @@ class View(QtWidgets.QGraphicsView):
                 startVertex.removeAdjacentVertex(endVertex)
                 endVertex.removeAdjacentVertex(startVertex)
                 self._vergeList.remove(verge)
-                self.scene().removeItem(verge)
+                self._scene.removeItem(verge)
 
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
-        # print('after remove verge: ')
-        # for i in self._vergeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
+        print('after remove verge: ')
+        for i in self._vergeList:
+            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        print('\n')
 
     # Utils
     def clearScene(self):
@@ -236,22 +189,15 @@ class View(QtWidgets.QGraphicsView):
         for item in self._scene.items():
             self._scene.removeItem(item)
 
-        # Update table
-        self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        newCacheItem = CacheItem(self._vertexList, self._vergeList)
-        self._mainWindow.getCache().updateCache(newCacheItem)
-
-        # print('after clean all: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # for i in self._vergeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
+        print('after clean all: ')
+        for i in self._vertexList:
+            print(i.getName())
+        for i in self._vergeList:
+            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        print('\n')
 
     def getScene(self):
-        return self.scene()
+        return self._scene
 
     def getVertexList(self):
         return self._vertexList
@@ -309,25 +255,13 @@ class View(QtWidgets.QGraphicsView):
                         self.addVerge(item, item)
 
         elif obj == 'toggle direction':
-            pos_x, pos_y = event.pos().x(), event.pos().y()
-            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
-            if item is not None:
-                if isinstance(item, Vertex):
-                    self.toggleVergeDirection()
+            self.toggleVergeDirection()
 
         elif obj == 'set weight':
-            pos_x, pos_y = event.pos().x(), event.pos().y()
-            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
-            if item is not None:
-                if isinstance(item, Vertex):
-                    self.setVergeWeight()
+            self.setVergeWeight()
 
         elif obj == 'delete verge':
-            pos_x, pos_y = event.pos().x(), event.pos().y()
-            item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
-            if item is not None:
-                if isinstance(item, Vertex):
-                    self.removeVerge()
+            self.removeVerge()
 
         elif obj == 'clear all':
             self.clearScene()

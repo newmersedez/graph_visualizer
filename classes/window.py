@@ -4,10 +4,10 @@ from utils.defines import *
 from classes.view import *
 from classes.vertex import *
 from classes.verge import *
-from classes.cache import *
 import numpy as np
 import csv
 import random
+import pandas as pd
 
 
 class Window(QtWidgets.QMainWindow):
@@ -16,10 +16,8 @@ class Window(QtWidgets.QMainWindow):
 
         # View settings
         self._view = View(self)
-        self._cache = Cache(CACHE_SIZE)
 
         # Window settings
-        # self.resize(WIN_WIDTH, WIN_HEIGHT)
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
         self.setWindowTitle(WIN_TITLE)
         self.setFont(QtGui.QFont('Arial', 15))
@@ -62,20 +60,12 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar()
         self.menuBar = self._createMenuBar()
 
-        # Cache
-        cacheItem = CacheItem(self._view.getVertexList(), self._view.getVergeList())
-        self._cache.updateCache(cacheItem)
-
         # Realtime adjacency matrix
         self._adjacentTable = self._createAdjacentTable()
         self._tableLayout.addWidget(self._adjacentTable)
 
         # Buttons
         self._createButtons()
-
-    # Cache methods
-    def getCache(self):
-        return self._cache
 
     # Menu bar and menu methods
     def _createMenuBar(self):
@@ -165,8 +155,6 @@ class Window(QtWidgets.QMainWindow):
         scene.clear()
         vertexList.clear()
         vergeList.clear()
-        self.updateAdjacentTable()
-        self._cache.clear()
 
     @staticmethod
     def _isSquareNumpyMatrix(matrix):
@@ -179,115 +167,25 @@ class Window(QtWidgets.QMainWindow):
         return True
 
     def _loadAdjacentMatrixFromFile(self):
-        fileName = self._openCSVFileDialog()
-
-        if len(fileName) != 0:
-            reader = csv.reader(open(fileName, "rt"), delimiter=',')
-            lst = list(reader)
-
-            try:
-                adjMatrix = np.array(lst).astype('int')
-                adjMatrixSize = len(adjMatrix)
-
-                pass
-
-            except ValueError:
-                print('incorrect file')                # throw message window in future
+        pass
 
     def _loadIncidenceMatrixFromFile(self):
-        fileName = self._openCSVFileDialog()
-
-        if len(fileName) != 0:
-            reader = csv.reader(open(fileName, "rt"), delimiter=',')
-            lst = list(reader)
-
-            try:
-                IncMatrix = np.array(lst).astype('int')
-                print(IncMatrix)
-
-            except ValueError:
-                print('incorrect file')  # throw message window in future
+        pass
 
     def _loadConfigurationFromFile(self):
-        print('config file')
-
-        scene = self._view.getScene()
-        vertexList = self._view.getVertexList()
-        vergeList = self._view.getVergeList()
-
-        scene.clear()
-        vertexList.clear()
-        vergeList.clear()
-        self.updateAdjacentTable()
-        self._cache.clear()
+        pass
 
     def _saveAdjacentMatrixToFile(self):
-        print('save adj')
-        fileName = self._saveCSVFileDialog()
-
-        if len(fileName) != 0:
-            stream = open(fileName, 'w')
-            delimiter = ','
-            columnCount = rowCount = self._adjacentTable.columnCount()
-
-            for i in range(0, columnCount):
-                for j in range(0, rowCount):
-                    stream.write(self._adjacentTable.item(i, j).text())
-                    if j != rowCount - 1:
-                        stream.write(delimiter)
-                if i != columnCount - 1:
-                    stream.write('\n')
-            stream.close()
+        pass
 
     def _saveIncidenceMatrixToFile(self):
-        print('save inc')
-        fileName = self._saveCSVFileDialog()
-
-        if len(fileName) != 0:
-            stream = open(fileName, 'w')
-            delimiter = ','
-            columnCount = rowCount = self._adjacentTable.columnCount()
-            vertexList = self._view.getVertexList()
-            vergeList = self._view.getVergeList()
-
-            for vertex in vertexList:
-                for verge in vergeList:
-                    if verge.isDirected():
-                        if vertex == verge.getStartVertex():
-                            stream.write('1')
-                            stream.write(delimiter)
-
-                        elif vertex == verge.getEndVertex():
-                            stream.write('-1')
-                            stream.write(delimiter)
-
-                        else:
-                            stream.write('0')
-                            stream.write(delimiter)
-
-                    else:
-                        if (vertex == verge.getStartVertex()) or (vertex == verge.getEndVertex()):
-                            stream.write('1')
-                            stream.write(delimiter)
-
-                        else:
-                            stream.write('0')
-                            stream.write(delimiter)
-
-                stream.write('\n')
-            stream.close()
+        pass
 
     def _saveConfigurationToFile(self):
-        print('save adj matrix to file')
-        # self._saveCSVFileDialog()
+        pass
 
     def _saveToImage(self):
-        print('save to image')
-        fileName = self._saveCSVFileDialog()
-
-        if len(fileName) != 0:
-            pixmap = self._view.grab(self._view.getScene().sceneRect().toRect())
-            pixmap.save(fileName)
+        pass
 
     # Table methods
     @staticmethod
@@ -385,51 +283,7 @@ class Window(QtWidgets.QMainWindow):
         self._buttonsLayout.addWidget(button5)
 
     def _undoButtonAction(self):
-        vertexList, vergeList = self._cache.getDecreasedState()
-        scene = self._view.getScene()
-        oldVertexList = self._view.getVertexList()
-        oldVergeList = self._view.getVergeList()
-
-        if vertexList is not None:
-            for vertex in oldVertexList:
-                scene.removeItem(vertex)
-
-            self._view.setVertexList(vertexList)
-
-            for vertex in vertexList:
-                scene.addItem(vertex)
-
-        if vergeList is not None:
-            for verge in oldVergeList:
-                scene.removeItem(verge)
-            self._view.setVergeList(vergeList)
-
-            for verge in vergeList:
-                scene.addItem(verge)
-
-        self.updateAdjacentTable()
+        pass
 
     def _redoButtonAction(self):
-        vertexList, vergeList = self._cache.getIncreasedState()
-        scene = self._view.getScene()
-        oldVertexList = self._view.getVertexList()
-        oldVergeList = self._view.getVergeList()
-
-        if vertexList is not None:
-            for vertex in oldVertexList:
-                scene.removeItem(vertex)
-
-            self._view.setVertexList(vertexList)
-
-            for vertex in vertexList:
-                scene.addItem(vertex)
-
-        if vergeList is not None:
-            for verge in oldVergeList:
-                scene.removeItem(verge)
-            self._view.setVergeList(vergeList)
-
-            for verge in vergeList:
-                scene.addItem(verge)
-
-        self.updateAdjacentTable()
+        pass
