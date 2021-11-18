@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.vertex import *
 from classes.verge import *
+from classes.graph import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -9,8 +10,9 @@ class View(QtWidgets.QGraphicsView):
         super().__init__()
 
         # Graph variables
-        self._vertexList = list()
-        self._vergeList = list()
+        # self._vertexList = list()
+        # self._vergeList = list()
+        self._graph = None
         self._start = None
         self._end = None
         self._mainWindow = window
@@ -25,7 +27,7 @@ class View(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
     # Vertex methods
-    def addVertex(self, x, y):
+     def addVertex(self, x, y):
         if len(self._vertexList) == 0:
             name = '1'
         else:
@@ -220,7 +222,6 @@ class View(QtWidgets.QGraphicsView):
 
     def getVergeList(self):
         return self._vergeList
-
 
     # Events
     def contextMenuEvent(self, event):
