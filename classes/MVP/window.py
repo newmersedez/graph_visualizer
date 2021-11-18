@@ -1,8 +1,11 @@
 # View
 
 from PyQt5.QtCore import pyqtSlot
+from classes.cache.cache import *
 from classes.MVP.view import *
 import numpy as np
+import random
+import pandas as pd
 
 
 class Window(QtWidgets.QMainWindow):
@@ -11,6 +14,7 @@ class Window(QtWidgets.QMainWindow):
 
         # View settings
         self._view = View(self)
+        self._cache = Cache(CACHE_SIZE)
 
         # Window settings
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
@@ -158,36 +162,45 @@ class Window(QtWidgets.QMainWindow):
     @pyqtSlot()
     def _loadAdjacentMatrixFromFile(self):
         pass
-        # fileName = self._openCSVFileDialog()
-        #
-        # if len(fileName) != 0:
-        #     adjMatrix = np.array(pd.read_csv(fileName, header=None))
-        #
-        #     adjMatrixSize = len(adjMatrix)
-        #
-        #     if self._isCorrectAdjacentMatrix(adjMatrix):
-        #         self._view.clearScene()
-        #         for i in range(0, adjMatrixSize):
-        #             pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
-        #             pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
-        #             self._view.addVertex(pos_x, pos_y)
-        #
-        #         vertexList = self._view.getVertexList()
-        #
-        #         for i in range(len(vertexList)):
-        #             for j in range(i, len(vertexList)):
-        #                 if i == j and adjMatrix[i][j] != 0:
-        #                     self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
-        #                 else:
-        #                     if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
-        #                         self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j])
-        #                         direction=False)
-        #         for i in range(len(vertexList))
+        fileName = self._openCSVFileDialog()
 
-        #             for j in range(len(vertexList)):
-        #                 if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-        #                     self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]),
-        #                     direction=True)
+        if len(fileName) != 0:
+            adjMatrix = np.array(pd.read_csv(fileName, header=None))
+
+            adjMatrixSize = len(adjMatrix)
+
+            if self._isCorrectAdjacentMatrix(adjMatrix):
+                graph = Graph()
+
+                for i in range(0, adjMatrixSize):
+                    cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                    cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+
+                    vertex = Vertex(cordX, cordY, str(len(graph.getVertexList())), VERTEX_COLOR)
+                    vertex.setPos(self.mapToScene(cordX, cordY))
+                    graph.addVertex(vertex)
+
+                vertexList = graph.getVertexList()
+                vertexListSize = len(vertexList)
+
+                for i in range(vertexListSize):
+                    for j in range(i, vertexListSize):
+                        if i == j and adjMatrix[i][j] != 0:
+                            verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
+                            graph.addVerge(verge)
+                        else:
+                            if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                                verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]),
+                                              direction=False)
+                                graph.addVerge(verge)
+
+                for i in range(vertexListSize):
+                    for j in range(vertexListSize):
+                        if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                            verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=True)
+                            graph.addVerge(verge)
+
+                self._view.addGraph(graph)
 
     @pyqtSlot()
     def _loadIncidenceMatrixFromFile(self):

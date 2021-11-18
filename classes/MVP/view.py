@@ -31,6 +31,7 @@ class View(QtWidgets.QGraphicsView):
         
         for item in vertexList:
             self._scene.addItem(item)
+            item.setPos(self.mapToScene(x, y))
         
         for item in vergeList:
             self._scene.addItem(item)
@@ -60,7 +61,7 @@ class View(QtWidgets.QGraphicsView):
     def _contextMenuAddVertex(self, x, y):
         name = self._createVertexName()
         vertex = Vertex(0, 0, name=name, color=VERTEX_COLOR)
-        vertex.setPos(self.mapToScene(x, y))
+        # vertex.setPos(self.mapToScene(x, y))
 
         self._graph.addVertex(vertex)
         self._scene.addItem(vertex)
