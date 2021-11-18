@@ -1,16 +1,24 @@
 from queue import Queue
+from classes.MVP.graph import *
+import copy
 
 
 class CacheItem:
-    def __init__(self, vertexList, vergeList):
-        self._cachedVertexList = vertexList.copy()
-        self._cachedVergeList = vergeList.copy()
+    def __init__(self, graph: Graph):
+        vertexList = graph.getVertexList()
+        vergeList = graph.getVergeList()
 
-    def getCachedVertexList(self):
-        return self._cachedVertexList
+        graph = Graph()
+        for item in vertexList:
+            graph.addVertex(item)
 
-    def getCachedVergeList(self):
-        return self._cachedVergeList
+        for item in vergeList:
+            graph.addVerge(item)
+
+        self._cachedGraph = graph
+
+    def getCachedGraph(self):
+        return self._cachedGraph
 
 
 class Cache:
@@ -37,9 +45,8 @@ class Cache:
 
         if self._pos < self._cacheQueue.qsize() - 1:
             self._pos += 1
-            vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
-            vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
-        return vertexList, vergeList
+        graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+        return graph
 
     def getDecreasedState(self):
         vertexList = None
@@ -47,6 +54,5 @@ class Cache:
 
         if self._pos > 0:
             self._pos -= 1
-            vertexList = self._cacheQueue.queue[self._pos].getCachedVertexList()
-            vergeList = self._cacheQueue.queue[self._pos].getCachedVergeList()
-        return vertexList, vergeList
+        graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+        return graph

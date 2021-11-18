@@ -1,6 +1,7 @@
 # Presenter
 
 from classes.MVP.graph import *
+from classes.cache.cache import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -38,6 +39,7 @@ class View(QtWidgets.QGraphicsView):
     def removeGraph(self):
         self._graph.clear()
         self._redrawScene()
+        self._mainWindow.getCache().clearAllStates()
 
     def _redrawScene(self):
         vertexList = self._graph.getVertexList()
@@ -65,9 +67,17 @@ class View(QtWidgets.QGraphicsView):
         self._graph.addVertex(vertex)
         self._scene.addItem(vertex)
 
+        # Update graph
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
+
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
         self._redrawScene()
+
+        # Update graph
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
 
     # Verge methods
     @staticmethod
@@ -127,6 +137,10 @@ class View(QtWidgets.QGraphicsView):
         self._graph.addVerge(verge)
         self._scene.addItem(verge)
 
+        # Update graph
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
+
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -140,6 +154,10 @@ class View(QtWidgets.QGraphicsView):
         if ok:
             verge = self._graph.findVergeByName(name)
             self._graph.toggleVergeDirection(verge)
+
+            # Update graph
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -170,6 +188,10 @@ class View(QtWidgets.QGraphicsView):
             verge = self._graph.findVergeByName(name)
             self._graph.setVergeWeight(verge, weight)
 
+            # Update graph
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
+
     def _contextMenuRemoveVerge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -185,10 +207,18 @@ class View(QtWidgets.QGraphicsView):
             self._graph.removeVerge(verge)
             self._redrawScene()
 
+            # Update graph
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
+
     # Utils
     def _contextMenuClearScene(self):
         self._graph.clear()
         self._redrawScene()
+
+        # Update graph
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
 
     # Events
     def contextMenuEvent(self, event):

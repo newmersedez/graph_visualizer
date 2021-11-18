@@ -132,6 +132,10 @@ class Window(QtWidgets.QMainWindow):
 
         return menuBar
 
+    # Cache methods
+    def getCache(self):
+        return self._cache
+
     # File dialog
     def _openCSVFileDialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -259,7 +263,7 @@ class Window(QtWidgets.QMainWindow):
         return _adjacentTable
 
     def updateAdjacentTable(self, adjMatrix=None):
-        vertexList = self._view.getVertexList()
+        vertexList = self.getG.getVertexList()
         vergeList = self._view.getVergeList()
 
         columnCount = rowCount = len(vertexList)
@@ -323,8 +327,14 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _undoButtonAction(self):
-        pass
+        graph = self._cache.getDecreasedState()
+
+        self._view.addGraph(graph)
+        # self.updateAdjacentTable()
 
     @pyqtSlot()
     def _redoButtonAction(self):
-        pass
+        graph = self._cache.getIncreasedState()
+
+        self._view.addGraph(graph)
+        # self.updateAdjacentTable()
