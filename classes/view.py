@@ -256,6 +256,10 @@ class View(QtWidgets.QGraphicsView):
                 if isinstance(item, Vertex):
                     print('event = ', event.pos().x(), event.pos().y(), 'item = ', item.pos().x(), item.pos().y())
                     self.removeVertex(item)
+                else:
+                    print('another type = ', type(item))
+            else:
+                print('ne popal')
 
         elif obj == 'make loop':
             pos_x, pos_y = event.pos().x(), event.pos().y()

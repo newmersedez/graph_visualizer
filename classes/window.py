@@ -161,14 +161,13 @@ class Window(QtWidgets.QMainWindow):
 
     @staticmethod
     def _isCorrectAdjacentMatrix(matrix):
-        # if matrix is not None:
-        #
-        #     matrixSize = len(matrix)
-        #     for item in matrix:
-        #         itemSize = len(item)
-        #         if itemSize != matrixSize:
-        #             return False
-        # return True
+        if matrix is not None:
+
+            matrixSize = len(matrix)
+            for item in matrix:
+                itemSize = len(item)
+                if itemSize != matrixSize:
+                    return False
         return True
 
     def _loadAdjacentMatrixFromFile(self):

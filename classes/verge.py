@@ -39,6 +39,7 @@ class Verge(QtWidgets.QGraphicsItem):
     def getName(self):
         return self._name
 
+    # Исправить тут хитбокс, потому что не попасть по вершине
     def boundingRect(self):
         start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
         end_x, end_y = self._endVertex.pos().x(), self._endVertex.pos().y()
