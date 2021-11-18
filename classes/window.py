@@ -1,3 +1,5 @@
+# View
+
 from PyQt5.QtCore import pyqtSlot
 from classes.view import *
 import numpy as np
