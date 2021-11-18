@@ -1,13 +1,6 @@
-import numpy
-from PyQt5 import QtWidgets, QtGui, QtCore
-from utils.defines import *
+from PyQt5.QtCore import pyqtSlot
 from classes.view import *
-from classes.vertex import *
-from classes.verge import *
 import numpy as np
-import csv
-import random
-import pandas as pd
 
 
 class Window(QtWidgets.QMainWindow):
@@ -67,7 +60,7 @@ class Window(QtWidgets.QMainWindow):
         # Buttons
         self._createButtons()
 
-    # Menu bar and menu methods
+    # Menu bar and menu widgets
     def _createMenuBar(self):
         self.statusBar()
         # Menu initialization
@@ -133,6 +126,7 @@ class Window(QtWidgets.QMainWindow):
 
         return menuBar
 
+    # File dialog
     def _openCSVFileDialog(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -147,18 +141,7 @@ class Window(QtWidgets.QMainWindow):
                                                             "Matrix file (*.csv);;Image file (*png)", options=options)
         return fileName
 
-    def _clearAll(self):
-        scene = self._view.getScene()
-        vertexList = self._view.getVertexList()
-        vergeList = self._view.getVergeList()
-
-        for vertex in vertexList:
-            scene.removeItem(vertex)
-        for verge in vergeList:
-            scene.removeItem(verge)
-        vertexList.clear()
-        vergeList.clear()
-
+    # File load/save
     @staticmethod
     def _isCorrectAdjacentMatrix(matrix):
         if matrix is not None:
@@ -170,54 +153,65 @@ class Window(QtWidgets.QMainWindow):
                     return False
         return True
 
+    @pyqtSlot()
     def _loadAdjacentMatrixFromFile(self):
-        fileName = self._openCSVFileDialog()
+        pass
+        # fileName = self._openCSVFileDialog()
+        #
+        # if len(fileName) != 0:
+        #     adjMatrix = np.array(pd.read_csv(fileName, header=None))
+        #
+        #     adjMatrixSize = len(adjMatrix)
+        #
+        #     if self._isCorrectAdjacentMatrix(adjMatrix):
+        #         self._view.clearScene()
+        #         for i in range(0, adjMatrixSize):
+        #             pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+        #             pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+        #             self._view.addVertex(pos_x, pos_y)
+        #
+        #         vertexList = self._view.getVertexList()
+        #
+        #         for i in range(len(vertexList)):
+        #             for j in range(i, len(vertexList)):
+        #                 if i == j and adjMatrix[i][j] != 0:
+        #                     self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
+        #                 else:
+        #                     if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+        #                         self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j])
+        #                         direction=False)
+        #         for i in range(len(vertexList))
 
-        if len(fileName) != 0:
-            adjMatrix = np.array(pd.read_csv(fileName, header=None))
+        #             for j in range(len(vertexList)):
+        #                 if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
+        #                     self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]),
+        #                     direction=True)
 
-            adjMatrixSize = len(adjMatrix)
-
-            if self._isCorrectAdjacentMatrix(adjMatrix):
-                self._clearAll()
-                for i in range(0, adjMatrixSize):
-                    pos_x = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
-                    pos_y = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
-                    self._view.addVertex(pos_x, pos_y)
-
-                vertexList = self._view.getVertexList()
-
-                for i in range(len(vertexList)):
-                    for j in range(i, len(vertexList)):
-                        if i == j and adjMatrix[i][j] != 0:
-                            self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
-                        else:
-                            if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                                self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=False)
-                for i in range(len(vertexList)):
-                    for j in range(len(vertexList)):
-                        if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                            self._view.addVerge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=True)
-
+    @pyqtSlot()
     def _loadIncidenceMatrixFromFile(self):
         pass
 
+    @pyqtSlot()
     def _loadConfigurationFromFile(self):
         pass
 
+    @pyqtSlot()
     def _saveAdjacentMatrixToFile(self):
         pass
 
+    @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
         pass
 
+    @pyqtSlot()
     def _saveConfigurationToFile(self):
         pass
 
+    @pyqtSlot()
     def _saveToImage(self):
         pass
 
-    # Table methods
+    # Table widget
     @staticmethod
     def _createAdjacentTable():
         _adjacentTable = QtWidgets.QTableWidget()
@@ -287,7 +281,7 @@ class Window(QtWidgets.QMainWindow):
             for j in range(rowCount):
                 self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(matrix[i][j]))
 
-    # Buttons methods
+    # Buttons widget
     def _createButtons(self):
         button1 = QtWidgets.QPushButton('Undo', self)
         button1.setFixedSize(400, 70)
@@ -312,11 +306,10 @@ class Window(QtWidgets.QMainWindow):
         self._buttonsLayout.addWidget(button4)
         self._buttonsLayout.addWidget(button5)
 
+    @pyqtSlot()
     def _undoButtonAction(self):
         pass
 
+    @pyqtSlot()
     def _redoButtonAction(self):
         pass
-
-
-
