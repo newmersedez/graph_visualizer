@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils.defines import *
 from classes.vertex import *
 from classes.verge import *
+from classes.graph import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -9,8 +10,7 @@ class View(QtWidgets.QGraphicsView):
         super().__init__()
 
         # Graph variables
-        self._vertexList = list()
-        self._vergeList = list()
+        self._graph = Graph()
         self._start = None
         self._end = None
         self._mainWindow = window
@@ -24,24 +24,31 @@ class View(QtWidgets.QGraphicsView):
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
+    def createGraph(self, graph: Graph):
+        self._graph.clear()
+        self._graph = graph
+
+    def clearGraph(self):
+        self._graph.clear()
+        for item in self._scene.items():
+            self._scene.removeItem(item)
+
     # Vertex methods
-    def addVertex(self, x, y):
-        if len(self._vertexList) == 0:
+    def contextMenuAddVertex(self, x, y):
+        vertexList = self._graph.getVertexList()
+
+        if len(vertexList) == 0:
             name = '1'
         else:
-            name = str(int(self._vertexList[-1].getName()) + 1)
-        vertex = Vertex(0, 0, name, VERTEX_COLOR)
+            name = str(int(vertexList[-1].getName()) + 1)
 
-        self._vertexList.append(vertex)
-        self._scene.addItem(vertex)
+        vertex = Vertex(0, 0, name=name, color=VERTEX_COLOR)
         vertex.setPos(self.mapToScene(x, y))
 
-        print('after add vertex: ')
-        for i in self._vertexList:
-            print(i.getName())
-        print('\n')
+        self._graph.addVertex(vertex)
+        self._scene.addItem(vertex)
 
-    def removeVertex(self, vertex):
+    def contextMenuRemoveVertex(self, vertex):
         for vert in self._vertexList:
             vert.removeAdjacentVertex(vertex)
 
@@ -53,38 +60,48 @@ class View(QtWidgets.QGraphicsView):
         self._vertexList.remove(vertex)
         self._scene.removeItem(vertex)
 
-        print('after remove vertex: ')
-        for i in self._vertexList:
-            print(i.getName())
-        for i in self._vergeList:
-            print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        print('\n')
-
-    def findVertexByName(self, name):
-        for vertex in self._vertexList:
-            if vertex.getName() == name:
-                return vertex
+        # print('after remove vertex: ')
+        # for i in self._vertexList:
+        #     print(i.getName())
+        # for i in self._vergeList:
+        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
+        # print('\n')
+        print("asdbewfaewfrasdfasdfasdf")
 
     # Verge methods
-    def addVerge(self, startVertex, endVertex, weight=1, direction=False):
+    def contextMenuAddVerge(self, startVertex, endVertex, weight=1, direction=False):
         # Count bezier factor
-        endAdjVertexList = endVertex.getAdjacentVertexList()
+        if startVertex.getName() > endVertex.getName():
+            factorStart = startVertex
+            factorEnd = endVertex
+        else:
+            factorStart = endVertex
+            factorEnd = startVertex
+
+        endAdjVertexList = factorEnd.getAdjacentVertexList().copy()
+        startAdjVertexList = factorStart.getAdjacentVertexList().copy()
+
         factor = 0
         for vertex in endAdjVertexList:
-            if vertex == startVertex:
+            if vertex == factorStart:
                 factor += 1
-
-        if factor % 2 == 0:
+                for i in range(startAdjVertexList.count(factorEnd)):
+                    startAdjVertexList.remove(factorEnd)
+        for vertex in startAdjVertexList:
+            if vertex == factorEnd:
+                factor += 1
+        if factor > 0 and factor % 2 == 0:
             factor /= -2
-        else:
+        elif factor > 0 and factor % 2 != 0:
             factor = (factor + 1) / 2
+        if startVertex.getName() > endVertex.getName():
+            factor = -factor
 
         # Create default name
         if len(self._vergeList) == 0:
             name = '1'
         else:
             name = str(len(self._vergeList) + 1)
-        print('factor = ', factor)
 
         verge = Verge(startVertex, endVertex, name, weight=weight, direction=direction, factor=factor)
 
@@ -103,12 +120,7 @@ class View(QtWidgets.QGraphicsView):
             print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         print('\n')
 
-    def _findVergeByName(self, name):
-        for verge in self._vergeList:
-            if verge.getName() == name:
-                return verge
-
-    def toggleVergeDirection(self):
+    def contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Вкл/Выкл направление ребра')
@@ -123,7 +135,7 @@ class View(QtWidgets.QGraphicsView):
             if verge is not None:
                 verge.toggleDirection()
 
-    def setVergeWeight(self):
+    def contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
         inputDialog.setWindowTitle('Установить вес ребра')
         inputDialog.setStyleSheet('background-color: #303030; color: white;')
@@ -153,7 +165,7 @@ class View(QtWidgets.QGraphicsView):
             if verge is not None:
                 verge.setWeight(weight)
 
-    def removeVerge(self):
+    def contextMenuRemoveVerge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Удаление ребра')
@@ -183,9 +195,12 @@ class View(QtWidgets.QGraphicsView):
         print('\n')
 
     # Utils
-    def clearScene(self):
-        self._vertexList.clear()
-        self._vergeList.clear()
+    def contextMenuClearScene(self):
+        vertexList = self._graph.getVertexList()
+        vergeList = self._graph.getVergeList()
+
+        vertexList.clear()
+        vergeList.clear()
         for item in self._scene.items():
             self._scene.removeItem(item)
 
@@ -195,21 +210,6 @@ class View(QtWidgets.QGraphicsView):
         for i in self._vergeList:
             print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         print('\n')
-
-    def getScene(self):
-        return self._scene
-
-    def getVertexList(self):
-        return self._vertexList
-
-    def getVergeList(self):
-        return self._vergeList
-
-    def setVertexList(self, vertexList):
-        self._vertexList = vertexList.copy()
-
-    def setVergeList(self, vergeList):
-        self._vergeList = vergeList.copy()
 
     # Events
     def contextMenuEvent(self, event):
@@ -236,14 +236,14 @@ class View(QtWidgets.QGraphicsView):
         obj = ret.objectName()
         if obj == 'add vertex':
             pos_x, pos_y = event.pos().x(), event.pos().y()
-            self.addVertex(pos_x, pos_y)
+            self.contextMenuAddVertex(pos_x, pos_y)
 
         elif obj == 'delete vertex':
             pos_x, pos_y = event.pos().x(), event.pos().y()
             item = self._scene.itemAt(pos_x, pos_y, QtGui.QTransform())
             if item is not None:
                 if isinstance(item, Vertex):
-                    self.removeVertex(item)
+                    self.contextMenuRemoveVertex(item)
 
         elif obj == 'make loop':
             pos_x, pos_y = event.pos().x(), event.pos().y()
@@ -252,19 +252,19 @@ class View(QtWidgets.QGraphicsView):
                 if isinstance(item, Vertex):
                     if not item.isLoopExist():
                         item.setLoop(value=True)
-                        self.addVerge(item, item)
+                        self.contextMenuAddVerge(item, item)
 
         elif obj == 'toggle direction':
-            self.toggleVergeDirection()
+            self.contextMenuToggleDirection()
 
         elif obj == 'set weight':
-            self.setVergeWeight()
+            self.contextMenuSetWeight()
 
         elif obj == 'delete verge':
-            self.removeVerge()
+            self.contextMenuRemoveVerge()
 
         elif obj == 'clear all':
-            self.clearScene()
+            self.contextMenuClearScene()
 
     def resizeEvent(self, event):
         width, height = self.viewport().width(), self.viewport().height()
@@ -287,6 +287,6 @@ class View(QtWidgets.QGraphicsView):
                 self._end = item
                 if isinstance(self._start, Vertex) and isinstance(self._end, Vertex):
                     if self._start != self._end:
-                        self.addVerge(self._start, self._end)
+                        self.contextMenuAddVerge(self._start, self._end)
 
         super(View, self).mouseReleaseEvent(event)

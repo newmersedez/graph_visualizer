@@ -4,7 +4,7 @@ from math import sqrt, sin, cos, acos, pi, radians
 
 class Verge(QtWidgets.QGraphicsItem):
 
-    def __init__(self, startVertex, endVertex, name, weight=1, direction=False, factor=None, parent=None):
+    def __init__(self, startVertex, endVertex, name='1', weight=1, direction=False, factor=0, parent=None):
         super().__init__(parent)
 
         # Verge variables
@@ -39,6 +39,7 @@ class Verge(QtWidgets.QGraphicsItem):
     def getName(self):
         return self._name
 
+    # Исправить тут хитбокс, потому что не попасть по вершине
     def boundingRect(self):
         start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
         end_x, end_y = self._endVertex.pos().x(), self._endVertex.pos().y()
@@ -181,7 +182,7 @@ class Verge(QtWidgets.QGraphicsItem):
             painter.setPen(pen)
             painter.setFont(QtGui.QFont('Arial', 14))
 
-            factor *= 3.0 / 4.0
+            factor *= 3 / 4
             textOffset = VERTEX_SIZE / 4
             painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
                              '\'' + self._name + '\'')
