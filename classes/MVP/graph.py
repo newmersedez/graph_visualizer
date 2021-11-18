@@ -1,7 +1,6 @@
 # Model
 
-from classes.vertex import *
-from classes.verge import *
+from classes.graph.verge import *
 
 
 class Graph:

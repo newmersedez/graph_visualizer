@@ -1,7 +1,7 @@
 # View
 
 from PyQt5.QtCore import pyqtSlot
-from classes.view import *
+from classes.MVP.graph import *
 import numpy as np
 
 

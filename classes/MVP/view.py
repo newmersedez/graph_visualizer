@@ -1,10 +1,6 @@
 # Presenter
 
-from PyQt5 import QtWidgets, QtGui, QtCore
-from utils.defines import *
-from classes.vertex import *
-from classes.verge import *
-from classes.graph import *
+from classes.MVP.graph import *
 
 
 class View(QtWidgets.QGraphicsView):

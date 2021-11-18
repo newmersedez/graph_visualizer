@@ -1,4 +1,4 @@
-from classes.vertex import *
+from classes.graph.vertex import *
 from math import sqrt, sin, cos, acos, pi, radians
 
 
