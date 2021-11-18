@@ -176,8 +176,8 @@ class Window(QtWidgets.QMainWindow):
                     cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
                     cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
 
-                    vertex = Vertex(cordX, cordY, str(len(graph.getVertexList())), VERTEX_COLOR)
-                    vertex.setPos(self.mapToScene(cordX, cordY))
+                    vertex = Vertex(0, 0, str(len(graph.getVertexList())), VERTEX_COLOR)
+                    vertex.setPos(self._view.mapToScene(cordX, cordY))
                     graph.addVertex(vertex)
 
                 vertexList = graph.getVertexList()

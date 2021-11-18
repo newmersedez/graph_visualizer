@@ -15,6 +15,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._isLoop = False
 
         # Vertex settings
+        self.setPos(x, y)
         self.setBrush(QtGui.QColor(color))
         self.setFlag(QtWidgets.QGraphicsEllipseItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsLineItem.ItemSendsGeometryChanges)
