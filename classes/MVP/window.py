@@ -212,11 +212,11 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _saveAdjacentMatrixToFile(self):
-        pass
+        self._view.getGraph().getAdjacentMatrix()
 
     @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
-        pass
+        self._view.getGraph().getIncindenceMatrix()
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):

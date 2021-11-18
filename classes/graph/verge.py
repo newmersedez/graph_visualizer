@@ -30,6 +30,9 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = weight
         self._isWeight = True
 
+    def getWeight(self):
+        return self._weight
+
     def getStartVertex(self):
         return self._startVertex
 
