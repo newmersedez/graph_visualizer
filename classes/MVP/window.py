@@ -231,27 +231,80 @@ class Window(QtWidgets.QMainWindow):
                             vertexPoints.append(vertexInfo)
 
                     if len(vertexPoints) == 2:
-                        if vertexPoints[0][1] == 1 and vertexPoints[1][1] == 1:
-                            pass
+                        if graph.findVertexByName(vertexPoints[0][0]) is None:
+                            cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                            cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
 
-                        elif vertexPoints[0][1] == -1 and vertexPoints[1][1] == 1:
-                            pass
+                            startVertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
+                            startVertex.setPos(self._view.mapToScene(cordX, cordY))
+                            graph.addVertex(startVertex)
+                        else:
+                            startVertex = graph.findVertexByName(vertexPoints[0][0])
+
+                        if graph.findVertexByName(vertexPoints[1][0]) is None:
+                            cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                            cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+
+                            endVertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
+                            endVertex.setPos(self._view.mapToScene(cordX, cordY))
+                            graph.addVertex(endVertex)
+                        else:
+                            endVertex = graph.findVertexByName(vertexPoints[1][0])
+
+                        factor = self._view.countVergeFactor(startVertex, endVertex)
+                        if vertexPoints[0][1] == 1 and vertexPoints[1][1] == 1:
+                            verge = Verge(startVertex, endVertex,
+                                          name=str(len(graph.getVergeList()) + 1),
+                                          factor=factor,
+                                          direction=False)
+                            graph.addVerge(verge)
 
                         elif vertexPoints[0][1] == 1 and vertexPoints[1][1] == -1:
-                            pass
+                            verge = Verge(startVertex, endVertex,
+                                          name=str(len(graph.getVergeList()) + 1),
+                                          factor=factor,
+                                          direction=True)
+                            graph.addVerge(verge)
+
+                        elif vertexPoints[0][1] == -1 and vertexPoints[1][1] == 1:
+                            verge = Verge(endVertex, startVertex,
+                                          name=str(len(graph.getVergeList()) + 1),
+                                          factor=factor,
+                                          direction=True)
+                            graph.addVerge(verge)
 
                     elif len(vertexPoints) == 1:
-                        pass
+                        if vertexPoints[0][1] == 1:
+                            if graph.findVertexByName(vertexPoints[0][0]) is None:
+                                cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                                cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+
+                                vertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
+                                vertex.setPos(self._view.mapToScene(cordX, cordY))
+                                graph.addVertex(vertex)
+                            else:
+                                vertex = graph.findVertexByName(vertexPoints[0][0])
+
+                            verge = Verge(vertex, vertex,
+                                          name=str(len(graph.getVergeList()) + 1),
+                                          factor=factor)
+                            graph.addVerge(verge)
+
+                self._view.addGraph(graph)
             except ValueError:
                 print('incorrect incidence matrix')
 
     @pyqtSlot()
-    def _loadConfigurationFromFile(self):
-        pass
+    def _saveIncidenceMatrixToFile(self):
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            matrix = self._view.getGraph().getIncidenceMatrix()
+            pd.DataFrame(matrix).to_csv(fileName, header=False, index=False)
 
     @pyqtSlot()
-    def _saveIncidenceMatrixToFile(self):
-        self._view.getGraph().getIncidenceMatrix()
+    def _loadConfigurationFromFile(self):
+        pass
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):

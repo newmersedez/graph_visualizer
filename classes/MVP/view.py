@@ -100,7 +100,7 @@ class View(QtWidgets.QGraphicsView):
 
     # Verge methods
     @staticmethod
-    def _countVergeFactor(startVertex, endVertex):
+    def countVergeFactor(startVertex, endVertex):
         if startVertex.getName() > endVertex.getName():
             factorStart = startVertex
             factorEnd = endVertex
@@ -142,7 +142,7 @@ class View(QtWidgets.QGraphicsView):
 
     def _contextMenuAddVerge(self, startVertex, endVertex):
         # Count bezier factor
-        factor = self._countVergeFactor(startVertex, endVertex)
+        factor = self.countVergeFactor(startVertex, endVertex)
 
         # Create default name
         name = self._createVergeName()

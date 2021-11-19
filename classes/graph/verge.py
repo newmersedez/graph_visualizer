@@ -101,12 +101,12 @@ class Verge(QtWidgets.QGraphicsItem):
         # Calculate bezier curves for loop
         if self._startVertex == self._endVertex:
 
-            pointStartX = self._startVertex.x() + VERTEX_SIZE * 0.5
+            pointStartX = self._startVertex.x() + VERTEX_SIZE * 0.5 - 5
             pointStartY = self._startVertex.y()
             pointStart = QtCore.QPointF(pointStartX, pointStartY)
 
             pointEndX = self._startVertex.x()
-            pointEndY = self._startVertex.y() + VERTEX_SIZE * 0.5
+            pointEndY = self._startVertex.y() + VERTEX_SIZE * 0.5 - 5
             pointEnd = QtCore.QPointF(pointEndX, pointEndY)
 
             point1X = pointStart.x() - VERTEX_SIZE * 0.5
