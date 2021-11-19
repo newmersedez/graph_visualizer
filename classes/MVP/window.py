@@ -109,10 +109,9 @@ class Window(QtWidgets.QMainWindow):
         configSaveAction.triggered.connect(self._saveConfigurationToFile)
         fileSaveMenu.addAction(configSaveAction)
 
-        # Save as image
-        fileSaveImageAction = QtWidgets.QAction('&Сохранить граф в виде изображения', self)
-        fileSaveImageAction.triggered.connect(self._saveToImage)
-        fileMenu.addAction(fileSaveImageAction)
+        imageSaveAction = QtWidgets.QAction('&Сохранить граф в виде изображения', self)
+        imageSaveAction.triggered.connect(self._saveToImage)
+        fileSaveMenu.addAction(imageSaveAction)
 
         # Exit from app
         fileExitAction = QtWidgets.QAction('&Выйти из программы', self)
@@ -312,7 +311,11 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _saveToImage(self):
-        pass
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            pixmap = self._view.grab(self._view.sceneRect().toRect())
+            pixmap.save(fileName)
 
     # Table widget
     @staticmethod
