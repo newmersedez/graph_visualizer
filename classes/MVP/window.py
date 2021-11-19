@@ -329,12 +329,14 @@ class Window(QtWidgets.QMainWindow):
     def _undoButtonAction(self):
         graph = self._cache.getDecreasedState()
 
-        self._view.addGraph(graph)
+        if graph is not None:
+            self._view.addGraph(graph)
         # self.updateAdjacentTable()
 
     @pyqtSlot()
     def _redoButtonAction(self):
         graph = self._cache.getIncreasedState()
 
-        self._view.addGraph(graph)
+        if graph is not None:
+            self._view.addGraph(graph)
         # self.updateAdjacentTable()

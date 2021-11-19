@@ -36,6 +36,8 @@ class View(QtWidgets.QGraphicsView):
         for item in vergeList:
             self._scene.addItem(item)
 
+        self._mainWindow.getCache().clearAllStates()
+
     def removeGraph(self):
         self._graph.clear()
         self._redrawScene()

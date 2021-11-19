@@ -5,17 +5,15 @@ import copy
 
 class CacheItem:
     def __init__(self, graph: Graph):
-        vertexList = graph.getVertexList()
-        vergeList = graph.getVergeList()
+        vertexList = graph.getVertexList().copy()
+        vergeList = graph.getVergeList().copy()
 
-        graph = Graph()
+        self._cachedGraph = Graph()
         for item in vertexList:
-            graph.addVertex(item)
+            self._cachedGraph.addVertex(item)
 
         for item in vergeList:
-            graph.addVerge(item)
-
-        self._cachedGraph = graph
+            self._cachedGraph.addVerge(item)
 
     def getCachedGraph(self):
         return self._cachedGraph
@@ -29,30 +27,31 @@ class Cache:
 
     def addState(self, cacheItem):
         if self._cacheQueue.qsize() < self._size:
+            print('add new')
             self._cacheQueue.put(cacheItem)
             self._pos += 1
         else:
+            print('update')
             self._cacheQueue.get()
             self._cacheQueue.put(cacheItem)
+        print('pos = ', self._pos)
 
     def clearAllStates(self):
         self._pos = -1
         self._cacheQueue.queue.clear()
 
     def getIncreasedState(self):
-        vertexList = None
-        vergeList = None
-
+        graph = None
         if self._pos < self._cacheQueue.qsize() - 1:
             self._pos += 1
-        graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+            graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+        print('pos = ', self._pos)
         return graph
 
     def getDecreasedState(self):
-        vertexList = None
-        vergeList = None
-
+        graph = None
         if self._pos > 0:
             self._pos -= 1
-        graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+            graph = self._cacheQueue.queue[self._pos].getCachedGraph()
+        print('pos = ', self._pos)
         return graph
