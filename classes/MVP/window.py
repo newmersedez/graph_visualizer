@@ -293,7 +293,7 @@ class Window(QtWidgets.QMainWindow):
                                      '}')
         return _adjacentTable
 
-    def updateAdjacentTable(self, adjMatrix=None):
+    def updateAdjacentTable(self):
         vertexList = self.getG.getVertexList()
         vergeList = self._view.getVergeList()
 
