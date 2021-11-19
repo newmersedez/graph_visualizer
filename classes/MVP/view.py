@@ -1,6 +1,7 @@
 # Presenter
 
 from classes.MVP.graph import *
+from classes.graph.algo import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -22,6 +23,21 @@ class View(QtWidgets.QGraphicsView):
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
+    def viewBFS(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('BFS')
+        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Выберите начальную вершину обхода:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        if ok:
+            vertex = self._graph.findVertexByName(name)
+            if vertex is not None:
+                bfs(self._graph, vertex)
+
     def addGraph(self, graph: Graph):
         self.removeGraph()
         self._graph = graph
@@ -34,6 +50,9 @@ class View(QtWidgets.QGraphicsView):
         
         for item in vergeList:
             self._scene.addItem(item)
+
+    def getGraph(self):
+        return self._graph
 
     def removeGraph(self):
         self._graph.clear()

@@ -15,6 +15,7 @@ class Verge(QtWidgets.QGraphicsItem):
         self._curveFactor = factor
         self._isDirection = direction
 
+
         if self._weight == 1:
             self._isWeight = False
         else:
@@ -30,6 +31,9 @@ class Verge(QtWidgets.QGraphicsItem):
         self._weight = weight
         self._isWeight = True
 
+    def getWeight(self):
+        return self._weight
+
     def getStartVertex(self):
         return self._startVertex
 
@@ -38,6 +42,7 @@ class Verge(QtWidgets.QGraphicsItem):
 
     def getName(self):
         return self._name
+
 
     # Исправить тут хитбокс, потому что не попасть по вершине
     def boundingRect(self):

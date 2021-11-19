@@ -2,7 +2,7 @@
 
 from classes.graph.verge import *
 from classes.graph.vertex import *
-
+import numpy as np
 
 class Graph:
     def __init__(self):
@@ -50,8 +50,8 @@ class Graph:
             endVertex = verge.getEndVertex()
 
             self._vergeList.append(verge)
-            startVertex.addAdjacentVertex(endVertex)
-            endVertex.addAdjacentVertex(startVertex)
+            startVertex.addAdjacentVertex(endVertex, verge)
+            endVertex.addAdjacentVertex(startVertex, verge)
 
             print('after add verge: ')
             for i in self._vergeList:
@@ -107,3 +107,39 @@ class Graph:
         for i in self._vergeList:
             print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         print('\n')
+
+    def getAdjacentMatrix(self):
+        m = len(self._vertexList)
+        matrix = np.array([[0] * m] * m)
+        i = 0
+        for verge in self._vergeList:
+            start = self._vertexList.index(verge.getStartVertex())
+            end = self._vertexList.index(verge.getEndVertex())
+            matrix[start][end] = verge.getWeight()
+            if not verge.isDirected():
+                matrix[end][start] = verge.getWeight()
+
+        print(matrix)
+        return matrix
+
+    def getIncindenceMatrix(self):
+        n = len(self._vergeList)
+        m = len(self._vertexList)
+        matrix = np.array([[0] * n] * m)
+        i = 0
+        for verge in self._vergeList:
+            start = self._vertexList.index(verge.getStartVertex())
+            end = self._vertexList.index(verge.getEndVertex())
+            matrix[start][i] = 1
+            if verge.isDirected():
+                matrix[end][i] = -1
+            else:
+                matrix[end][i] = 1
+            i += 1
+
+        print("hahaha")
+        print(matrix)
+
+        return matrix
+
+
