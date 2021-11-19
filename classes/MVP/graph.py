@@ -118,11 +118,9 @@ class Graph:
             matrix[start][end] = verge.getWeight()
             if not verge.isDirected():
                 matrix[end][start] = verge.getWeight()
-
-        print(matrix)
         return matrix
 
-    def getIncindenceMatrix(self):
+    def getIncidenceMatrix(self):
         n = len(self._vergeList)
         m = len(self._vertexList)
         matrix = np.array([[0] * n] * m)
@@ -136,10 +134,6 @@ class Graph:
             else:
                 matrix[end][i] = 1
             i += 1
-
-        print("hahaha")
-        print(matrix)
-
         return matrix
 
 

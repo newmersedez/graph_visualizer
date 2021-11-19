@@ -171,49 +171,59 @@ class Window(QtWidgets.QMainWindow):
         fileName = self._openCSVFileDialog()
 
         if len(fileName) != 0:
-            adjMatrix = np.array(pd.read_csv(fileName, header=None))
+            try:
+                adjMatrix = np.array(pd.read_csv(fileName, header=None))
+                adjMatrixSize = len(adjMatrix)
 
-            adjMatrixSize = len(adjMatrix)
+                if self._isCorrectAdjacentMatrix(adjMatrix):
+                    graph = Graph()
 
-            if self._isCorrectAdjacentMatrix(adjMatrix):
-                graph = Graph()
+                    for i in range(0, adjMatrixSize):
+                        cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
+                        cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
 
-                for i in range(0, adjMatrixSize):
-                    cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
-                    cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+                        vertex = Vertex(0, 0, str(len(graph.getVertexList())), VERTEX_COLOR)
+                        vertex.setPos(self._view.mapToScene(cordX, cordY))
+                        graph.addVertex(vertex)
 
-                    vertex = Vertex(0, 0, str(len(graph.getVertexList())), VERTEX_COLOR)
-                    vertex.setPos(self._view.mapToScene(cordX, cordY))
-                    graph.addVertex(vertex)
+                    vertexList = graph.getVertexList()
+                    vertexListSize = len(vertexList)
 
-                vertexList = graph.getVertexList()
-                vertexListSize = len(vertexList)
-
-                for i in range(vertexListSize):
-                    for j in range(i, vertexListSize):
-                        if i == j and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j],
-                                          name=str(len(self._view._graph.getVergeList()) + 1),
-                                          weight=int(adjMatrix[i][j]))
-                            graph.addVerge(verge)
-                        else:
-                            if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                    for i in range(vertexListSize):
+                        for j in range(i, vertexListSize):
+                            if i == j and adjMatrix[i][j] != 0:
                                 verge = Verge(vertexList[i], vertexList[j],
-                                              str(len(self._view._graph.getVergeList()) + 1),
+                                              name=str(len(graph.getVergeList()) + 1),
+                                              weight=int(adjMatrix[i][j]))
+                                graph.addVerge(verge)
+                            else:
+                                if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                                    verge = Verge(vertexList[i], vertexList[j],
+                                                  name=str(len(graph.getVergeList()) + 1),
+                                                  weight=int(adjMatrix[i][j]),
+                                                  direction=False)
+                                    graph.addVerge(verge)
+
+                    for i in range(vertexListSize):
+                        for j in range(vertexListSize):
+                            if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                                verge = Verge(vertexList[i], vertexList[j],
+                                              name=str(len(graph.getVergeList()) + 1),
                                               weight=int(adjMatrix[i][j]),
-                                              direction=False)
+                                              direction=True)
                                 graph.addVerge(verge)
 
-                for i in range(vertexListSize):
-                    for j in range(vertexListSize):
-                        if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j],
-                                          str(len(self._view._graph.getVergeList()) + 1),
-                                          weight=int(adjMatrix[i][j]),
-                                          direction=True)
-                            graph.addVerge(verge)
+                    self._view.addGraph(graph)
+            except ValueError:
+                print('incorrect adjacent matrix')
 
-                self._view.addGraph(graph)
+    @pyqtSlot()
+    def _saveAdjacentMatrixToFile(self):
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            matrix = self._view.getGraph().getAdjacentMatrix()
+            pd.DataFrame(matrix).to_csv(fileName, header=False, index=False)
 
     @pyqtSlot()
     def _loadIncidenceMatrixFromFile(self):
@@ -224,12 +234,8 @@ class Window(QtWidgets.QMainWindow):
         pass
 
     @pyqtSlot()
-    def _saveAdjacentMatrixToFile(self):
-        self._view.getGraph().getAdjacentMatrix()
-
-    @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
-        self._view.getGraph().getIncindenceMatrix()
+        self._view.getGraph().getIncidenceMatrix()
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):
