@@ -15,6 +15,7 @@ class Window(QtWidgets.QMainWindow):
         # View settings
         self._view = View(self)
         self._cache = Cache(CACHE_SIZE)
+        self._task = None
 
         # Window settings
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
@@ -119,7 +120,9 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        # fill when program is finished
+        algo = QtWidgets.QAction('BFS', self)
+        algo.triggered.connect(self._view.viewBFS)
+        tasksMenu.addAction(algo)
 
         # QA menu
         qaProgramAction = QtWidgets.QAction('&О программе', self)
@@ -165,7 +168,6 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _loadAdjacentMatrixFromFile(self):
-        pass
         fileName = self._openCSVFileDialog()
 
         if len(fileName) != 0:
@@ -190,18 +192,25 @@ class Window(QtWidgets.QMainWindow):
                 for i in range(vertexListSize):
                     for j in range(i, vertexListSize):
                         if i == j and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]))
+                            verge = Verge(vertexList[i], vertexList[j],
+                                          name=str(len(self._view._graph.getVergeList()) + 1),
+                                          weight=int(adjMatrix[i][j]))
                             graph.addVerge(verge)
                         else:
                             if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                                verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]),
+                                verge = Verge(vertexList[i], vertexList[j],
+                                              str(len(self._view._graph.getVergeList()) + 1),
+                                              weight=int(adjMatrix[i][j]),
                                               direction=False)
                                 graph.addVerge(verge)
 
                 for i in range(vertexListSize):
                     for j in range(vertexListSize):
                         if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j], weight=int(adjMatrix[i][j]), direction=True)
+                            verge = Verge(vertexList[i], vertexList[j],
+                                          str(len(self._view._graph.getVergeList()) + 1),
+                                          weight=int(adjMatrix[i][j]),
+                                          direction=True)
                             graph.addVerge(verge)
 
                 self._view.addGraph(graph)
@@ -216,11 +225,11 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _saveAdjacentMatrixToFile(self):
-        pass
+        self._view.getGraph().getAdjacentMatrix()
 
     @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
-        pass
+        self._view.getGraph().getIncindenceMatrix()
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):
