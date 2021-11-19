@@ -12,6 +12,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._name = name
         self._color = color
         self._adjacentVertexList = list()
+        self._adjacentVergeList = list()
         self._isLoop = False
 
         # Vertex settings
@@ -21,8 +22,11 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self.setFlag(QtWidgets.QGraphicsLineItem.ItemSendsGeometryChanges)
         self.setAcceptHoverEvents(True)
 
-    def addAdjacentVertex(self, vertex):
+    def addAdjacentVertex(self, vertex, verge):
         self._adjacentVertexList.append(vertex)
+        self._adjacentVergeList.append(verge)
+
+
 
     def removeAdjacentVertex(self, vertex):
         # if vertex in self._adjacentVertexList[:]:
@@ -40,6 +44,12 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
 
     def setLoop(self, value: bool):
         self._isLoop = value
+
+    def rangeToAdjNode(self, vertex):
+        for i in self._adjacentVergeList:
+            if (i.isDirected() and i.getEndVertex() == vertex) or not i.isDirected():
+                return i.getWeight()
+        return None
 
     def paint(self, painter, option, widget=None):
         pen = QtGui.QPen()

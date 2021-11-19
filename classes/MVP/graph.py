@@ -50,8 +50,8 @@ class Graph:
             endVertex = verge.getEndVertex()
 
             self._vergeList.append(verge)
-            startVertex.addAdjacentVertex(endVertex)
-            endVertex.addAdjacentVertex(startVertex)
+            startVertex.addAdjacentVertex(endVertex, verge)
+            endVertex.addAdjacentVertex(startVertex, verge)
 
             print('after add verge: ')
             for i in self._vergeList:

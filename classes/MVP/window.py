@@ -15,6 +15,7 @@ class Window(QtWidgets.QMainWindow):
         # View settings
         self._view = View(self)
         self._cache = Cache(CACHE_SIZE)
+        self._task = None
 
         # Window settings
         self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
@@ -119,7 +120,9 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        # fill when program is finished
+        algo = QtWidgets.QAction('BFS', self)
+        algo.triggered.connect(self._view.viewBFS)
+        tasksMenu.addAction(algo)
 
         # QA menu
         qaProgramAction = QtWidgets.QAction('&О программе', self)
@@ -161,7 +164,6 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _loadAdjacentMatrixFromFile(self):
-        pass
         fileName = self._openCSVFileDialog()
 
         if len(fileName) != 0:
