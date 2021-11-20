@@ -1,5 +1,6 @@
 # Presenter
 
+from classes.cache.cache import *
 from algorithms.bfs import *
 
 
@@ -89,12 +90,20 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
+        # Update cache
+        item = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(item)
+
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
         self._redrawScene()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
+
+        # Update cache
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
 
     # Edge methods
     @staticmethod
@@ -157,6 +166,10 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
+        # Update cache
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
+
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -173,6 +186,10 @@ class View(QtWidgets.QGraphicsView):
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
+
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -207,6 +224,10 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
+
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -225,6 +246,10 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().addState(cacheItem)
+
     # Utils
     def _contextMenuClearScene(self):
         self._graph.clear()
@@ -232,6 +257,10 @@ class View(QtWidgets.QGraphicsView):
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
+
+        # Update cache
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().addState(cacheItem)
 
     # Events
     def contextMenuEvent(self, event):

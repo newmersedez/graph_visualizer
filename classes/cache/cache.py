@@ -1,19 +1,13 @@
 from queue import Queue
 from classes.MVP.graph import *
-import copy
 
 
 class CacheItem:
     def __init__(self, graph: Graph):
-        vertexList = graph.getVertexList().copy()
-        edgeList = graph.getEdgeList().copy()
+        vertexList = graph.getVertexList()
+        edgeList = graph.getEdgeList()
 
         self._cachedGraph = Graph()
-        for item in vertexList:
-            self._cachedGraph.addVertex(item)
-
-        for item in edgeList:
-            self._cachedGraph.addEdge(item)
 
     def getCachedGraph(self):
         return self._cachedGraph

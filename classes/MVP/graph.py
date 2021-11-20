@@ -5,11 +5,11 @@ from classes.graph.vertex import *
 import numpy as np
 
 class Graph:
-    def __init__(self):
+    def __init__(self, directed=False, weighted=False):
         self._vertexList = list()
         self._edgeList = list()
-        self._isDirectedGraph = False
-        self._isWeightedGraph = False
+        self._isDirectedGraph = directed
+        self._isWeightedGraph = weighted
 
     # Vertex methods
     def addVertex(self, vertex: Vertex):

@@ -43,6 +43,9 @@ class Edge(QtWidgets.QGraphicsItem):
     def getName(self):
         return self._name
 
+    def getFactor(self):
+        return self._curveFactor
+
     # Исправить тут хитбокс, потому что не попасть по вершине
     def boundingRect(self):
         start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()

@@ -169,7 +169,7 @@ class Window(QtWidgets.QMainWindow):
                     cordX = random.randint(0, FIELD_WIDTH - VERTEX_SIZE)
                     cordY = random.randint(0, FIELD_HEIGHT - VERTEX_SIZE)
 
-                    vertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
+                    vertex = Vertex(cordX, cordY, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
                     vertex.setPos(self._view.mapToScene(cordX, cordY))
                     graph.addVertex(vertex)
 
@@ -316,21 +316,30 @@ class Window(QtWidgets.QMainWindow):
                     break
 
                 # Vertex
-                vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'
-                vertexList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
-                for item in vertexList:
-                    if not graph.findVertexByName(str(item[0])):
-                        if 0 <= int(item[1]) <= FIELD_WIDTH - VERTEX_SIZE and \
-                                0 <= int(item[2]) <= FIELD_HEIGHT - VERTEX_SIZE:
-                            vertex = Vertex(0, 0, str(item[0]), VERTEX_COLOR)
-                            vertex.setPos(self._view.mapToScene(int(item[1]), int(item[2])))
-                            graph.addVertex(vertex)
+                if line.find('Vertex') != -1:
+                    vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'
+                    vertexList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
+                    for item in vertexList:
+                        if not graph.findVertexByName(str(item[0])):
+                            if 0 <= int(item[1]) <= FIELD_WIDTH - VERTEX_SIZE and \
+                                    0 <= int(item[2]) <= FIELD_HEIGHT - VERTEX_SIZE:
+                                vertex = Vertex(0, 0, str(item[0]), VERTEX_COLOR)
+                                vertex.setPos(self._view.mapToScene(int(item[1]), int(item[2])))
+                                graph.addVertex(vertex)
 
-                # # Edge
-                # edgeRegex = r'(?<=Edges{)(\d+)\((\d+), ?(\d+)'
-                # edgeList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
-                # for item in edgeList:
-                #     print('edge = ', item)
+                # Edge
+                if line.find('Edges') != -1:
+                    edgeRegex = r'(?<=Edges{).+?(?=})'
+                    digs = list(map(int, re.findall(r'\d+', re.search(edgeRegex, line).group())))
+                    edgeList = [digs[i:i + 4] for i in range(0, len(digs), 4)]
+                    for item in edgeList:
+                        if not graph.findEdgeByName(str(item[0])):
+                            startEdge = graph.findVertexByName(str(item[2]))
+                            endEdge = graph.findVertexByName(str(item[3]))
+                            if startEdge and endEdge:
+                                edge = Edge(startEdge, endEdge, name=str(item[0]), weight=int(item[1]))
+                                graph.addEdge(edge)
+
 
             stream.close()
             self._view.addGraph(graph)
@@ -421,8 +430,6 @@ class Window(QtWidgets.QMainWindow):
             i += 1
 
         matrix = self._view.getGraph().getAdjacentMatrix()
-        print(matrix)
-
         for i in range(columnCount):
             for j in range(rowCount):
                 self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(matrix[i][j])))
@@ -458,7 +465,7 @@ class Window(QtWidgets.QMainWindow):
 
         if graph is not None:
             self._view.addGraph(graph)
-        # self.updateAdjacentTable()
+            self.updateAdjacentTable()
 
     @pyqtSlot()
     def _redoButtonAction(self):
@@ -466,4 +473,4 @@ class Window(QtWidgets.QMainWindow):
 
         if graph is not None:
             self._view.addGraph(graph)
-        # self.updateAdjacentTable()
+            self.updateAdjacentTable()

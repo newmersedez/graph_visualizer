@@ -29,7 +29,5 @@ def bfs(graph: Graph, vertex: Vertex):
     print(names_lst)
     print(range_lst)
 
-
-
     return (shortest_ways)
 
