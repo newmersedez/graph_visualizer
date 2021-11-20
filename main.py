@@ -1,4 +1,4 @@
-from classes.MVP.window import *
+from classes.gui.window import *
 
 
 if __name__ == '__main__':

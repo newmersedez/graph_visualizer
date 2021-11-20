@@ -1,5 +1,5 @@
 from queue import Queue
-from classes.MVP.graph import *
+from classes.graph.graph import *
 
 
 class CacheItem:
