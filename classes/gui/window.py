@@ -16,13 +16,16 @@ class Window(QtWidgets.QMainWindow):
         # View settings
         self._view = View(self)
         self._cache = Cache(CACHE_SIZE)
-        self._task = None
+        self._darkTheme = False
 
         # Window settings
-        self.setFixedSize(WIN_WIDTH, WIN_HEIGHT)
+        self.resize(WIN_WIDTH, WIN_HEIGHT)
         self.setWindowTitle(WIN_TITLE)
         self.setFont(QtGui.QFont('Arial', 15))
-        self.setStyleSheet('background-color: #303030; color: white; QMainWindow::separator {width: 20px};')
+        self.setStyleSheet('color: black;'
+                           'background-color: white;'
+                           'selection-color: black;'
+                           'selection-background-color: #008cff;')
         self.setCentralWidget(self._view)
 
         # Layout management
@@ -37,7 +40,7 @@ class Window(QtWidgets.QMainWindow):
         self._tableWidget = QtWidgets.QWidget()
         self._tableLayout = QtWidgets.QVBoxLayout()
         self._tableWidget.setLayout(self._tableLayout)
-        self._tableWidget.setGeometry(0, 0, 100, 100)
+        self._tableWidget.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
 
         self._buttonsWidget = QtWidgets.QWidget()
         self._buttonsLayout = QtWidgets.QVBoxLayout()
@@ -58,7 +61,6 @@ class Window(QtWidgets.QMainWindow):
 
     def _initUI(self):
         # Menu bar
-        self.statusBar()
         self.menuBar = self._createMenuBar()
 
         # Realtime adjacency matrix
@@ -68,6 +70,68 @@ class Window(QtWidgets.QMainWindow):
         # Buttons
         self._createButtons()
 
+    # Theme color
+    def _changeTheme(self):
+        if self._darkTheme:
+            self._darkTheme = False
+            self._view.setStyleSheet('background-color: gray;')
+            self.setStyleSheet('color: black;'
+                               'background-color: white;'
+                               'selection-color: black;'
+                               'selection-background-color: #008cff;')
+            self._adjacentTable.setStyleSheet('QWidget'
+                                              '{'
+                                              'background-color: #e1e1e1;'
+                                              'color: black;'
+                                              '}'
+                                              'QHeaderView::section'
+                                              '{'
+                                              'background-color: #c8c8c8;'
+                                              'padding: 4px;'
+                                              'border: 1px solid #fffff8;'
+                                              'font-size: 14pt;'
+                                              '}'
+                                              'QTableWidget'
+                                              '{'
+                                              'gridline-color: #fffff8;'
+                                              'font-size: 12pt;'
+                                              '}'
+                                              'QTableWidget QTableCornerButton::section'
+                                              '{'
+                                              'background-color: #c8c8c8;'
+                                              'border: 1px solid #fffff8;'
+                                              '}')
+
+        else:
+            self._darkTheme = True
+            self._view.setStyleSheet('background-color: #202020;')
+            self.setStyleSheet('color: white;'
+                               'background-color: #303030;'
+                               'selection-color: white;'
+                               'selection-background-color: #008cff;')
+            self._adjacentTable.setStyleSheet('QWidget'
+                                              '{'
+                                              'background-color: #333333;'
+                                              'color: #fffff8;'
+                                              '}'
+                                              'QHeaderView::section'
+                                              '{'
+                                              'background-color: #646464;'
+                                              'padding: 4px;'
+                                              'border: 1px solid gray;'
+                                              'font-size: 14pt;'
+                                              '}'
+                                              'QTableWidget'
+                                              '{'
+                                              'gridline-color: gray;'
+                                              'font-size: 12pt;'
+                                              '}'
+                                              'QTableWidget QTableCornerButton::section'
+                                              '{'
+                                              'background-color: #646464;'
+                                              'border: 1px solid gray;'
+                                              '}')
+
     # Menu bar and menu widgets
     def _createMenuBar(self):
         self.statusBar()
@@ -76,6 +140,7 @@ class Window(QtWidgets.QMainWindow):
         menuBar.setNativeMenuBar(False)
         fileMenu = menuBar.addMenu('&Файл')
         tasksMenu = menuBar.addMenu('&Задачи теории графов')
+        settingsMenu = menuBar.addMenu('&Настройки')
         qaMenu = menuBar.addMenu('&?')
 
         # Load from file
@@ -124,13 +189,16 @@ class Window(QtWidgets.QMainWindow):
         algo.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algo)
 
+        # Settings menu
+        settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
+        settingsChangeTheme.triggered.connect(self._changeTheme)
+        settingsMenu.addAction(settingsChangeTheme)
+
         # QA menu
         qaProgramAction = QtWidgets.QAction('&О программе', self)
-        qaProgramAction.setStatusTip('Program info')
         qaMenu.addAction(qaProgramAction)
 
         qaAuthorAction = QtWidgets.QAction('&Об авторе', self)
-        qaAuthorAction.setStatusTip('Program author')
         qaMenu.addAction(qaAuthorAction)
 
         return menuBar
@@ -448,32 +516,32 @@ class Window(QtWidgets.QMainWindow):
     @staticmethod
     def _createAdjacentTable():
         _adjacentTable = QtWidgets.QTableWidget()
-        _adjacentTable.setFixedSize(TABLE_WIDTH, TABLE_HEIGHT)
+        _adjacentTable.setGeometry(0, 0, TABLE_WIDTH, TABLE_HEIGHT)
         _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
         _adjacentTable.verticalHeader().setDefaultSectionSize(30)
-        # _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         _adjacentTable.setStyleSheet('QWidget'
-                                     '{'
-                                     'background-color: #333333;'
-                                     'color: #fffff8;'
-                                     '}'
-                                     'QHeaderView::section'
-                                     '{'
-                                     'background-color: #646464;'
-                                     'padding: 4px;'
-                                     'border: 1px solid #fffff8;'
-                                     'font-size: 14pt;'
-                                     '}'
-                                     'QTableWidget'
-                                     '{'
-                                     'gridline-color: #fffff8;'
-                                     'font-size: 12pt;'
-                                     '}'
-                                     'QTableWidget QTableCornerButton::section'
-                                     '{'
-                                     'background-color: #646464;'
-                                     'border: 1px solid #fffff8;'
-                                     '}')
+                                          '{'
+                                          'background-color: #e1e1e1;'
+                                          'color: black;'
+                                          '}'
+                                          'QHeaderView::section'
+                                          '{'
+                                          'background-color: #c8c8c8;'
+                                          'padding: 4px;'
+                                          'border: 1px solid #fffff8;'
+                                          'font-size: 14pt;'
+                                          '}'
+                                          'QTableWidget'
+                                          '{'
+                                          'gridline-color: #fffff8;'
+                                          'font-size: 12pt;'
+                                          '}'
+                                          'QTableWidget QTableCornerButton::section'
+                                          '{'
+                                          'background-color: #c8c8c8;'
+                                          'border: 1px solid #fffff8;'
+                                          '}')
         return _adjacentTable
 
     def updateAdjacentTable(self):
@@ -498,27 +566,15 @@ class Window(QtWidgets.QMainWindow):
     # Buttons widget
     def _createButtons(self):
         button1 = QtWidgets.QPushButton('Undo', self)
-        button1.setFixedSize(400, 70)
+        button1.setFixedHeight(70)
         button1.clicked.connect(self._undoButtonAction)
 
         button2 = QtWidgets.QPushButton('Redo', self)
-        button2.setFixedSize(400, 70)
+        button2.setFixedHeight(70)
         button2.clicked.connect(self._redoButtonAction)
-
-        button3 = QtWidgets.QPushButton('dummy button', self)
-        button3.setFixedSize(400, 70)
-
-        button4 = QtWidgets.QPushButton('dummy button', self)
-        button4.setFixedSize(400, 70)
-
-        button5 = QtWidgets.QPushButton('dummy button', self)
-        button5.setFixedSize(400, 70)
 
         self._buttonsLayout.addWidget(button1)
         self._buttonsLayout.addWidget(button2)
-        self._buttonsLayout.addWidget(button3)
-        self._buttonsLayout.addWidget(button4)
-        self._buttonsLayout.addWidget(button5)
 
     @pyqtSlot()
     def _undoButtonAction(self):

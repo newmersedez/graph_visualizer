@@ -127,11 +127,12 @@ class Edge(QtWidgets.QGraphicsItem):
             painter.drawPath(myPath)
 
             pen.setColor(QtGui.QColor(VERTEX_COLOR))
+            pen.setWidth(10)
             painter.setPen(pen)
             painter.setFont(QtGui.QFont('Arial', 14))
 
             # Update factor for text and arrow drawing
-            painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE, '\'' + self._name + '\'')
+            painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE, self._name)
 
             # Edge direction
             if self._isDirection:
@@ -164,7 +165,7 @@ class Edge(QtWidgets.QGraphicsItem):
                 painter.setFont(QtGui.QFont('Arial', 14))
                 textOffset = VERTEX_SIZE / 4
                 painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE,
-                                 '\'' + self._name + '\': ' + str(self._weight))
+                                 self._name + ': ' + str(self._weight))
 
         # Calculate bezier curve loop default edge
         else:
@@ -191,8 +192,7 @@ class Edge(QtWidgets.QGraphicsItem):
 
             factor *= 3 / 4
             textOffset = VERTEX_SIZE / 4
-            painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
-                             '\'' + self._name + '\'')
+            painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset, self._name)
 
             # Edge direction
             if self._isDirection:
@@ -224,4 +224,4 @@ class Edge(QtWidgets.QGraphicsItem):
                 painter.setFont(QtGui.QFont('Arial', 14))
                 textOffset = VERTEX_SIZE / 4
                 painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
-                                 '\'' + self._name  + '\': ' + str(self._weight))
+                                 self._name + ': ' + str(self._weight))

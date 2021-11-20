@@ -16,10 +16,8 @@ class View(QtWidgets.QGraphicsView):
 
         # Scene and view settings
         self._scene = QtWidgets.QGraphicsScene(self)
-        self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
         self.setScene(self._scene)
-        self.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
-        self.setStyleSheet('background-color: #202020;')
+        self.setStyleSheet('background-color: gray;')
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
