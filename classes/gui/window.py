@@ -2,7 +2,7 @@
 
 from PyQt5.QtCore import pyqtSlot
 from classes.cache.cache import *
-from classes.MVP.view import *
+from classes.gui.view import *
 import numpy as np
 import random
 import pandas as pd
@@ -154,7 +154,35 @@ class Window(QtWidgets.QMainWindow):
                                                             "Matrix file (*.csv);;Image file (*png)", options=options)
         return fileName
 
+    def _messageDialog(self, message: str):
+        inputDialog = QtWidgets.QDialog(self)
+        inputDialog.setWindowTitle('Ошибка')
+        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+
+        form = QtWidgets.QFormLayout(inputDialog)
+        form.addRow(QtWidgets.QLabel(message))
+
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        form.addRow(buttonBox)
+        buttonBox.accepted.connect(inputDialog.accept)
+        buttonBox.rejected.connect(inputDialog.reject)
+
+        inputDialog.exec_()
+
     # File load/save
+    @staticmethod
+    def _isCorrectAdjacentMatrix(matrix):
+        matrixSize = len(matrix)
+        for row in matrix:
+            rowSize = len(row)
+            if rowSize != matrixSize:
+                return False
+            for i in range(0, rowSize):
+                if row[i] < 0:
+                    return False
+        return True
+
     @pyqtSlot()
     def _loadAdjacentMatrixFromFile(self):
         fileName = self._openCSVFileDialog()
@@ -163,13 +191,15 @@ class Window(QtWidgets.QMainWindow):
             try:
                 adjMatrix = np.array(pd.read_csv(fileName, header=None))
                 adjMatrixSize = len(adjMatrix)
-                graph = Graph()
+                if not self._isCorrectAdjacentMatrix(adjMatrix):
+                    raise ValueError
 
+                graph = Graph()
                 for i in range(0, adjMatrixSize):
                     cordX = random.randint(0, FIELD_WIDTH - VERTEX_SIZE)
                     cordY = random.randint(0, FIELD_HEIGHT - VERTEX_SIZE)
 
-                    vertex = Vertex(cordX, cordY, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
+                    vertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
                     vertex.setPos(self._view.mapToScene(cordX, cordY))
                     graph.addVertex(vertex)
 
@@ -200,9 +230,13 @@ class Window(QtWidgets.QMainWindow):
                                         direction=True)
                             graph.addEdge(edge)
 
-                self._view.addGraph(graph)
+                if graph.empty():
+                    raise ValueError
+                else:
+                    self._view.addGraph(graph)
+
             except ValueError:
-                print('incorrect adjacent matrix')
+                self._messageDialog('Ошибка в матрице смежности')
 
     @pyqtSlot()
     def _saveAdjacentMatrixToFile(self):
@@ -212,6 +246,20 @@ class Window(QtWidgets.QMainWindow):
             matrix = self._view.getGraph().getAdjacentMatrix()
             pd.DataFrame(matrix).to_csv(fileName, header=False, index=False)
 
+    @staticmethod
+    def _isCorrectIncidenceMatrix(matrix):
+        rowsCount = len(matrix)
+        colsCount = len(matrix[0])
+
+        for row in matrix:
+            rowSize = len(row)
+            if rowSize != colsCount:
+                return False
+            for i in range(rowSize):
+                if abs(row[i] > 1):
+                    return False
+        return True
+
     @pyqtSlot()
     def _loadIncidenceMatrixFromFile(self):
         fileName = self._openCSVFileDialog()
@@ -219,10 +267,12 @@ class Window(QtWidgets.QMainWindow):
         if len(fileName) != 0:
             try:
                 incMatrix = np.array(pd.read_csv(fileName, header=None))
+                if not self._isCorrectIncidenceMatrix(incMatrix):
+                    raise ValueError
+
                 rows = len(incMatrix)
                 cols = len(incMatrix[0])
                 graph = Graph()
-
                 for i in range(0, cols):
                     vertexPoints = []
                     for j in range(0, rows):
@@ -291,9 +341,13 @@ class Window(QtWidgets.QMainWindow):
                                         factor=factor)
                             graph.addEdge(edge)
 
-                self._view.addGraph(graph)
+                if graph.empty():
+                    raise ValueError
+                else:
+                    self._view.addGraph(graph)
+
             except ValueError:
-                print('incorrect incidence matrix')
+                self._messageDialog('Ошибка в матрице инцидентности')
 
     @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
@@ -309,40 +363,47 @@ class Window(QtWidgets.QMainWindow):
 
         if len(fileName) != 0:
             stream = open(fileName, 'r')
-            graph = Graph()
-            while True:
-                line = stream.readline()
-                if not line:
-                    break
+            try:
+                graph = Graph()
+                while True:
+                    line = stream.readline()
+                    if not line:
+                        break
 
-                # Vertex
-                if line.find('Vertex') != -1:
-                    vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'
-                    vertexList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
-                    for item in vertexList:
-                        if not graph.findVertexByName(str(item[0])):
-                            if 0 <= int(item[1]) <= FIELD_WIDTH - VERTEX_SIZE and \
-                                    0 <= int(item[2]) <= FIELD_HEIGHT - VERTEX_SIZE:
-                                vertex = Vertex(0, 0, str(item[0]), VERTEX_COLOR)
-                                vertex.setPos(self._view.mapToScene(int(item[1]), int(item[2])))
-                                graph.addVertex(vertex)
+                    # Vertex
+                    if line.find('Vertex') != -1:
+                        vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'
+                        vertexList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
+                        for item in vertexList:
+                            if not graph.findVertexByName(str(item[0])):
+                                if 0 <= int(item[1]) <= FIELD_WIDTH - VERTEX_SIZE and \
+                                        0 <= int(item[2]) <= FIELD_HEIGHT - VERTEX_SIZE:
+                                    vertex = Vertex(0, 0, str(item[0]), VERTEX_COLOR)
+                                    vertex.setPos(self._view.mapToScene(int(item[1]), int(item[2])))
+                                    graph.addVertex(vertex)
 
-                # Edge
-                if line.find('Edges') != -1:
-                    edgeRegex = r'(?<=Edges{).+?(?=})'
-                    digs = list(map(int, re.findall(r'\d+', re.search(edgeRegex, line).group())))
-                    edgeList = [digs[i:i + 4] for i in range(0, len(digs), 4)]
-                    for item in edgeList:
-                        if not graph.findEdgeByName(str(item[0])):
-                            startEdge = graph.findVertexByName(str(item[2]))
-                            endEdge = graph.findVertexByName(str(item[3]))
-                            if startEdge and endEdge:
-                                edge = Edge(startEdge, endEdge, name=str(item[0]), weight=int(item[1]))
-                                graph.addEdge(edge)
+                    # Edge
+                    if line.find('Edges') != -1:
+                        edgeRegex = r'(?<=Edges{).+?(?=})'
+                        digs = list(map(int, re.findall(r'\d+', re.search(edgeRegex, line).group())))
+                        edgeList = [digs[i:i + 4] for i in range(0, len(digs), 4)]
+                        for item in edgeList:
+                            if not graph.findEdgeByName(str(item[0])):
+                                startEdge = graph.findVertexByName(str(item[2]))
+                                endEdge = graph.findVertexByName(str(item[3]))
+                                if startEdge and endEdge:
+                                    edge = Edge(startEdge, endEdge, name=str(item[0]), weight=int(item[1]))
+                                    graph.addEdge(edge)
 
+                if graph.empty():
+                    raise ValueError
+                else:
+                    self._view.addGraph(graph)
+
+            except ValueError:
+                self._messageDialog('Ошибка в файле конфигурации')
 
             stream.close()
-            self._view.addGraph(graph)
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):

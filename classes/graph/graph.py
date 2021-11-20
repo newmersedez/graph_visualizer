@@ -79,6 +79,9 @@ class Graph:
         self._isDirectedGraph = False
         self._isWeightedGraph = False
 
+    def empty(self):
+        return len(self._vertexList) == 0 and len(self._edgeList) == 0
+
     def getAdjacentMatrix(self):
         m = len(self._vertexList)
         matrix = np.array([[0] * m] * m)
