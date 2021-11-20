@@ -1,13 +1,13 @@
 # Model
 
-from classes.graph.verge import *
+from classes.graph.edge import *
 from classes.graph.vertex import *
 import numpy as np
 
 class Graph:
     def __init__(self):
         self._vertexList = list()
-        self._vergeList = list()
+        self._edgeList = list()
         self._isDirectedGraph = False
         self._isWeightedGraph = False
 
@@ -26,15 +26,15 @@ class Graph:
             for item in self._vertexList:
                 item.removeAdjacentVertex(vertex)
 
-            for item in self._vergeList[:]:
+            for item in self._edgeList[:]:
                 if item.getStartVertex() == vertex or item.getEndVertex() == vertex:
-                    self._vergeList.remove(item)
+                    self._edgeList.remove(item)
             self._vertexList.remove(vertex)
 
             print('after remove vertex: ')
             for i in self._vertexList:
                 print(i.getName())
-            for i in self._vergeList:
+            for i in self._edgeList:
                 print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
             print('\n')
 
@@ -43,68 +43,68 @@ class Graph:
             if item.getName() == name:
                 return item
 
-    # Verge methods
-    def addVerge(self, verge: Verge):
-        if verge is not None:
-            startVertex = verge.getStartVertex()
-            endVertex = verge.getEndVertex()
+    # Edge methods
+    def addEdge(self, edge: Edge):
+        if edge is not None:
+            startVertex = edge.getStartVertex()
+            endVertex = edge.getEndVertex()
 
-            self._vergeList.append(verge)
-            startVertex.addAdjacentVertex(endVertex, verge)
-            endVertex.addAdjacentVertex(startVertex, verge)
+            self._edgeList.append(edge)
+            startVertex.addAdjacentVertex(endVertex, edge)
+            endVertex.addAdjacentVertex(startVertex, edge)
 
-            print('after add verge: ')
-            for i in self._vergeList:
+            print('after add edge: ')
+            for i in self._edgeList:
                 print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
             print('\n')
 
-    def removeVerge(self, verge: Verge):
-        if verge is not None:
-            startVertex = verge.getStartVertex()
-            endVertex = verge.getEndVertex()
+    def removeEdge(self, edge: Edge):
+        if edge is not None:
+            startVertex = edge.getStartVertex()
+            endVertex = edge.getEndVertex()
 
             if startVertex == endVertex:
                 startVertex.setLoop(value=False)
 
             startVertex.removeAdjacentVertex(endVertex)
             endVertex.removeAdjacentVertex(startVertex)
-            self._vergeList.remove(verge)
+            self._edgeList.remove(edge)
 
-            print('after remove verge: ')
-            for i in self._vergeList:
+            print('after remove edge: ')
+            for i in self._edgeList:
                 print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
             print('\n')
 
-    def findVergeByName(self, name: str):
-        for verge in self._vergeList:
-            if verge.getName() == name:
-                return verge
+    def findEdgeByName(self, name: str):
+        for edge in self._edgeList:
+            if edge.getName() == name:
+                return edge
 
-    def toggleVergeDirection(self, verge: Verge):
-        if verge in self._vergeList:
-            verge.toggleDirection()
+    def toggleEdgeDirection(self, edge: Edge):
+        if edge in self._edgeList:
+            edge.toggleDirection()
 
-    def setVergeWeight(self, verge: Verge, weight: int):
-        if verge in self._vergeList:
-            verge.setWeight(weight)
+    def setEdgeWeight(self, edge: Edge, weight: int):
+        if edge in self._edgeList:
+            edge.setWeight(weight)
 
     # Utils
     def getVertexList(self):
         return self._vertexList
 
-    def getVergeList(self):
-        return self._vergeList
+    def getEdgeList(self):
+        return self._edgeList
 
     def clear(self):
         self._vertexList.clear()
-        self._vergeList.clear()
+        self._edgeList.clear()
         self._isDirectedGraph = False
         self._isWeightedGraph = False
 
         print('after clean all: ')
         for i in self._vertexList:
             print(i.getName())
-        for i in self._vergeList:
+        for i in self._edgeList:
             print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
         print('\n')
 
@@ -112,24 +112,24 @@ class Graph:
         m = len(self._vertexList)
         matrix = np.array([[0] * m] * m)
         i = 0
-        for verge in self._vergeList:
-            start = self._vertexList.index(verge.getStartVertex())
-            end = self._vertexList.index(verge.getEndVertex())
-            matrix[start][end] = verge.getWeight()
-            if not verge.isDirected():
-                matrix[end][start] = verge.getWeight()
+        for edge in self._edgeList:
+            start = self._vertexList.index(edge.getStartVertex())
+            end = self._vertexList.index(edge.getEndVertex())
+            matrix[start][end] = edge.getWeight()
+            if not edge.isDirected():
+                matrix[end][start] = edge.getWeight()
         return matrix
 
     def getIncidenceMatrix(self):
-        n = len(self._vergeList)
+        n = len(self._edgeList)
         m = len(self._vertexList)
         matrix = np.array([[0] * n] * m)
         i = 0
-        for verge in self._vergeList:
-            start = self._vertexList.index(verge.getStartVertex())
-            end = self._vertexList.index(verge.getEndVertex())
+        for edge in self._edgeList:
+            start = self._vertexList.index(edge.getStartVertex())
+            end = self._vertexList.index(edge.getEndVertex())
             matrix[start][i] = 1
-            if verge.isDirected():
+            if edge.isDirected():
                 matrix[end][i] = -1
             else:
                 matrix[end][i] = 1

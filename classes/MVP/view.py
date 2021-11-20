@@ -1,8 +1,7 @@
 # Presenter
 
-from classes.MVP.graph import *
 from classes.cache.cache import *
-from classes.graph.algo import *
+from algorithms.bfs import *
 
 
 class View(QtWidgets.QGraphicsView):
@@ -44,12 +43,12 @@ class View(QtWidgets.QGraphicsView):
         self._graph = graph
         
         vertexList = self._graph.getVertexList()
-        vergeList = self._graph.getVergeList()
+        edgeList = self._graph.getEdgeList()
         
         for item in vertexList:
             self._scene.addItem(item)
         
-        for item in vergeList:
+        for item in edgeList:
             self._scene.addItem(item)
 
     def getGraph(self):
@@ -62,10 +61,10 @@ class View(QtWidgets.QGraphicsView):
 
     def _redrawScene(self):
         vertexList = self._graph.getVertexList()
-        vergeList = self._graph.getVergeList()
+        edgeList = self._graph.getEdgeList()
 
         for item in self._scene.items():
-            if not (item in vertexList) and not (item in vergeList):
+            if not (item in vertexList) and not (item in edgeList):
                 self._scene.removeItem(item)
 
     # Vertex methods
@@ -98,9 +97,9 @@ class View(QtWidgets.QGraphicsView):
         cacheItem = CacheItem(self._graph)
         self._mainWindow.getCache().addState(cacheItem)
 
-    # Verge methods
+    # Edge methods
     @staticmethod
-    def countVergeFactor(startVertex, endVertex):
+    def countEdgeFactor(startVertex, endVertex):
         if startVertex.getName() > endVertex.getName():
             factorStart = startVertex
             factorEnd = endVertex
@@ -131,30 +130,30 @@ class View(QtWidgets.QGraphicsView):
             factor = -factor
         return factor
 
-    def _createVergeName(self):
-        vergeList = self._graph.getVergeList()
+    def _createEdgeName(self):
+        edgeList = self._graph.getEdgeList()
 
-        if len(vergeList) == 0:
+        if len(edgeList) == 0:
             name = '1'
         else:
-            name = str(len(vergeList) + 1)
+            name = str(len(edgeList) + 1)
         return name
 
-    def _contextMenuAddVerge(self, startVertex, endVertex):
+    def _contextMenuAddEdge(self, startVertex, endVertex):
         # Count bezier factor
-        factor = self.countVergeFactor(startVertex, endVertex)
+        factor = self.countEdgeFactor(startVertex, endVertex)
 
         # Create default name
-        name = self._createVergeName()
+        name = self._createEdgeName()
 
-        # Create verge
-        verge = Verge(startVertex, endVertex, name, weight=1, direction=False, factor=factor)
+        # Create edge
+        edge = Edge(startVertex, endVertex, name, weight=1, direction=False, factor=factor)
 
         if startVertex == endVertex:
             startVertex.setLoop(value=True)
 
-        self._graph.addVerge(verge)
-        self._scene.addItem(verge)
+        self._graph.addEdge(edge)
+        self._scene.addItem(edge)
 
         # Update graph
         cacheItem = CacheItem(self._graph)
@@ -171,8 +170,8 @@ class View(QtWidgets.QGraphicsView):
         name = inputDialog.textValue()
 
         if ok:
-            verge = self._graph.findVergeByName(name)
-            self._graph.toggleVergeDirection(verge)
+            edge = self._graph.findEdgeByName(name)
+            self._graph.toggleEdgeDirection(edge)
 
             # Update graph
             cacheItem = CacheItem(self._graph)
@@ -204,14 +203,14 @@ class View(QtWidgets.QGraphicsView):
         if ok:
             name = textBox1.text()
             weight = textBox2.text()
-            verge = self._graph.findVergeByName(name)
-            self._graph.setVergeWeight(verge, weight)
+            edge = self._graph.findEdgeByName(name)
+            self._graph.setEdgeWeight(edge, weight)
 
             # Update graph
             cacheItem = CacheItem(self._graph)
             self._mainWindow.getCache().addState(cacheItem)
 
-    def _contextMenuRemoveVerge(self):
+    def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Удаление ребра')
@@ -222,8 +221,8 @@ class View(QtWidgets.QGraphicsView):
         name = inputDialog.textValue()
 
         if ok:
-            verge = self._graph.findVergeByName(name)
-            self._graph.removeVerge(verge)
+            edge = self._graph.findEdgeByName(name)
+            self._graph.removeEdge(edge)
             self._redrawScene()
 
             # Update graph
@@ -252,7 +251,7 @@ class View(QtWidgets.QGraphicsView):
         mnu.addSection('Ребро:')
         mnu.addAction('Вкл/Выкл направление ребра...').setObjectName('toggle direction')
         mnu.addAction('Установить вес ребра...').setObjectName('set weight')
-        mnu.addAction('Удалить ребро...').setObjectName('delete verge')
+        mnu.addAction('Удалить ребро...').setObjectName('delete edge')
 
         mnu.addSection('Дополнительно:')
         mnu.addAction('Очистить экран').setObjectName('clear all')
@@ -280,7 +279,7 @@ class View(QtWidgets.QGraphicsView):
                 if isinstance(item, Vertex):
                     if not item.isLoopExist():
                         item.setLoop(value=True)
-                        self._contextMenuAddVerge(item, item)
+                        self._contextMenuAddEdge(item, item)
 
         elif obj == 'toggle direction':
             self._contextMenuToggleDirection()
@@ -288,8 +287,8 @@ class View(QtWidgets.QGraphicsView):
         elif obj == 'set weight':
             self._contextMenuSetWeight()
 
-        elif obj == 'delete verge':
-            self._contextMenuRemoveVerge()
+        elif obj == 'delete edge':
+            self._contextMenuRemoveEdge()
 
         elif obj == 'clear all':
             self._contextMenuClearScene()
@@ -315,7 +314,7 @@ class View(QtWidgets.QGraphicsView):
                 self._end = item
                 if isinstance(self._start, Vertex) and isinstance(self._end, Vertex):
                     if self._start != self._end:
-                        self._contextMenuAddVerge(self._start, self._end)
+                        self._contextMenuAddEdge(self._start, self._end)
                         self._start = None
                         self._end = None
 

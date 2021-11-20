@@ -6,14 +6,14 @@ import copy
 class CacheItem:
     def __init__(self, graph: Graph):
         vertexList = graph.getVertexList().copy()
-        vergeList = graph.getVergeList().copy()
+        edgeList = graph.getEdgeList().copy()
 
         self._cachedGraph = Graph()
         for item in vertexList:
             self._cachedGraph.addVertex(item)
 
-        for item in vergeList:
-            self._cachedGraph.addVerge(item)
+        for item in edgeList:
+            self._cachedGraph.addEdge(item)
 
     def getCachedGraph(self):
         return self._cachedGraph

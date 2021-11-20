@@ -2,12 +2,12 @@ from classes.graph.vertex import *
 from math import sqrt, sin, cos, acos, pi, radians
 
 
-class Verge(QtWidgets.QGraphicsItem):
+class Edge(QtWidgets.QGraphicsItem):
 
     def __init__(self, startVertex, endVertex, name='1', weight=1, direction=False, factor=0, parent=None):
         super().__init__(parent)
 
-        # Verge variables
+        # Edge variables
         self._startVertex = startVertex
         self._endVertex = endVertex
         self._name = name
@@ -42,7 +42,6 @@ class Verge(QtWidgets.QGraphicsItem):
 
     def getName(self):
         return self._name
-
 
     # Исправить тут хитбокс, потому что не попасть по вершине
     def boundingRect(self):
@@ -131,7 +130,7 @@ class Verge(QtWidgets.QGraphicsItem):
             # Update factor for text and arrow drawing
             painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE, '\'' + self._name + '\'')
 
-            # Verge direction
+            # Edge direction
             if self._isDirection:
                 endPoint = QtCore.QPointF(pointEndX, pointEndY)
                 dx, dy = pointStart.x() - endPoint.x(), pointStart.y() - endPoint.y()
@@ -154,7 +153,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.drawPoint(endPoint)
                 painter.drawPolygon(point2, point3, endPoint)
 
-            # Verge weight display
+            # Edge weight display
             if self._isWeight:
                 newPen = QtGui.QPen()
                 newPen.setColor(QtGui.QColor(VERTEX_COLOR))
@@ -164,7 +163,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE,
                                  '\'' + self._name + '\': ' + str(self._weight))
 
-        # Calculate bezier curve loop default verge
+        # Calculate bezier curve loop default edge
         else:
             point3X = ((pointEnd.x() + pointStart.x()) / 2)
             point3Y = ((pointEnd.y() + pointStart.y()) / 2)
@@ -192,7 +191,7 @@ class Verge(QtWidgets.QGraphicsItem):
             painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
                              '\'' + self._name + '\'')
 
-            # Verge direction
+            # Edge direction
             if self._isDirection:
                 endPoint = QtCore.QPointF(point3X + factor * cos(-angle2),  point3Y + factor * sin(-angle2))
                 dx, dy = pointStart.x() - endPoint.x(), pointStart.y() - endPoint.y()
@@ -214,7 +213,7 @@ class Verge(QtWidgets.QGraphicsItem):
                 painter.setBrush(newBrush)
                 painter.drawPolygon(point2, endPoint, point3)
 
-            # Verge weight display
+            # Edge weight display
             if self._isWeight:
                 newPen = QtGui.QPen()
                 newPen.setColor(QtGui.QColor(VERTEX_COLOR))

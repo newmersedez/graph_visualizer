@@ -22,7 +22,7 @@ VERTEX_COLOR = 'salmon'
 VERTEX_SIZE = 50
 OFFSET = VERTEX_SIZE / 2
 
-# Verge defaults
+# Edge defaults
 VERGE_COLOR = 'white'
 VERGE_WIDTH = 5
 ARROW_SIZE = 8

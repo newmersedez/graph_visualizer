@@ -6,6 +6,7 @@ from classes.MVP.view import *
 import numpy as np
 import random
 import pandas as pd
+import re
 
 
 class Window(QtWidgets.QMainWindow):
@@ -178,26 +179,26 @@ class Window(QtWidgets.QMainWindow):
                 for i in range(vertexListSize):
                     for j in range(i, vertexListSize):
                         if i == j and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j],
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          weight=int(adjMatrix[i][j]))
-                            graph.addVerge(verge)
+                            edge = Edge(vertexList[i], vertexList[j],
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        weight=int(adjMatrix[i][j]))
+                            graph.addEdge(edge)
                         else:
                             if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                                verge = Verge(vertexList[i], vertexList[j],
-                                              name=str(len(graph.getVergeList()) + 1),
-                                              weight=int(adjMatrix[i][j]),
-                                              direction=False)
-                                graph.addVerge(verge)
+                                edge = Edge(vertexList[i], vertexList[j],
+                                            name=str(len(graph.getEdgeList()) + 1),
+                                            weight=int(adjMatrix[i][j]),
+                                            direction=False)
+                                graph.addEdge(edge)
 
                 for i in range(vertexListSize):
                     for j in range(vertexListSize):
                         if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
-                            verge = Verge(vertexList[i], vertexList[j],
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          weight=int(adjMatrix[i][j]),
-                                          direction=True)
-                            graph.addVerge(verge)
+                            edge = Edge(vertexList[i], vertexList[j],
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        weight=int(adjMatrix[i][j]),
+                                        direction=True)
+                            graph.addEdge(edge)
 
                 self._view.addGraph(graph)
             except ValueError:
@@ -250,27 +251,27 @@ class Window(QtWidgets.QMainWindow):
                         else:
                             endVertex = graph.findVertexByName(vertexPoints[1][0])
 
-                        factor = self._view.countVergeFactor(startVertex, endVertex)
+                        factor = self._view.countEdgeFactor(startVertex, endVertex)
                         if vertexPoints[0][1] == 1 and vertexPoints[1][1] == 1:
-                            verge = Verge(startVertex, endVertex,
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          factor=factor,
-                                          direction=False)
-                            graph.addVerge(verge)
+                            edge = Edge(startVertex, endVertex,
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        factor=factor,
+                                        direction=False)
+                            graph.addEdge(edge)
 
                         elif vertexPoints[0][1] == 1 and vertexPoints[1][1] == -1:
-                            verge = Verge(startVertex, endVertex,
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          factor=factor,
-                                          direction=True)
-                            graph.addVerge(verge)
+                            edge = Edge(startVertex, endVertex,
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        factor=factor,
+                                        direction=True)
+                            graph.addEdge(edge)
 
                         elif vertexPoints[0][1] == -1 and vertexPoints[1][1] == 1:
-                            verge = Verge(endVertex, startVertex,
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          factor=factor,
-                                          direction=True)
-                            graph.addVerge(verge)
+                            edge = Edge(endVertex, startVertex,
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        factor=factor,
+                                        direction=True)
+                            graph.addEdge(edge)
 
                     elif len(vertexPoints) == 1:
                         if vertexPoints[0][1] == 1:
@@ -284,10 +285,11 @@ class Window(QtWidgets.QMainWindow):
                             else:
                                 vertex = graph.findVertexByName(vertexPoints[0][0])
 
-                            verge = Verge(vertex, vertex,
-                                          name=str(len(graph.getVergeList()) + 1),
-                                          factor=factor)
-                            graph.addVerge(verge)
+                            factor = self._view.countEdgeFactor(vertex, vertex)
+                            edge = Edge(vertex, vertex,
+                                        name=str(len(graph.getEdgeList()) + 1),
+                                        factor=factor)
+                            graph.addEdge(edge)
 
                 self._view.addGraph(graph)
             except ValueError:
@@ -303,11 +305,60 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _loadConfigurationFromFile(self):
-        pass
+        fileName = self._openCSVFileDialog()
+
+        if len(fileName) != 0:
+            stream = open(fileName, 'r')
+            while True:
+                line = stream.readline()
+                if not line:
+                    break
+
+                vertexList = []
+                edgeList = []
+                substr = '/( { ( (?: [^{}]* | (?1) )* ) } )/x'
+                for pos in re.finditer(substr, line):
+                    vertexList.append(pos)
+                for pos in re.finditer('Edges', line):
+                    edgeList.append(pos)
+
+                if len(vertexList) != 0:
+                    print(vertexList)
+
+                if len(edgeList) != 0:
+                    print(edgeList)
+            stream.close()
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):
-        pass
+        fileName = self._saveCSVFileDialog()
+
+        if len(fileName) != 0:
+            vertexList = self._view.getGraph().getVertexList()
+            edgeList = self._view.getGraph().getEdgeList()
+
+            stream = open(fileName, 'w')
+            for item in vertexList:
+                name = item.getName()
+                cordX, cordY = item.getPos()
+                result = 'Vertex' + '{' + name + '(' + str(cordX) + ',' + str(cordY) + ')' + '}'
+                stream.write(result)
+                if item != vertexList[-1]:
+                    stream.write('\n')
+
+            if len(edgeList) != 0:
+                stream.write('\nEdges{')
+                for item in edgeList:
+                    name = item.getName()
+                    weight = item.getWeight()
+                    startName = item.getStartVertex().getName()
+                    endName = item.getEndVertex().getName()
+                    result = str(name) + '(' + str(weight) + ',' + str(startName) + ',' + str(endName) + ')'
+                    stream.write(result)
+                    if item != edgeList[-1]:
+                        stream.write(',')
+                stream.write('}')
+            stream.close()
 
     @pyqtSlot()
     def _saveToImage(self):
@@ -351,7 +402,7 @@ class Window(QtWidgets.QMainWindow):
 
     def updateAdjacentTable(self):
         vertexList = self.getG.getVertexList()
-        vergeList = self._view.getVergeList()
+        edgeList = self._view.getEdgeList()
 
         columnCount = rowCount = len(vertexList)
         self._adjacentTable.setColumnCount(columnCount)
@@ -365,9 +416,9 @@ class Window(QtWidgets.QMainWindow):
 
         n = len(vertexList)
         matrix = np.array([['0'] * n] * n)
-        for verge in vergeList:
-            startVertex = verge.getStartVertex()
-            endVertex = verge.getEndVertex()
+        for edge in edgeList:
+            startVertex = edge.getStartVertex()
+            endVertex = edge.getEndVertex()
             posStart, posEnd = None, None
 
             if startVertex in vertexList:
@@ -376,7 +427,7 @@ class Window(QtWidgets.QMainWindow):
                 posEnd = vertexList.index(endVertex)
 
             if (posStart is not None) and (posEnd is not None):
-                if verge.isDirected():
+                if edge.isDirected():
                     matrix[posStart][posEnd] = '1'
 
                 else:

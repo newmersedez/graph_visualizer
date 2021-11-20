@@ -1,4 +1,4 @@
-from classes.graph.verge import *
+from classes.graph.edge import *
 from classes.graph.vertex import *
 from classes.MVP.graph import *
 from queue import Queue
