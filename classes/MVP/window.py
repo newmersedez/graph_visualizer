@@ -166,8 +166,8 @@ class Window(QtWidgets.QMainWindow):
                 graph = Graph()
 
                 for i in range(0, adjMatrixSize):
-                    cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
-                    cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+                    cordX = random.randint(0, FIELD_WIDTH - VERTEX_SIZE)
+                    cordY = random.randint(0, FIELD_HEIGHT - VERTEX_SIZE)
 
                     vertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
                     vertex.setPos(self._view.mapToScene(cordX, cordY))
@@ -232,8 +232,8 @@ class Window(QtWidgets.QMainWindow):
 
                     if len(vertexPoints) == 2:
                         if graph.findVertexByName(vertexPoints[0][0]) is None:
-                            cordX = random.randint(VERTEX_SIZE, FIELD_WIDTH - 2 * VERTEX_SIZE)
-                            cordY = random.randint(VERTEX_SIZE, FIELD_HEIGHT - 2 * VERTEX_SIZE)
+                            cordX = random.randint(0, FIELD_WIDTH - VERTEX_SIZE)
+                            cordY = random.randint(0, FIELD_HEIGHT - VERTEX_SIZE)
 
                             startVertex = Vertex(0, 0, str(len(graph.getVertexList()) + 1), VERTEX_COLOR)
                             startVertex.setPos(self._view.mapToScene(cordX, cordY))
@@ -309,25 +309,31 @@ class Window(QtWidgets.QMainWindow):
 
         if len(fileName) != 0:
             stream = open(fileName, 'r')
+            graph = Graph()
             while True:
                 line = stream.readline()
                 if not line:
                     break
 
-                vertexList = []
-                edgeList = []
-                substr = '/( { ( (?: [^{}]* | (?1) )* ) } )/x'
-                for pos in re.finditer(substr, line):
-                    vertexList.append(pos)
-                for pos in re.finditer('Edges', line):
-                    edgeList.append(pos)
+                # Vertex
+                vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'
+                vertexList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
+                for item in vertexList:
+                    if not graph.findVertexByName(str(item[0])):
+                        if 0 <= int(item[1]) <= FIELD_WIDTH - VERTEX_SIZE and \
+                                0 <= int(item[2]) <= FIELD_HEIGHT - VERTEX_SIZE:
+                            vertex = Vertex(0, 0, str(item[0]), VERTEX_COLOR)
+                            vertex.setPos(self._view.mapToScene(int(item[1]), int(item[2])))
+                            graph.addVertex(vertex)
 
-                if len(vertexList) != 0:
-                    print(vertexList)
+                # # Edge
+                # edgeRegex = r'(?<=Edges{)(\d+)\((\d+), ?(\d+)'
+                # edgeList = [list(map(int, (v, k, l))) for v, k, l in re.findall(vertexRegex, line)]
+                # for item in edgeList:
+                #     print('edge = ', item)
 
-                if len(edgeList) != 0:
-                    print(edgeList)
             stream.close()
+            self._view.addGraph(graph)
 
     @pyqtSlot()
     def _saveConfigurationToFile(self):
@@ -401,8 +407,8 @@ class Window(QtWidgets.QMainWindow):
         return _adjacentTable
 
     def updateAdjacentTable(self):
-        vertexList = self.getG.getVertexList()
-        edgeList = self._view.getEdgeList()
+        vertexList = self._view.getGraph().getVertexList()
+        edgeList = self._view.getGraph().getEdgeList()
 
         columnCount = rowCount = len(vertexList)
         self._adjacentTable.setColumnCount(columnCount)
@@ -414,29 +420,12 @@ class Window(QtWidgets.QMainWindow):
             self._adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
             i += 1
 
-        n = len(vertexList)
-        matrix = np.array([['0'] * n] * n)
-        for edge in edgeList:
-            startVertex = edge.getStartVertex()
-            endVertex = edge.getEndVertex()
-            posStart, posEnd = None, None
-
-            if startVertex in vertexList:
-                posStart = vertexList.index(startVertex)
-            if endVertex in vertexList:
-                posEnd = vertexList.index(endVertex)
-
-            if (posStart is not None) and (posEnd is not None):
-                if edge.isDirected():
-                    matrix[posStart][posEnd] = '1'
-
-                else:
-                    matrix[posStart][posEnd] = '1'
-                    matrix[posEnd][posStart] = '1'
+        matrix = self._view.getGraph().getAdjacentMatrix()
+        print(matrix)
 
         for i in range(columnCount):
             for j in range(rowCount):
-                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(matrix[i][j]))
+                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(matrix[i][j])))
 
     # Buttons widget
     def _createButtons(self):

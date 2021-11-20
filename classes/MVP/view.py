@@ -1,6 +1,5 @@
 # Presenter
 
-from classes.cache.cache import *
 from algorithms.bfs import *
 
 
@@ -44,12 +43,15 @@ class View(QtWidgets.QGraphicsView):
         
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
-        
+
         for item in vertexList:
             self._scene.addItem(item)
         
         for item in edgeList:
             self._scene.addItem(item)
+
+        # Update adjacent table widget
+        self._mainWindow.updateAdjacentTable()
 
     def getGraph(self):
         return self._graph
@@ -57,7 +59,6 @@ class View(QtWidgets.QGraphicsView):
     def removeGraph(self):
         self._graph.clear()
         self._redrawScene()
-        self._mainWindow.getCache().clearAllStates()
 
     def _redrawScene(self):
         vertexList = self._graph.getVertexList()
@@ -85,17 +86,15 @@ class View(QtWidgets.QGraphicsView):
         self._graph.addVertex(vertex)
         self._scene.addItem(vertex)
 
-        # Update graph
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        # Update adjacent table widget
+        self._mainWindow.updateAdjacentTable()
 
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
         self._redrawScene()
 
-        # Update graph
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        # Update adjacent table widget
+        self._mainWindow.updateAdjacentTable()
 
     # Edge methods
     @staticmethod
@@ -155,9 +154,8 @@ class View(QtWidgets.QGraphicsView):
         self._graph.addEdge(edge)
         self._scene.addItem(edge)
 
-        # Update graph
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        # Update adjacent table widget
+        self._mainWindow.updateAdjacentTable()
 
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -173,9 +171,8 @@ class View(QtWidgets.QGraphicsView):
             edge = self._graph.findEdgeByName(name)
             self._graph.toggleEdgeDirection(edge)
 
-            # Update graph
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            # Update adjacent table widget
+            self._mainWindow.updateAdjacentTable()
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -189,6 +186,7 @@ class View(QtWidgets.QGraphicsView):
         form.addRow(textBox1)
 
         textBox2 = QtWidgets.QSpinBox()
+        textBox2.setMinimum(1)
         textBox2.setMaximum(10000)
         form.addRow(QtWidgets.QLabel('Вес ребра'))
         form.addRow(textBox2)
@@ -206,9 +204,8 @@ class View(QtWidgets.QGraphicsView):
             edge = self._graph.findEdgeByName(name)
             self._graph.setEdgeWeight(edge, weight)
 
-            # Update graph
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            # Update adjacent table widget
+            self._mainWindow.updateAdjacentTable()
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -225,18 +222,16 @@ class View(QtWidgets.QGraphicsView):
             self._graph.removeEdge(edge)
             self._redrawScene()
 
-            # Update graph
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            # Update adjacent table widget
+            self._mainWindow.updateAdjacentTable()
 
     # Utils
     def _contextMenuClearScene(self):
         self._graph.clear()
         self._redrawScene()
 
-        # Update graph
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        # Update adjacent table widget
+        self._mainWindow.updateAdjacentTable()
 
     # Events
     def contextMenuEvent(self, event):
