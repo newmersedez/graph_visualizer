@@ -15,7 +15,6 @@ class Edge(QtWidgets.QGraphicsItem):
         self._curveFactor = factor
         self._isDirection = direction
 
-
         if self._weight == 1:
             self._isWeight = False
         else:
@@ -163,7 +162,6 @@ class Edge(QtWidgets.QGraphicsItem):
                 newPen.setColor(QtGui.QColor(VERTEX_COLOR))
                 painter.setPen(newPen)
                 painter.setFont(QtGui.QFont('Arial', 14))
-                textOffset = VERTEX_SIZE / 4
                 painter.drawText(pointEnd.x() - VERTEX_SIZE, pointStart.y() - VERTEX_SIZE,
                                  self._name + ': ' + str(self._weight))
 

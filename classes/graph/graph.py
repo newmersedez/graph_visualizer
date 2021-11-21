@@ -17,11 +17,6 @@ class Graph:
         if vertex is not None:
             self._vertexList.append(vertex)
 
-        # print('after add vertex: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # print('\n')
-
     def removeVertex(self, vertex: Vertex):
         if vertex is not None:
             for item in self._vertexList:
@@ -31,13 +26,6 @@ class Graph:
                 if item.getStartVertex() == vertex or item.getEndVertex() == vertex:
                     self._edgeList.remove(item)
             self._vertexList.remove(vertex)
-
-        # print('after remove vertex: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # for i in self._edgeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
 
     def findVertexByName(self, name: str):
         for item in self._vertexList:
@@ -54,11 +42,6 @@ class Graph:
             startVertex.addAdjacentVertex(endVertex, edge)
             endVertex.addAdjacentVertex(startVertex, edge)
 
-        # print('after add edge: ')
-        # for i in self._edgeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
-
     def removeEdge(self, edge: Edge):
         if edge is not None:
             startVertex = edge.getStartVertex()
@@ -70,11 +53,6 @@ class Graph:
             startVertex.removeAdjacentVertex(endVertex)
             endVertex.removeAdjacentVertex(startVertex)
             self._edgeList.remove(edge)
-
-        # print('after remove edge: ')
-        # for i in self._edgeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
 
     def findEdgeByName(self, name: str):
         for edge in self._edgeList:
@@ -102,20 +80,12 @@ class Graph:
         self._isDirectedGraph = False
         self._isWeightedGraph = False
 
-        # print('after clear all: ')
-        # for i in self._vertexList:
-        #     print(i.getName())
-        # for i in self._edgeList:
-        #     print(i.getStartVertex().getName(), ' -> ', i.getEndVertex().getName())
-        # print('\n')
-
     def empty(self):
         return len(self._vertexList) == 0 and len(self._edgeList) == 0
 
     def getAdjacentMatrix(self):
         m = len(self._vertexList)
         matrix = np.array([[0] * m] * m)
-        i = 0
         for edge in self._edgeList:
             start = self._vertexList.index(edge.getStartVertex())
             end = self._vertexList.index(edge.getEndVertex())
@@ -139,5 +109,3 @@ class Graph:
                 matrix[end][i] = 1
             i += 1
         return matrix
-
-

@@ -179,15 +179,15 @@ class View(QtWidgets.QGraphicsView):
         name = inputDialog.textValue()
 
         if ok:
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().updateCache(cacheItem)
-
             edge = self._graph.findEdgeByName(name)
             self._graph.toggleEdgeDirection(edge)
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
+
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -214,10 +214,6 @@ class View(QtWidgets.QGraphicsView):
         ok = inputDialog.exec_()
 
         if ok:
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().updateCache(cacheItem)
-
             name = textBox1.text()
             weight = textBox2.text()
             edge = self._graph.findEdgeByName(name)
@@ -225,6 +221,10 @@ class View(QtWidgets.QGraphicsView):
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
+
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)

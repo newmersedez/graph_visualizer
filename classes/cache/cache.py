@@ -14,19 +14,6 @@ class CacheItem:
         for item in edgeList:
             self._cachedGraph.addEdge(item)
 
-    def print(self):
-        print('Cached Vertex:')
-        if len(self._cachedGraph.getVertexList()) != 0:
-            for item in self._cachedGraph.getVertexList():
-                print(item.getName())
-
-        print('Cached edge:')
-        if len(self._cachedGraph.getEdgeList()) != 0:
-            for item in self._cachedGraph.getEdgeList():
-                print(item.getStartVertex().getName(), ' -> ', item.getEndVertex().getName())
-
-        print('\n')
-
     def getCachedGraph(self):
         return self._cachedGraph
 
@@ -45,13 +32,6 @@ class Cache:
             self._cacheQueue.get()
             self._cacheQueue.put(cacheItem)
 
-        print('\n======================================================================')
-        i = 0
-        for item in self._cacheQueue.queue:
-            print('State = ', i)
-            print(item.print())
-            i += 1
-
     def clearAllStates(self):
         self._pos = -1
         self._cacheQueue.queue.clear()
@@ -61,7 +41,6 @@ class Cache:
         if self._pos < self._cacheQueue.qsize() - 1:
             self._pos += 1
             graph = self._cacheQueue.queue[self._pos].getCachedGraph()
-        print('pos = ', self._pos)
         return graph
 
     def getDecreasedState(self):
@@ -69,5 +48,4 @@ class Cache:
         if self._pos > 0:
             self._pos -= 1
             graph = self._cacheQueue.queue[self._pos].getCachedGraph()
-        print('pos = ', self._pos)
         return graph
