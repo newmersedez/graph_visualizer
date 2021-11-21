@@ -22,9 +22,8 @@ def bfs(graph: Graph, vertex: Vertex):
     names_lst = [i.getName() for i in shortest_ways.keys()]
     range_lst = [i for i in shortest_ways.values()]
 
-    print("asdsabef")
     print(names_lst)
     print(range_lst)
 
-    return (shortest_ways)
+    return shortest_ways
 
