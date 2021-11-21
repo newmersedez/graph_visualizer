@@ -37,8 +37,11 @@ class View(QtWidgets.QGraphicsView):
                 bfs(self._graph, vertex)
 
     def addGraph(self, graph: Graph):
-        self.removeGraph()
+        for item in self._scene.items():
+            self._scene.removeItem(item)
+
         self._graph = graph
+        self._redrawScene()
         
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
@@ -55,10 +58,6 @@ class View(QtWidgets.QGraphicsView):
     def getGraph(self):
         return self._graph
 
-    def removeGraph(self):
-        self._graph.clear()
-        self._redrawScene()
-
     def _redrawScene(self):
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
@@ -66,6 +65,7 @@ class View(QtWidgets.QGraphicsView):
         for item in self._scene.items():
             if not (item in vertexList) and not (item in edgeList):
                 self._scene.removeItem(item)
+                self._scene.update()
 
     # Vertex methods
     def _createVertexName(self):
@@ -89,8 +89,8 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        item = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(item)
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
@@ -101,7 +101,7 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     # Edge methods
     @staticmethod
@@ -166,7 +166,7 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -179,15 +179,15 @@ class View(QtWidgets.QGraphicsView):
         name = inputDialog.textValue()
 
         if ok:
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().updateCache(cacheItem)
+
             edge = self._graph.findEdgeByName(name)
             self._graph.toggleEdgeDirection(edge)
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
-
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -214,6 +214,10 @@ class View(QtWidgets.QGraphicsView):
         ok = inputDialog.exec_()
 
         if ok:
+            # Update cache
+            cacheItem = CacheItem(self._graph)
+            self._mainWindow.getCache().updateCache(cacheItem)
+
             name = textBox1.text()
             weight = textBox2.text()
             edge = self._graph.findEdgeByName(name)
@@ -221,10 +225,6 @@ class View(QtWidgets.QGraphicsView):
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
-
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -246,7 +246,7 @@ class View(QtWidgets.QGraphicsView):
 
             # Update cache
             cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     # Utils
     def _contextMenuClearScene(self):
@@ -258,7 +258,7 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     # Events
     def contextMenuEvent(self, event):

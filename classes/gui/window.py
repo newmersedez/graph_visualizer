@@ -302,6 +302,7 @@ class Window(QtWidgets.QMainWindow):
                 if graph.empty():
                     raise ValueError
                 else:
+                    self._cache.clearAllStates()
                     self._view.addGraph(graph)
 
             except ValueError:
@@ -413,6 +414,7 @@ class Window(QtWidgets.QMainWindow):
                 if graph.empty():
                     raise ValueError
                 else:
+                    self._cache.clearAllStates()
                     self._view.addGraph(graph)
 
             except ValueError:
@@ -467,6 +469,7 @@ class Window(QtWidgets.QMainWindow):
                 if graph.empty():
                     raise ValueError
                 else:
+                    self._cache.clearAllStates()
                     self._view.addGraph(graph)
 
             except ValueError:
@@ -577,18 +580,18 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def _undoButtonAction(self):
-        graph = self._cache.getDecreasedState()
+        cachedGraph = self._cache.getDecreasedState()
 
-        if graph is not None:
-            self._view.addGraph(graph)
+        if cachedGraph:
+            self._view.addGraph(cachedGraph)
             self.updateAdjacentTable()
 
     @pyqtSlot()
     def _redoButtonAction(self):
-        graph = self._cache.getIncreasedState()
+        cachedGraph = self._cache.getIncreasedState()
 
-        if graph is not None:
-            self._view.addGraph(graph)
+        if cachedGraph:
+            self._view.addGraph(cachedGraph)
             self.updateAdjacentTable()
 
     def _authorDialog(self):
