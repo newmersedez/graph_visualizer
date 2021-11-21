@@ -16,10 +16,8 @@ class View(QtWidgets.QGraphicsView):
 
         # Scene and view settings
         self._scene = QtWidgets.QGraphicsScene(self)
-        self._scene.setSceneRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT)
         self.setScene(self._scene)
-        self.setFixedSize(FIELD_WIDTH, FIELD_HEIGHT)
-        self.setStyleSheet('background-color: #202020;')
+        self.setStyleSheet('background-color: gray;')
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
 
@@ -39,8 +37,11 @@ class View(QtWidgets.QGraphicsView):
                 bfs(self._graph, vertex)
 
     def addGraph(self, graph: Graph):
-        self.removeGraph()
+        for item in self._scene.items():
+            self._scene.removeItem(item)
+
         self._graph = graph
+        self._redrawScene()
         
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
@@ -57,10 +58,6 @@ class View(QtWidgets.QGraphicsView):
     def getGraph(self):
         return self._graph
 
-    def removeGraph(self):
-        self._graph.clear()
-        self._redrawScene()
-
     def _redrawScene(self):
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
@@ -68,6 +65,7 @@ class View(QtWidgets.QGraphicsView):
         for item in self._scene.items():
             if not (item in vertexList) and not (item in edgeList):
                 self._scene.removeItem(item)
+                self._scene.update()
 
     # Vertex methods
     def _createVertexName(self):
@@ -91,8 +89,8 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        item = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(item)
+        cacheItem = CacheItem(self._graph)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
@@ -103,7 +101,7 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     # Edge methods
     @staticmethod
@@ -168,13 +166,18 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Вкл/Выкл направление ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Название ребра:')
         ok = inputDialog.exec_()
@@ -189,13 +192,18 @@ class View(QtWidgets.QGraphicsView):
 
             # Update cache
             cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
         inputDialog.setWindowTitle('Установить вес ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
         inputDialog.setFont(QtGui.QFont('Arial', 15))
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         form = QtWidgets.QFormLayout(inputDialog)
 
         textBox1 = QtWidgets.QLineEdit()
@@ -226,15 +234,20 @@ class View(QtWidgets.QGraphicsView):
 
             # Update cache
             cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Удаление ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Название ребра:')
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         ok = inputDialog.exec_()
         name = inputDialog.textValue()
 
@@ -248,7 +261,7 @@ class View(QtWidgets.QGraphicsView):
 
             # Update cache
             cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().addState(cacheItem)
+            self._mainWindow.getCache().updateCache(cacheItem)
 
     # Utils
     def _contextMenuClearScene(self):
@@ -260,7 +273,7 @@ class View(QtWidgets.QGraphicsView):
 
         # Update cache
         cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().addState(cacheItem)
+        self._mainWindow.getCache().updateCache(cacheItem)
 
     # Events
     def contextMenuEvent(self, event):

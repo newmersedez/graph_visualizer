@@ -4,6 +4,7 @@ from classes.graph.edge import *
 from classes.graph.vertex import *
 import numpy as np
 
+
 class Graph:
     def __init__(self, directed=False, weighted=False):
         self._vertexList = list()
@@ -85,7 +86,6 @@ class Graph:
     def getAdjacentMatrix(self):
         m = len(self._vertexList)
         matrix = np.array([[0] * m] * m)
-        i = 0
         for edge in self._edgeList:
             start = self._vertexList.index(edge.getStartVertex())
             end = self._vertexList.index(edge.getEndVertex())
@@ -109,5 +109,3 @@ class Graph:
                 matrix[end][i] = 1
             i += 1
         return matrix
-
-
