@@ -172,7 +172,12 @@ class View(QtWidgets.QGraphicsView):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Вкл/Выкл направление ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Название ребра:')
         ok = inputDialog.exec_()
@@ -192,8 +197,13 @@ class View(QtWidgets.QGraphicsView):
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
         inputDialog.setWindowTitle('Установить вес ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
         inputDialog.setFont(QtGui.QFont('Arial', 15))
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         form = QtWidgets.QFormLayout(inputDialog)
 
         textBox1 = QtWidgets.QLineEdit()
@@ -230,9 +240,14 @@ class View(QtWidgets.QGraphicsView):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('Удаление ребра')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Название ребра:')
+
+        if self._mainWindow.getTheme():
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
+
         ok = inputDialog.exec_()
         name = inputDialog.textValue()
 

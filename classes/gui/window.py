@@ -209,6 +209,9 @@ class Window(QtWidgets.QMainWindow):
     def getCache(self):
         return self._cache
 
+    def getTheme(self):
+        return self._darkTheme
+
     # File dialog windows, graph loading/saving
     def _openCSVFileDialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -224,11 +227,15 @@ class Window(QtWidgets.QMainWindow):
                                                             "Matrix file (*.csv);;Image file (*png)", options=options)
         return fileName
 
-    def _messageDialog(self, message: str):
+    def _messageDialog(self, name: str, message: str):
         inputDialog = QtWidgets.QDialog(self)
-        inputDialog.setWindowTitle('Ошибка')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setWindowTitle(name)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
+
+        if self._darkTheme:
+            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        else:
+            inputDialog.setStyleSheet('background-color: white; color: black;')
 
         form = QtWidgets.QFormLayout(inputDialog)
         form.addRow(QtWidgets.QLabel(message))
@@ -306,7 +313,7 @@ class Window(QtWidgets.QMainWindow):
                     self._view.addGraph(graph)
 
             except ValueError:
-                self._messageDialog('Ошибка в матрице смежности')
+                self._messageDialog('Ошибка', 'Ошибка в матрице смежности')
 
     @pyqtSlot()
     def _saveAdjacentMatrixToFile(self):
@@ -418,7 +425,7 @@ class Window(QtWidgets.QMainWindow):
                     self._view.addGraph(graph)
 
             except ValueError:
-                self._messageDialog('Ошибка в матрице инцидентности')
+                self._messageDialog('Ошибка', 'Ошибка в матрице инцидентности')
 
     @pyqtSlot()
     def _saveIncidenceMatrixToFile(self):
@@ -473,7 +480,7 @@ class Window(QtWidgets.QMainWindow):
                     self._view.addGraph(graph)
 
             except ValueError:
-                self._messageDialog('Ошибка в файле конфигурации')
+                self._messageDialog('Ошибка', 'Ошибка в файле конфигурации')
 
             stream.close()
 
@@ -595,7 +602,23 @@ class Window(QtWidgets.QMainWindow):
             self.updateAdjacentTable()
 
     def _authorDialog(self):
-        pass
+        author = 'asfgjhagfjhagjhasgjhagjhfsgajgsjahsgfasjhgfsajhfgsajhfgsjhafgasjhghfsahjgf\n' \
+                 'sfsahfkajskafkafjhaghfjasgfjhsagfjhsagsjhagfajhsfgjahsfgajshfgasjhfgasjfhasgfa\n' \
+                 'fsafiasufgjahfgjsahgjhafgjahfgasfgsajhfgsjahfgjhfgajhfgajhfasg\n' \
+                 'safsahfgjasgfsjhagjhafgjafgajgfjahfgasjhfgajhfgjas\n' \
+                 'afgakjsgfjahgfajhsfgakhfgakjfhsalkfhaskjfhlaskhflska]asfjhsaf\n' \
+                 'asfgsakufgkashgfhsahsjahgfjsahgfjhsafgjsahfgahfgasjhfgsajhfgajhssgfaf]as\n' \
+                 'sfgkafghajsgfjhsagfafgsjafgjalsfgkhasfgasjfhljfgaskhfgasljgfkasjfgsaihf]asfhvasf\n' \
+                 'afgksfgaskjfasmsfujasjfaslfnasifsafsmfslafbasfkacnsocasbfaskfnsaclcnss fbfnso cbscsf\n'
+        self._messageDialog('Об авторе', author)
 
     def _instructionDialog(self):
-        pass
+        instruction = 'asfgjhagfjhagjhasgjhagjhfsgajgsjahsgfasjhgfsajhfgsajhfgsjhafgasjhghfsahjgf\n' \
+                 'sfsahfkajskafkafjhaghfjasgfjhsagfjhsagsjhagfajhsfgjahsfgajshfgasjhfgasjfhasgfa\n' \
+                 'fsafiasufgjahfgjsahgjhafgjahfgasfgsajhfgsjahfgjhfgajhfgajhfasg\n' \
+                 'safsahfgjasgfsjhagjhafgjafgajgfjahfgasjhfgajhfgjas\n' \
+                 'afgakjsgfjahgfajhsfgakhfgakjfhsalkfhaskjfhlaskhflska]asfjhsaf\n' \
+                 'asfgsakufgkashgfhsahsjahgfjsahgfjhsafgjsahfgahfgasjhfgsajhfgajhssgfaf]as\n' \
+                 'sfgkafghajsgfjhsagfafgsjafgjalsfgkhasfgasjfhljfgaskhfgasljgfkasjfgsaihf]asfhvasf\n' \
+                 'afgksfgaskjfasmsfujasjfaslfnasifsafsmfslafbasfkacnsocasbfaskfnsaclcnss fbfnso cbscsf\n'
+        self._messageDialog('О программе', instruction)
