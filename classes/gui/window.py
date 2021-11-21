@@ -59,6 +59,7 @@ class Window(QtWidgets.QMainWindow):
 
         self._initUI()
 
+    # Window initialisation
     def _initUI(self):
         # Menu bar
         self.menuBar = self._createMenuBar()
@@ -70,69 +71,6 @@ class Window(QtWidgets.QMainWindow):
         # Buttons
         self._createButtons()
 
-    # Theme color
-    def _changeTheme(self):
-        if self._darkTheme:
-            self._darkTheme = False
-            self._view.setStyleSheet('background-color: gray;')
-            self.setStyleSheet('color: black;'
-                               'background-color: white;'
-                               'selection-color: black;'
-                               'selection-background-color: #008cff;')
-            self._adjacentTable.setStyleSheet('QWidget'
-                                              '{'
-                                              'background-color: #e1e1e1;'
-                                              'color: black;'
-                                              '}'
-                                              'QHeaderView::section'
-                                              '{'
-                                              'background-color: #c8c8c8;'
-                                              'padding: 4px;'
-                                              'border: 1px solid #fffff8;'
-                                              'font-size: 14pt;'
-                                              '}'
-                                              'QTableWidget'
-                                              '{'
-                                              'gridline-color: #fffff8;'
-                                              'font-size: 12pt;'
-                                              '}'
-                                              'QTableWidget QTableCornerButton::section'
-                                              '{'
-                                              'background-color: #c8c8c8;'
-                                              'border: 1px solid #fffff8;'
-                                              '}')
-
-        else:
-            self._darkTheme = True
-            self._view.setStyleSheet('background-color: #202020;')
-            self.setStyleSheet('color: white;'
-                               'background-color: #303030;'
-                               'selection-color: white;'
-                               'selection-background-color: #008cff;')
-            self._adjacentTable.setStyleSheet('QWidget'
-                                              '{'
-                                              'background-color: #333333;'
-                                              'color: #fffff8;'
-                                              '}'
-                                              'QHeaderView::section'
-                                              '{'
-                                              'background-color: #646464;'
-                                              'padding: 4px;'
-                                              'border: 1px solid gray;'
-                                              'font-size: 14pt;'
-                                              '}'
-                                              'QTableWidget'
-                                              '{'
-                                              'gridline-color: gray;'
-                                              'font-size: 12pt;'
-                                              '}'
-                                              'QTableWidget QTableCornerButton::section'
-                                              '{'
-                                              'background-color: #646464;'
-                                              'border: 1px solid gray;'
-                                              '}')
-
-    # Menu bar and menu widgets
     def _createMenuBar(self):
         self.statusBar()
         # Menu initialization
@@ -196,18 +134,82 @@ class Window(QtWidgets.QMainWindow):
 
         # QA menu
         qaProgramAction = QtWidgets.QAction('&О программе', self)
+        qaProgramAction.triggered.connect(self._instructionDialog)
         qaMenu.addAction(qaProgramAction)
 
         qaAuthorAction = QtWidgets.QAction('&Об авторе', self)
+        qaAuthorAction.triggered.connect(self._authorDialog)
         qaMenu.addAction(qaAuthorAction)
 
         return menuBar
 
-    # Cache methods
+    @staticmethod
+    def _createAdjacentTable():
+        _adjacentTable = QtWidgets.QTableWidget()
+        _adjacentTable.setGeometry(0, 0, TABLE_WIDTH, TABLE_HEIGHT)
+        _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
+        _adjacentTable.verticalHeader().setDefaultSectionSize(30)
+        _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        _adjacentTable.setStyleSheet('QWidget'
+                                     '{'
+                                     'background-color: #e1e1e1;'
+                                     'color: black;'
+                                     '}'
+                                     'QHeaderView::section'
+                                     '{'
+                                     'background-color: #c8c8c8;'
+                                     'padding: 4px;'
+                                     'border: 1px solid #fffff8;'
+                                     'font-size: 14pt;'
+                                     '}'
+                                     'QTableWidget'
+                                     '{'
+                                     'gridline-color: #fffff8;'
+                                     'font-size: 12pt;'
+                                     '}'
+                                     'QTableWidget QTableCornerButton::section'
+                                     '{'
+                                     'background-color: #c8c8c8;'
+                                     'border: 1px solid #fffff8;'
+                                     '}')
+        return _adjacentTable
+
+    def updateAdjacentTable(self):
+        vertexList = self._view.getGraph().getVertexList()
+        edgeList = self._view.getGraph().getEdgeList()
+
+        columnCount = rowCount = len(vertexList)
+        self._adjacentTable.setColumnCount(columnCount)
+        self._adjacentTable.setRowCount(rowCount)
+
+        i = 0
+        for item in vertexList:
+            self._adjacentTable.setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
+            self._adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
+            i += 1
+
+        matrix = self._view.getGraph().getAdjacentMatrix()
+        for i in range(columnCount):
+            for j in range(rowCount):
+                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(matrix[i][j])))
+
+    def _createButtons(self):
+        button1 = QtWidgets.QPushButton('Undo', self)
+        button1.setFixedHeight(70)
+        button1.clicked.connect(self._undoButtonAction)
+
+        button2 = QtWidgets.QPushButton('Redo', self)
+        button2.setFixedHeight(70)
+        button2.clicked.connect(self._redoButtonAction)
+
+        self._buttonsLayout.addWidget(button1)
+        self._buttonsLayout.addWidget(button2)
+
+    # Utils
     def getCache(self):
         return self._cache
 
-    # File dialog
+    # File dialog windows, graph loading/saving
     def _openCSVFileDialog(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -238,7 +240,6 @@ class Window(QtWidgets.QMainWindow):
 
         inputDialog.exec_()
 
-    # File load/save
     @staticmethod
     def _isCorrectAdjacentMatrix(matrix):
         matrixSize = len(matrix)
@@ -512,69 +513,67 @@ class Window(QtWidgets.QMainWindow):
             pixmap = self._view.grab(self._view.sceneRect().toRect())
             pixmap.save(fileName)
 
-    # Table widget
-    @staticmethod
-    def _createAdjacentTable():
-        _adjacentTable = QtWidgets.QTableWidget()
-        _adjacentTable.setGeometry(0, 0, TABLE_WIDTH, TABLE_HEIGHT)
-        _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
-        _adjacentTable.verticalHeader().setDefaultSectionSize(30)
-        _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        _adjacentTable.setStyleSheet('QWidget'
-                                          '{'
-                                          'background-color: #e1e1e1;'
-                                          'color: black;'
-                                          '}'
-                                          'QHeaderView::section'
-                                          '{'
-                                          'background-color: #c8c8c8;'
-                                          'padding: 4px;'
-                                          'border: 1px solid #fffff8;'
-                                          'font-size: 14pt;'
-                                          '}'
-                                          'QTableWidget'
-                                          '{'
-                                          'gridline-color: #fffff8;'
-                                          'font-size: 12pt;'
-                                          '}'
-                                          'QTableWidget QTableCornerButton::section'
-                                          '{'
-                                          'background-color: #c8c8c8;'
-                                          'border: 1px solid #fffff8;'
-                                          '}')
-        return _adjacentTable
+    # Button actions
+    def _changeTheme(self):
+        if self._darkTheme:
+            self._darkTheme = False
+            self._view.setStyleSheet('background-color: gray;')
+            self.setStyleSheet('color: black;'
+                               'background-color: white;'
+                               'selection-color: black;'
+                               'selection-background-color: #008cff;')
+            self._adjacentTable.setStyleSheet('QWidget'
+                                              '{'
+                                              'background-color: #e1e1e1;'
+                                              'color: black;'
+                                              '}'
+                                              'QHeaderView::section'
+                                              '{'
+                                              'background-color: #c8c8c8;'
+                                              'padding: 4px;'
+                                              'border: 1px solid #fffff8;'
+                                              'font-size: 14pt;'
+                                              '}'
+                                              'QTableWidget'
+                                              '{'
+                                              'gridline-color: #fffff8;'
+                                              'font-size: 12pt;'
+                                              '}'
+                                              'QTableWidget QTableCornerButton::section'
+                                              '{'
+                                              'background-color: #c8c8c8;'
+                                              'border: 1px solid #fffff8;'
+                                              '}')
 
-    def updateAdjacentTable(self):
-        vertexList = self._view.getGraph().getVertexList()
-        edgeList = self._view.getGraph().getEdgeList()
-
-        columnCount = rowCount = len(vertexList)
-        self._adjacentTable.setColumnCount(columnCount)
-        self._adjacentTable.setRowCount(rowCount)
-
-        i = 0
-        for item in vertexList:
-            self._adjacentTable.setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
-            self._adjacentTable.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(item.getName()))
-            i += 1
-
-        matrix = self._view.getGraph().getAdjacentMatrix()
-        for i in range(columnCount):
-            for j in range(rowCount):
-                self._adjacentTable.setItem(i, j, QtWidgets.QTableWidgetItem(str(matrix[i][j])))
-
-    # Buttons widget
-    def _createButtons(self):
-        button1 = QtWidgets.QPushButton('Undo', self)
-        button1.setFixedHeight(70)
-        button1.clicked.connect(self._undoButtonAction)
-
-        button2 = QtWidgets.QPushButton('Redo', self)
-        button2.setFixedHeight(70)
-        button2.clicked.connect(self._redoButtonAction)
-
-        self._buttonsLayout.addWidget(button1)
-        self._buttonsLayout.addWidget(button2)
+        else:
+            self._darkTheme = True
+            self._view.setStyleSheet('background-color: #202020;')
+            self.setStyleSheet('color: white;'
+                               'background-color: #303030;'
+                               'selection-color: white;'
+                               'selection-background-color: #008cff;')
+            self._adjacentTable.setStyleSheet('QWidget'
+                                              '{'
+                                              'background-color: #333333;'
+                                              'color: #fffff8;'
+                                              '}'
+                                              'QHeaderView::section'
+                                              '{'
+                                              'background-color: #646464;'
+                                              'padding: 4px;'
+                                              'border: 1px solid gray;'
+                                              'font-size: 14pt;'
+                                              '}'
+                                              'QTableWidget'
+                                              '{'
+                                              'gridline-color: gray;'
+                                              'font-size: 12pt;'
+                                              '}'
+                                              'QTableWidget QTableCornerButton::section'
+                                              '{'
+                                              'background-color: #646464;'
+                                              'border: 1px solid gray;'
+                                              '}')
 
     @pyqtSlot()
     def _undoButtonAction(self):
@@ -591,3 +590,9 @@ class Window(QtWidgets.QMainWindow):
         if graph is not None:
             self._view.addGraph(graph)
             self.updateAdjacentTable()
+
+    def _authorDialog(self):
+        pass
+
+    def _instructionDialog(self):
+        pass
