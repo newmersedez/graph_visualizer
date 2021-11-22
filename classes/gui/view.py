@@ -4,6 +4,7 @@ from classes.cache.cache import *
 from algorithms.bfs import *
 import time
 
+
 class View(QtWidgets.QGraphicsView):
     def __init__(self, window):
         super().__init__()
@@ -42,8 +43,7 @@ class View(QtWidgets.QGraphicsView):
             self._scene.removeItem(item)
 
         self._graph = graph
-        self._redrawScene()
-        
+
         vertexList = self._graph.getVertexList()
         edgeList = self._graph.getEdgeList()
 
@@ -88,9 +88,31 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
-        # Update cache
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().updateCache(cacheItem)
+        # # Update cache
+        # cachedGraph = Graph()
+        #
+        # for item in self._graph.getVertexList():
+        #     x, y = item.getPos()
+        #     vertex = Vertex(0, 0,
+        #                     name=item.getName(),
+        #                     color=item.getColor())
+        #     vertex.setPos(self.mapToScene(x, y))
+        #     cachedGraph.addVertex(vertex)
+        #
+        # for item in self._graph.getEdgeList():
+        #     startVertex = item.getStartVertex()
+        #     endVertex = item.getEndVertex()
+        #
+        #     if startVertex is not None and endVertex is not None:
+        #         edge = Edge(startVertex, endVertex,
+        #                     name=item.getName(),
+        #                     weight=item.getWeight(),
+        #                     direction=item.isDirected(),
+        #                     factor=item.getFactor())
+        #         cachedGraph.addEdge(edge)
+        #
+        # cacheItem = CacheItem(cachedGraph)
+        # self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
@@ -99,9 +121,31 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
-        # Update cache
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().updateCache(cacheItem)
+        # # Update cache
+        # cachedGraph = Graph()
+        #
+        # for item in self._graph.getVertexList():
+        #     x, y = item.getPos()
+        #     vertex = Vertex(0, 0,
+        #                     name=item.getName(),
+        #                     color=item.getColor())
+        #     vertex.setPos(self.mapToScene(x, y))
+        #     cachedGraph.addVertex(vertex)
+        #
+        # for item in self._graph.getEdgeList():
+        #     startVertex = item.getStartVertex()
+        #     endVertex = item.getEndVertex()
+        #
+        #     if startVertex is not None and endVertex is not None:
+        #         edge = Edge(startVertex, endVertex,
+        #                     name=item.getName(),
+        #                     weight=item.getWeight(),
+        #                     direction=item.isDirected(),
+        #                     factor=item.getFactor())
+        #         cachedGraph.addEdge(edge)
+        #
+        # cacheItem = CacheItem(cachedGraph)
+        # self._mainWindow.getCache().updateCache(cacheItem)
 
     # Edge methods
     @staticmethod
@@ -134,6 +178,10 @@ class View(QtWidgets.QGraphicsView):
 
         if startVertex.getName() > endVertex.getName():
             factor = -factor
+
+        print(len(endAdjVertexList))
+        print(len(startAdjVertexList))
+
         return factor
 
     def _createEdgeName(self):
@@ -164,9 +212,31 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
-        # Update cache
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().updateCache(cacheItem)
+        # # Update cache
+        # cachedGraph = Graph()
+        #
+        # for item in self._graph.getVertexList():
+        #     x, y = item.getPos()
+        #     vertex = Vertex(0, 0,
+        #                     name=item.getName(),
+        #                     color=item.getColor())
+        #     vertex.setPos(self.mapToScene(x, y))
+        #     cachedGraph.addVertex(vertex)
+        #
+        # for item in self._graph.getEdgeList():
+        #     startVertex = item.getStartVertex()
+        #     endVertex = item.getEndVertex()
+        #
+        #     if startVertex is not None and endVertex is not None:
+        #         edge = Edge(startVertex, endVertex,
+        #                     name=item.getName(),
+        #                     weight=item.getWeight(),
+        #                     direction=item.isDirected(),
+        #                     factor=item.getFactor())
+        #         cachedGraph.addEdge(edge)
+        #
+        # cacheItem = CacheItem(cachedGraph)
+        # self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -190,9 +260,31 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().updateCache(cacheItem)
+            # # Update cache
+            # cachedGraph = Graph()
+            #
+            # for item in self._graph.getVertexList():
+            #     x, y = item.getPos()
+            #     vertex = Vertex(0, 0,
+            #                     name=item.getName(),
+            #                     color=item.getColor())
+            #     vertex.setPos(self.mapToScene(x, y))
+            #     cachedGraph.addVertex(vertex)
+            #
+            # for item in self._graph.getEdgeList():
+            #     startVertex = item.getStartVertex()
+            #     endVertex = item.getEndVertex()
+            #
+            #     if startVertex is not None and endVertex is not None:
+            #         edge = Edge(startVertex, endVertex,
+            #                     name=item.getName(),
+            #                     weight=item.getWeight(),
+            #                     direction=item.isDirected(),
+            #                     factor=item.getFactor())
+            #         cachedGraph.addEdge(edge)
+            #
+            # cacheItem = CacheItem(cachedGraph)
+            # self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -232,9 +324,31 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().updateCache(cacheItem)
+            # # Update cache
+            # cachedGraph = Graph()
+            #
+            # for item in self._graph.getVertexList():
+            #     x, y = item.getPos()
+            #     vertex = Vertex(0, 0,
+            #                     name=item.getName(),
+            #                     color=item.getColor())
+            #     vertex.setPos(self.mapToScene(x, y))
+            #     cachedGraph.addVertex(vertex)
+            #
+            # for item in self._graph.getEdgeList():
+            #     startVertex = item.getStartVertex()
+            #     endVertex = item.getEndVertex()
+            #
+            #     if startVertex is not None and endVertex is not None:
+            #         edge = Edge(startVertex, endVertex,
+            #                     name=item.getName(),
+            #                     weight=item.getWeight(),
+            #                     direction=item.isDirected(),
+            #                     factor=item.getFactor())
+            #         cachedGraph.addEdge(edge)
+            #
+            # cacheItem = CacheItem(cachedGraph)
+            # self._mainWindow.getCache().updateCache(cacheItem)
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -259,9 +373,31 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
-            # Update cache
-            cacheItem = CacheItem(self._graph)
-            self._mainWindow.getCache().updateCache(cacheItem)
+            # # Update cache
+            # cachedGraph = Graph()
+            #
+            # for item in self._graph.getVertexList():
+            #     x, y = item.getPos()
+            #     vertex = Vertex(0, 0,
+            #                     name=item.getName(),
+            #                     color=item.getColor())
+            #     vertex.setPos(self.mapToScene(x, y))
+            #     cachedGraph.addVertex(vertex)
+            #
+            # for item in self._graph.getEdgeList():
+            #     startVertex = item.getStartVertex()
+            #     endVertex = item.getEndVertex()
+            #
+            #     if startVertex is not None and endVertex is not None:
+            #         edge = Edge(startVertex, endVertex,
+            #                     name=item.getName(),
+            #                     weight=item.getWeight(),
+            #                     direction=item.isDirected(),
+            #                     factor=item.getFactor())
+            #         cachedGraph.addEdge(edge)
+            #
+            # cacheItem = CacheItem(cachedGraph)
+            # self._mainWindow.getCache().updateCache(cacheItem)
 
     # Utils
     def _contextMenuClearScene(self):
@@ -360,17 +496,17 @@ class View(QtWidgets.QGraphicsView):
 
         super(View, self).mouseReleaseEvent(event)
 
-    def mouseMoveEvent(self, event):
-        if event.buttons() == QtCore.Qt.LeftButton:
-            cordX, cordY = event.pos().x(), event.pos().y()
-            item = self._scene.itemAt(cordX, cordY, QtGui.QTransform())
-            if item is not None:
-                if isinstance(item, Vertex):
-                    x, y = item.getPos()
-                    x = max(min(x, self.width() - VERTEX_SIZE), 0)
-                    y = max(min(y, self.height() - VERTEX_SIZE), 0)
-                    item.setPos(self.mapToScene(x, y))
-                    print(x, y)
-                    # if (x < 0 or x > self.width() - VERTEX_SIZE) or (y < 0 or y > self.height() - VERTEX_SIZE):
-                    #     print('OUT')
-        super(View, self).mouseMoveEvent(event)
+    # def mouseMoveEvent(self, event):
+    #     if event.buttons() == QtCore.Qt.LeftButton:
+    #         cordX, cordY = event.pos().x(), event.pos().y()
+    #         item = self._scene.itemAt(cordX, cordY, QtGui.QTransform())
+    #         if item is not None:
+    #             if isinstance(item, Vertex):
+    #                 x, y = item.getPos()
+    #                 x = max(min(x, self.width() - VERTEX_SIZE), 0)
+    #                 y = max(min(y, self.height() - VERTEX_SIZE), 0)
+    #                 item.setPos(self.mapToScene(x, y))
+    #                 print(x, y)
+    #                 # if (x < 0 or x > self.width() - VERTEX_SIZE) or (y < 0 or y > self.height() - VERTEX_SIZE):
+    #                 #     print('OUT')
+    #     super(View, self).mouseMoveEvent(event)

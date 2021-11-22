@@ -4,15 +4,7 @@ from classes.graph.graph import *
 
 class CacheItem:
     def __init__(self, graph: Graph):
-        vertexList = graph.getVertexList().copy()
-        edgeList = graph.getEdgeList().copy()
-        self._cachedGraph = Graph()
-
-        for item in vertexList:
-            self._cachedGraph.addVertex(item)
-
-        for item in edgeList:
-            self._cachedGraph.addEdge(item)
+        self._cachedGraph = graph
 
     def getCachedGraph(self):
         return self._cachedGraph

@@ -40,6 +40,9 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
     def getPos(self):
         return int(super().pos().x()), int(super().pos().y())
 
+    def getColor(self):
+        return self._color
+
     def isLoopExist(self):
         return self._isLoop
 
