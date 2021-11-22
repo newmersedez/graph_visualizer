@@ -240,10 +240,9 @@ class Window(QtWidgets.QMainWindow):
         form = QtWidgets.QFormLayout(inputDialog)
         form.addRow(QtWidgets.QLabel(message))
 
-        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         form.addRow(buttonBox)
         buttonBox.accepted.connect(inputDialog.accept)
-        buttonBox.rejected.connect(inputDialog.reject)
 
         inputDialog.exec_()
 
@@ -602,25 +601,7 @@ class Window(QtWidgets.QMainWindow):
             self.updateAdjacentTable()
 
     def _authorDialog(self):
-        author = 'Московский Авиационный Институт\n' \
-                 'Институт №8\n' \
-                 'Кафедра 813 «Компьютерная математика»\n' \
-                 'Группа М8О-311Б-19\n' \
-                 '\n' \
-                 'Тришин Дмитрий\n' \
-                 'Мамченков Дмитрий'
-        self._messageDialog('Об авторе', author)
+        self._messageDialog('Об авторе', AUTHOR)
 
     def _instructionDialog(self):
-        introduction = 'Graph Visualizer - программа для визуализации и работы с графами,' \
-                       'разработанная на языке Python.\n' \
-                       'Программа предоставляет следующие возможности:\n' \
-                       '    1) загрузка матрицы из файла ' \
-                       '(матрица смежности, матрица инцидентности, файл конфигурации);\n' \
-                       '    2) сохранение графа в файл ' \
-                       '(в виде матрицы смежности, матрицы инцидентности, файла конфигурации или изображения);\n' \
-                       '    3) Создание и редактирование графа с помощью мыши и кнопок Undo/Redo;\n' \
-                       '    4) Построение матрица смежности графа в реальном времени;\n' \
-                       '    5) Применение алгоритмов к графу (п. Задачи теории графов);\n' \
-                       '    6) Выбор темы (темная или светлая);\n'
-        self._messageDialog('О программе', introduction)
+        self._messageDialog('О программе', INSTRUCTION)

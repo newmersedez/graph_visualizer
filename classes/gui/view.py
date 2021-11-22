@@ -20,6 +20,7 @@ class View(QtWidgets.QGraphicsView):
         self.setStyleSheet('background-color: gray;')
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
+        self.setMouseTracking(True)
 
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -329,6 +330,13 @@ class View(QtWidgets.QGraphicsView):
         width, height = self.viewport().width(), self.viewport().height()
         self.setSceneRect(0, 0, width, height)
 
+        for item in self._scene.items():
+            if isinstance(item, Vertex):
+                x, y = item.getPos()
+                x = max(min(x, self.width() - VERTEX_SIZE), 0)
+                y = max(min(y, self.height() - VERTEX_SIZE), 0)
+                item.setPos(self.mapToScene(x, y))
+
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MiddleButton:
             pos_x, pos_y = event.pos().x(), event.pos().y()
@@ -351,3 +359,18 @@ class View(QtWidgets.QGraphicsView):
                         self._end = None
 
         super(View, self).mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == QtCore.Qt.LeftButton:
+            cordX, cordY = event.pos().x(), event.pos().y()
+            item = self._scene.itemAt(cordX, cordY, QtGui.QTransform())
+            if item is not None:
+                if isinstance(item, Vertex):
+                    x, y = item.getPos()
+                    x = max(min(x, self.width() - VERTEX_SIZE), 0)
+                    y = max(min(y, self.height() - VERTEX_SIZE), 0)
+                    item.setPos(self.mapToScene(x, y))
+                    print(x, y)
+                    # if (x < 0 or x > self.width() - VERTEX_SIZE) or (y < 0 or y > self.height() - VERTEX_SIZE):
+                    #     print('OUT')
+        super(View, self).mouseMoveEvent(event)
