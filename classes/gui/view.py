@@ -275,9 +275,6 @@ class View(QtWidgets.QGraphicsView):
         pos = event.pos()
         mnu = QtWidgets.QMenu()
 
-        if event.reason() == QtGui.QContextMenuEvent.Mouse:
-            print('ahahahahaha')
-
         mnu.addSection('Вершина:')
         mnu.addAction('Добавить вершину').setObjectName('add vertex')
         mnu.addAction('Создать петлю').setObjectName('make loop')
