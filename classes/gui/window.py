@@ -16,14 +16,14 @@ class Window(QtWidgets.QMainWindow):
         # View settings
         self._view = View(self)
         self._cache = Cache(CACHE_SIZE)
-        self._darkTheme = False
+        self._darkTheme = True
 
         # Window settings
         self.resize(WIN_WIDTH, WIN_HEIGHT)
         self.setWindowTitle(WIN_TITLE)
         self.setFont(QtGui.QFont('Arial', 15))
-        self.setStyleSheet('color: black;'
-                           'background-color: white;'
+        self.setStyleSheet('color: white;'
+                           'background-color: #303030;'
                            'selection-color: white;'
                            'selection-background-color: #418af7;')
         self.setCentralWidget(self._view)
@@ -151,27 +151,27 @@ class Window(QtWidgets.QMainWindow):
         _adjacentTable.verticalHeader().setDefaultSectionSize(30)
         _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         _adjacentTable.setStyleSheet('QWidget'
-                                     '{'
-                                     'background-color: #e1e1e1;'
-                                     'color: black;'
-                                     '}'
-                                     'QHeaderView::section'
-                                     '{'
-                                     'background-color: #c8c8c8;'
-                                     'padding: 4px;'
-                                     'border: 1px solid #fffff8;'
-                                     'font-size: 14pt;'
-                                     '}'
-                                     'QTableWidget'
-                                     '{'
-                                     'gridline-color: #fffff8;'
-                                     'font-size: 12pt;'
-                                     '}'
-                                     'QTableWidget QTableCornerButton::section'
-                                     '{'
-                                     'background-color: #c8c8c8;'
-                                     'border: 1px solid #fffff8;'
-                                     '}')
+                                          '{'
+                                          'background-color: #333333;'
+                                          'color: #fffff8;'
+                                          '}'
+                                          'QHeaderView::section'
+                                          '{'
+                                          'background-color: #646464;'
+                                          'padding: 4px;'
+                                          'border: 1px solid gray;'
+                                          'font-size: 14pt;'
+                                          '}'
+                                          'QTableWidget'
+                                          '{'
+                                          'gridline-color: gray;'
+                                          'font-size: 12pt;'
+                                          '}'
+                                          'QTableWidget QTableCornerButton::section'
+                                          '{'
+                                          'background-color: #646464;'
+                                          'border: 1px solid gray;'
+                                          '}')
         return _adjacentTable
 
     def updateAdjacentTable(self):

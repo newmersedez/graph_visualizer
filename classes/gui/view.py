@@ -17,7 +17,7 @@ class View(QtWidgets.QGraphicsView):
         # Scene and view settings
         self._scene = QtWidgets.QGraphicsScene(self)
         self.setScene(self._scene)
-        self.setStyleSheet('background-color: gray;')
+        self.setStyleSheet('background-color: #202020;')
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)
