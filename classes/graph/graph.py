@@ -75,8 +75,9 @@ class Graph:
         return self._edgeList
 
     def clear(self):
-        self._vertexList.clear()
         self._edgeList.clear()
+        self._vertexList.clear()
+
         self._isDirectedGraph = False
         self._isWeightedGraph = False
 

@@ -24,8 +24,8 @@ class Window(QtWidgets.QMainWindow):
         self.setFont(QtGui.QFont('Arial', 15))
         self.setStyleSheet('color: black;'
                            'background-color: white;'
-                           'selection-color: black;'
-                           'selection-background-color: #008cff;')
+                           'selection-color: white;'
+                           'selection-background-color: #418af7;')
         self.setCentralWidget(self._view)
 
         # Layout management
@@ -530,8 +530,8 @@ class Window(QtWidgets.QMainWindow):
             self._view.setStyleSheet('background-color: gray;')
             self.setStyleSheet('color: black;'
                                'background-color: white;'
-                               'selection-color: black;'
-                               'selection-background-color: #008cff;')
+                               'selection-color: white;'
+                               'selection-background-color: #418af7;')
             self._adjacentTable.setStyleSheet('QWidget'
                                               '{'
                                               'background-color: #e1e1e1;'
@@ -561,7 +561,7 @@ class Window(QtWidgets.QMainWindow):
             self.setStyleSheet('color: white;'
                                'background-color: #303030;'
                                'selection-color: white;'
-                               'selection-background-color: #008cff;')
+                               'selection-background-color: #418af7;')
             self._adjacentTable.setStyleSheet('QWidget'
                                               '{'
                                               'background-color: #333333;'

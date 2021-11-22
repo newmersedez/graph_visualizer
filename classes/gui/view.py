@@ -2,7 +2,7 @@
 
 from classes.cache.cache import *
 from algorithms.bfs import *
-
+import time
 
 class View(QtWidgets.QGraphicsView):
     def __init__(self, window):
@@ -65,7 +65,6 @@ class View(QtWidgets.QGraphicsView):
         for item in self._scene.items():
             if not (item in vertexList) and not (item in edgeList):
                 self._scene.removeItem(item)
-                self._scene.update()
 
     # Vertex methods
     def _createVertexName(self):
@@ -266,19 +265,18 @@ class View(QtWidgets.QGraphicsView):
     # Utils
     def _contextMenuClearScene(self):
         self._graph.clear()
-        self._redrawScene()
+        self._scene.clear()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
-
-        # Update cache
-        cacheItem = CacheItem(self._graph)
-        self._mainWindow.getCache().updateCache(cacheItem)
 
     # Events
     def contextMenuEvent(self, event):
         pos = event.pos()
         mnu = QtWidgets.QMenu()
+
+        if event.reason() == QtGui.QContextMenuEvent.Mouse:
+            print('ahahahahaha')
 
         mnu.addSection('Вершина:')
         mnu.addAction('Добавить вершину').setObjectName('add vertex')
