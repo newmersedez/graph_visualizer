@@ -1,7 +1,8 @@
 # View
 
 from PyQt5.QtCore import pyqtSlot
-from classes.cache.cache import *
+from utils.colorpalletes import *
+from utils.windowtext import *
 from classes.gui.view import *
 import numpy as np
 import random
@@ -20,12 +21,10 @@ class Window(QtWidgets.QMainWindow):
 
         # Window settings
         self.resize(WIN_WIDTH, WIN_HEIGHT)
+        self.showMaximized()
         self.setWindowTitle(WIN_TITLE)
         self.setFont(QtGui.QFont('Arial', 15))
-        self.setStyleSheet('color: white;'
-                           'background-color: #303030;'
-                           'selection-color: white;'
-                           'selection-background-color: #418af7;')
+        self.setStyleSheet(WINDOW_DARK)
         self.setCentralWidget(self._view)
 
         # Layout management
@@ -150,28 +149,7 @@ class Window(QtWidgets.QMainWindow):
         _adjacentTable.horizontalHeader().setDefaultSectionSize(30)
         _adjacentTable.verticalHeader().setDefaultSectionSize(30)
         _adjacentTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        _adjacentTable.setStyleSheet('QWidget'
-                                          '{'
-                                          'background-color: #333333;'
-                                          'color: #fffff8;'
-                                          '}'
-                                          'QHeaderView::section'
-                                          '{'
-                                          'background-color: #646464;'
-                                          'padding: 4px;'
-                                          'border: 1px solid gray;'
-                                          'font-size: 14pt;'
-                                          '}'
-                                          'QTableWidget'
-                                          '{'
-                                          'gridline-color: gray;'
-                                          'font-size: 12pt;'
-                                          '}'
-                                          'QTableWidget QTableCornerButton::section'
-                                          '{'
-                                          'background-color: #646464;'
-                                          'border: 1px solid gray;'
-                                          '}')
+        _adjacentTable.setStyleSheet(TABLE_DARK)
         return _adjacentTable
 
     def updateAdjacentTable(self):
@@ -233,9 +211,9 @@ class Window(QtWidgets.QMainWindow):
         inputDialog.setFont(QtGui.QFont('Arial', 15))
 
         if self._darkTheme:
-            inputDialog.setStyleSheet('background-color: #303030; color: white;')
+            inputDialog.setStyleSheet(WINDOW_DARK)
         else:
-            inputDialog.setStyleSheet('background-color: white; color: black;')
+            inputDialog.setStyleSheet(WINDOW_BRIGHT)
 
         form = QtWidgets.QFormLayout(inputDialog)
         form.addRow(QtWidgets.QLabel(message))
@@ -526,63 +504,15 @@ class Window(QtWidgets.QMainWindow):
     def _changeTheme(self):
         if self._darkTheme:
             self._darkTheme = False
-            self._view.setStyleSheet('background-color: gray;')
-            self.setStyleSheet('color: black;'
-                               'background-color: white;'
-                               'selection-color: white;'
-                               'selection-background-color: #418af7;')
-            self._adjacentTable.setStyleSheet('QWidget'
-                                              '{'
-                                              'background-color: #e1e1e1;'
-                                              'color: black;'
-                                              '}'
-                                              'QHeaderView::section'
-                                              '{'
-                                              'background-color: #c8c8c8;'
-                                              'padding: 4px;'
-                                              'border: 1px solid #fffff8;'
-                                              'font-size: 14pt;'
-                                              '}'
-                                              'QTableWidget'
-                                              '{'
-                                              'gridline-color: #fffff8;'
-                                              'font-size: 12pt;'
-                                              '}'
-                                              'QTableWidget QTableCornerButton::section'
-                                              '{'
-                                              'background-color: #c8c8c8;'
-                                              'border: 1px solid #fffff8;'
-                                              '}')
+            self._view.setStyleSheet(FIELD_BRIGHT)
+            self.setStyleSheet(WINDOW_BRIGHT)
+            self._adjacentTable.setStyleSheet(TABLE_BRIGHT)
 
         else:
             self._darkTheme = True
-            self._view.setStyleSheet('background-color: #202020;')
-            self.setStyleSheet('color: white;'
-                               'background-color: #303030;'
-                               'selection-color: white;'
-                               'selection-background-color: #418af7;')
-            self._adjacentTable.setStyleSheet('QWidget'
-                                              '{'
-                                              'background-color: #333333;'
-                                              'color: #fffff8;'
-                                              '}'
-                                              'QHeaderView::section'
-                                              '{'
-                                              'background-color: #646464;'
-                                              'padding: 4px;'
-                                              'border: 1px solid gray;'
-                                              'font-size: 14pt;'
-                                              '}'
-                                              'QTableWidget'
-                                              '{'
-                                              'gridline-color: gray;'
-                                              'font-size: 12pt;'
-                                              '}'
-                                              'QTableWidget QTableCornerButton::section'
-                                              '{'
-                                              'background-color: #646464;'
-                                              'border: 1px solid gray;'
-                                              '}')
+            self._view.setStyleSheet(FIELD_DARK)
+            self.setStyleSheet(WINDOW_DARK)
+            self._adjacentTable.setStyleSheet(TABLE_DARK)
 
     @pyqtSlot()
     def _undoButtonAction(self):

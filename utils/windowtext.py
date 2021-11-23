@@ -1,40 +1,3 @@
-# Window defaults
-WIN_WIDTH = 1440
-WIN_HEIGHT = 900
-FIELD_WIDTH = 1000
-FIELD_HEIGHT = 700
-TABLE_WIDTH = 400
-TABLE_HEIGHT = 300
-DIALOG_WIDTH = 300
-DIALOG_HEIGHT = 200
-WIN_TITLE = "Graph Visualizer"
-
-# Cache
-CACHE_SIZE = 10
-
-# Vertex defaults
-VERTEX_COLOR = 'salmon'
-VERTEX_SIZE = 50
-OFFSET = VERTEX_SIZE / 2
-
-# Edge defaults
-VERGE_COLOR = 'white'
-VERGE_WIDTH = 5
-ARROW_SIZE = 8
-
-# Mouse codes
-MOUSE_LEFT = 1
-MOUSE_RIGHT = 2
-MOUSE_MIDDLE = 3
-
-# Operations
-ADD_VERTEX = 1
-DELETE_VERTEX = 2
-MOVE_VERTEX = 3
-ADD_VERGE = 4
-DELETE_VERGE = 5
-
-# Text
 AUTHOR = 'Московский Авиационный Институт\n' \
          'Институт №8\n' \
          'Кафедра 813 «Компьютерная математика»\n' \
@@ -95,5 +58,4 @@ INSTRUCTION = 'Graph Visualizer - программа для визуализац
               '    Для создания петли у вершины воспользуйтесь контекстным меню. Для создания ребра между двумя' \
               'вершинами зажмите колесо \n' \
               '    мыши на первой вершине, затем, не отпуская колесо мыши, переместите мышь до второй вершины, ' \
-              'после чего отпустите кнопку.' \
-              '    '
+              'после чего отпустите кнопку.'

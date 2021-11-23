@@ -2,8 +2,9 @@
 
 from classes.cache.cache import *
 from algorithms.bfs import *
+from utils.colorpalletes import *
 import main
-import time
+import sip
 
 main.singleton = 0
 
@@ -21,7 +22,7 @@ class View(QtWidgets.QGraphicsView):
         # Scene and view settings
         self._scene = QtWidgets.QGraphicsScene(self)
         self.setScene(self._scene)
-        self.setStyleSheet('background-color: #202020;')
+        self.setStyleSheet(FIELD_DARK)
         self.setRenderHint(QtGui.QPainter.Antialiasing)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)
@@ -30,7 +31,7 @@ class View(QtWidgets.QGraphicsView):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('BFS')
-        inputDialog.setStyleSheet('background-color: #303030; color: white;')
+        inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину обхода:')
         ok = inputDialog.exec_()
@@ -51,10 +52,14 @@ class View(QtWidgets.QGraphicsView):
         edgeList = self._graph.getEdgeList()
 
         for item in vertexList:
-            self._scene.addItem(item)
+            if not sip.isdeleted(item):
+                self._scene.addItem(item)
         
         for item in edgeList:
-            self._scene.addItem(item)
+            if not sip.isdeleted(item) and \
+                    not (sip.isdeleted(item.getStartVertex())) and \
+                    not (sip.isdeleted(item.getEndVertex())):
+                self._scene.addItem(item)
         self._scene.update()
 
         # Update adjacent table widget
@@ -168,7 +173,7 @@ class View(QtWidgets.QGraphicsView):
         if len(edgeList) == 0:
             name = '1'
         else:
-            name = str(len(edgeList) + 1)
+            name = str(int(edgeList[-1].getName()) + 1)
         return name
 
     def _contextMenuAddEdge(self, startVertex, endVertex):
