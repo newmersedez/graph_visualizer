@@ -55,6 +55,7 @@ class View(QtWidgets.QGraphicsView):
         
         for item in edgeList:
             self._scene.addItem(item)
+        self._scene.update()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
@@ -110,16 +111,16 @@ class View(QtWidgets.QGraphicsView):
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
         redrawGraph = self.copyGraph()
-        for item in self._scene.items():
-            self._scene.removeItem(item)
+        self._scene.clear()
 
         self._graph = redrawGraph
         for item in self._graph.getVertexList():
             self._scene.addItem(item)
+            self._scene.update()
 
         for item in self._graph.getEdgeList():
             self._scene.addItem(item)
-        self._scene.update()
+            self._scene.update()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
@@ -281,8 +282,7 @@ class View(QtWidgets.QGraphicsView):
             if edge is not None:
                 self._graph.removeEdge(edge)
                 redrawGraph = self.copyGraph()
-                for item in self._scene.items():
-                    self._scene.removeItem(item)
+                self._scene.clear()
 
                 self._graph = redrawGraph
                 for item in self._graph.getVertexList():
