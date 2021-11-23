@@ -42,7 +42,9 @@ class View(QtWidgets.QGraphicsView):
                 bfs(self._graph, vertex)
 
     def addGraph(self, graph: Graph):
-        self._scene.clear()
+        for item in self._scene.items():
+            self._scene.removeItem(item)
+
         self._graph = graph
 
         vertexList = self._graph.getVertexList()
@@ -102,10 +104,14 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
+        # Update cache
+        self._mainWindow.getCache().updateCache(self.copyGraph())
+
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
         redrawGraph = self.copyGraph()
-        self._scene.clear()
+        for item in self._scene.items():
+            self._scene.removeItem(item)
 
         self._graph = redrawGraph
         for item in self._graph.getVertexList():
@@ -117,6 +123,9 @@ class View(QtWidgets.QGraphicsView):
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
+
+        # Update cache
+        self._mainWindow.getCache().updateCache(self.copyGraph())
 
     # Edge methods
     @staticmethod
@@ -181,6 +190,9 @@ class View(QtWidgets.QGraphicsView):
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
+        # Update cache
+        self._mainWindow.getCache().updateCache(self.copyGraph())
+
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -203,6 +215,9 @@ class View(QtWidgets.QGraphicsView):
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
+
+            # Update cache
+            self._mainWindow.getCache().updateCache(self.copyGraph())
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -243,6 +258,9 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
+            # Update cache
+            self._mainWindow.getCache().updateCache(self.copyGraph())
+
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -263,7 +281,8 @@ class View(QtWidgets.QGraphicsView):
             if edge is not None:
                 self._graph.removeEdge(edge)
                 redrawGraph = self.copyGraph()
-                self._scene.clear()
+                for item in self._scene.items():
+                    self._scene.removeItem(item)
 
                 self._graph = redrawGraph
                 for item in self._graph.getVertexList():
@@ -276,6 +295,9 @@ class View(QtWidgets.QGraphicsView):
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
 
+            # Update cache
+            self._mainWindow.getCache().updateCache(self.copyGraph())
+
     # Utils
     def _contextMenuClearScene(self):
         self._graph.clear()
@@ -284,6 +306,9 @@ class View(QtWidgets.QGraphicsView):
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
+
+        # Update cache
+        self._mainWindow.getCache().updateCache(self.copyGraph())
 
     # Events
     def contextMenuEvent(self, event):
