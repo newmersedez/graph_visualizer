@@ -1,5 +1,5 @@
 from classes.graph.vertex import *
-from math import sqrt, sin, cos, acos, pi, radians
+from math import sqrt, sin, cos, acos, pi, radians, degrees
 
 
 class Edge(QtWidgets.QGraphicsLineItem):
@@ -142,17 +142,17 @@ class Edge(QtWidgets.QGraphicsLineItem):
                 perpX, perpY = normY, -normX
 
                 leftX = endPoint.x() + ARROW_SIZE * normX + ARROW_SIZE * perpX - 7
-                leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY + 3
-                rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX - 20
-                rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY + 10
+                leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY - 3
+                rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX - 17
+                rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY + 8
 
                 point2 = QtCore.QPointF(leftX, leftY)
                 point3 = QtCore.QPointF(rightX, rightY)
 
-                newBrush = QtGui.QBrush()
-                newBrush.setColor(QtCore.Qt.blue)
-                painter.setBrush(newBrush)
-                painter.drawPoint(endPoint)
+                newPen = QtGui.QPen()
+                newPen.setColor(QtCore.Qt.white)
+                newPen.setWidth(ARROW_SIZE)
+                painter.setPen(newPen)
                 painter.drawPolygon(point2, point3, endPoint)
 
             # Edge weight display
@@ -194,23 +194,19 @@ class Edge(QtWidgets.QGraphicsLineItem):
             # Edge direction
             if self._isDirection:
                 endPoint = QtCore.QPointF(point3X + factor * cos(-angle2),  point3Y + factor * sin(-angle2))
-                dx, dy = pointStart.x() - endPoint.x(), pointStart.y() - endPoint.y()
-                length = sqrt(dx ** 2 + dy ** 2) / 1.2
 
-                normX, normY = dx / length, dy / length
-                perpX, perpY = -normY, normX
-
-                leftX = endPoint.x() + ARROW_SIZE * normX + ARROW_SIZE * perpX
-                leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY
-                rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX
-                rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY
+                leftX = endPoint.x() + VERTEX_SIZE / 4 * cos(angle + pi / 2 + pi / 4)
+                leftY = endPoint.y() - VERTEX_SIZE / 4 * sin(angle + radians(90 + 45))
+                rightX = endPoint.x() + VERTEX_SIZE / 4 * cos(angle + radians(90 + 90 + 45))
+                rightY = endPoint.y() - VERTEX_SIZE / 4 * sin(angle + radians(90 + 90 + 45))
 
                 point2 = QtCore.QPointF(leftX, leftY)
                 point3 = QtCore.QPointF(rightX, rightY)
 
-                newBrush = QtGui.QBrush()
-                newBrush.setColor(QtGui.QColor(VERTEX_COLOR))
-                painter.setBrush(newBrush)
+                newPen = QtGui.QPen()
+                newPen.setColor(QtCore.Qt.white)
+                newPen.setWidth(ARROW_SIZE)
+                painter.setPen(newPen)
                 painter.drawPolygon(point2, endPoint, point3)
 
             # Edge weight display

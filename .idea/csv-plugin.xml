@@ -66,6 +66,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/examples/config1.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/examples/config2.csv">
           <value>
             <Attribute>

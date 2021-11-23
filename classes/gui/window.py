@@ -425,6 +425,12 @@ class Window(QtWidgets.QMainWindow):
                     if not line:
                         break
 
+                    # Comment
+                    pos = line.find('%')
+                    if pos != -1:
+                        line = line[0:pos]
+                        print(line)
+
                     # Vertex
                     if line.find('Vertex') != -1:
                         vertexRegex = r'(?<=Vertex{)(\d+)\((\d+), ?(\d+)'

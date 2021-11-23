@@ -20,7 +20,7 @@ OFFSET = VERTEX_SIZE / 2
 # Edge defaults
 VERGE_COLOR = 'white'
 VERGE_WIDTH = 5
-ARROW_SIZE = 8
+ARROW_SIZE = 5
 
 # Mouse codes
 MOUSE_LEFT = 1
