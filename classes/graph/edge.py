@@ -141,10 +141,10 @@ class Edge(QtWidgets.QGraphicsLineItem):
                 normX, normY = dx / length, dy / length
                 perpX, perpY = normY, -normX
 
-                leftX = endPoint.x() + ARROW_SIZE * normX + ARROW_SIZE * perpX - 7
-                leftY = endPoint.y() + ARROW_SIZE * normY + ARROW_SIZE * perpY - 3
-                rightX = endPoint.x() + ARROW_SIZE * normX - ARROW_SIZE * perpX - 17
-                rightY = endPoint.y() + ARROW_SIZE * normY - ARROW_SIZE * perpY + 8
+                leftX = endPoint.x() - VERTEX_SIZE / 5 + 5
+                leftY = endPoint.y() - VERTEX_SIZE / 5 - 1
+                rightX = endPoint.x() - VERTEX_SIZE / 5
+                rightY = endPoint.y() + VERTEX_SIZE / 5 - 4
 
                 point2 = QtCore.QPointF(leftX, leftY)
                 point3 = QtCore.QPointF(rightX, rightY)
