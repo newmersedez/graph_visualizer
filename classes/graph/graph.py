@@ -19,12 +19,13 @@ class Graph:
 
     def removeVertex(self, vertex: Vertex):
         if vertex is not None:
+            for item in reversed(self._edgeList):
+                if item.getStartVertex() == vertex or item.getEndVertex() == vertex:
+                    self._edgeList.remove(item)
+
             for item in self._vertexList:
                 item.removeAdjacentVertex(vertex)
 
-            for item in self._edgeList[:]:
-                if item.getStartVertex() == vertex or item.getEndVertex() == vertex:
-                    self._edgeList.remove(item)
             self._vertexList.remove(vertex)
 
     def findVertexByName(self, name: str):
@@ -50,9 +51,9 @@ class Graph:
             if startVertex == endVertex:
                 startVertex.setLoop(value=False)
 
+            self._edgeList.remove(edge)
             startVertex.removeAdjacentVertex(endVertex)
             endVertex.removeAdjacentVertex(startVertex)
-            self._edgeList.remove(edge)
 
     def findEdgeByName(self, name: str):
         for edge in self._edgeList:
@@ -73,6 +74,12 @@ class Graph:
 
     def getEdgeList(self):
         return self._edgeList
+
+    def isDirected(self):
+        return self._isDirectedGraph
+
+    def isWeighted(self):
+        return self._isWeightedGraph
 
     def clear(self):
         self._edgeList.clear()

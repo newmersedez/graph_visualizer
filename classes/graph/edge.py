@@ -2,7 +2,7 @@ from classes.graph.vertex import *
 from math import sqrt, sin, cos, acos, pi, radians
 
 
-class Edge(QtWidgets.QGraphicsItem):
+class Edge(QtWidgets.QGraphicsLineItem):
 
     def __init__(self, startVertex, endVertex, name='1', weight=1, direction=False, factor=0, parent=None):
         super().__init__(parent)

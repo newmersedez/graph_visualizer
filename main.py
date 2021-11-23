@@ -1,6 +1,5 @@
 from classes.gui.window import *
 
-
 if __name__ == '__main__':
     import sys
 
