@@ -42,9 +42,7 @@ class View(QtWidgets.QGraphicsView):
                 bfs(self._graph, vertex)
 
     def addGraph(self, graph: Graph):
-        for item in self._scene.items():
-            self._scene.removeItem(item)
-
+        self._scene.clear()
         self._graph = graph
 
         vertexList = self._graph.getVertexList()
@@ -73,11 +71,11 @@ class View(QtWidgets.QGraphicsView):
             graph.addVertex(vertex)
 
         for item in self._graph.getEdgeList():
-            startVertex = item.getStartVertex()
-            endVertex = item.getEndVertex()
+            startVertex = graph.findVertexByName(item.getStartVertex().getName())
+            endVertex = graph.findVertexByName(item.getEndVertex().getName())
 
-            edge = Edge(startVertex, endVertex, name=item.getName(), weight=item.getWeight, direction=item.isDirected,
-                        factor=item.getFactor)
+            edge = Edge(startVertex, endVertex, name=item.getName(), weight=item.getWeight(),
+                        direction=item.isDirected(), factor=item.getFactor())
 
             graph.addEdge(edge)
         return graph
@@ -99,20 +97,22 @@ class View(QtWidgets.QGraphicsView):
 
         self._scene.addItem(vertex)
         self._graph.addVertex(vertex)
+        self._scene.update()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
 
     def _contextMenuRemoveVertex(self, vertex):
-        edgeList = self._graph.getEdgeList()
-
-        for item in reversed(edgeList):
-            if item.getStartVertex() == vertex or item.getEndVertex() == vertex:
-                self._graph.removeEdge(item)
-                self._scene.removeItem(item)
         self._graph.removeVertex(vertex)
-        self._scene.removeItem(vertex)
-        time.sleep(len(vertex.getAdjacentVertexList()) * 0.1)
+        redrawGraph = self.copyGraph()
+        self._scene.clear()
+
+        self._graph = redrawGraph
+        for item in self._graph.getVertexList():
+            self._scene.addItem(item)
+
+        for item in self._graph.getEdgeList():
+            self._scene.addItem(item)
         self._scene.update()
 
         # Update adjacent table widget
@@ -176,6 +176,7 @@ class View(QtWidgets.QGraphicsView):
 
         self._scene.addItem(edge)
         self._graph.addEdge(edge)
+        self._scene.update()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
@@ -198,6 +199,7 @@ class View(QtWidgets.QGraphicsView):
         if ok:
             edge = self._graph.findEdgeByName(name)
             self._graph.toggleEdgeDirection(edge)
+            self._scene.update()
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
@@ -236,6 +238,7 @@ class View(QtWidgets.QGraphicsView):
             weight = textBox2.text()
             edge = self._graph.findEdgeByName(name)
             self._graph.setEdgeWeight(edge, weight)
+            self._scene.update()
 
             # Update adjacent table widget
             self._mainWindow.updateAdjacentTable()
@@ -259,8 +262,15 @@ class View(QtWidgets.QGraphicsView):
             edge = self._graph.findEdgeByName(name)
             if edge is not None:
                 self._graph.removeEdge(edge)
-                self._scene.removeItem(edge)
-                time.sleep(len(edge.getStartVertex().getAdjacentVertexList()) * 0.1)
+                redrawGraph = self.copyGraph()
+                self._scene.clear()
+
+                self._graph = redrawGraph
+                for item in self._graph.getVertexList():
+                    self._scene.addItem(item)
+
+                for item in self._graph.getEdgeList():
+                    self._scene.addItem(item)
                 self._scene.update()
 
             # Update adjacent table widget
@@ -270,6 +280,7 @@ class View(QtWidgets.QGraphicsView):
     def _contextMenuClearScene(self):
         self._graph.clear()
         self._scene.clear()
+        self._scene.update()
 
         # Update adjacent table widget
         self._mainWindow.updateAdjacentTable()
