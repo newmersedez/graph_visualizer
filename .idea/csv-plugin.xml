@@ -52,13 +52,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/examples/adjacentMatrix7.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/examples/config.csv">
           <value>
             <Attribute>

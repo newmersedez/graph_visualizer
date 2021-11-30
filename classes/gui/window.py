@@ -525,7 +525,7 @@ class Window(QtWidgets.QMainWindow):
         cachedGraph = self._cache.getDecreasedState()
 
         if cachedGraph:
-            self._view.addGraph(cachedGraph)
+            self._view.addGraph(self._view.copyGraph(cachedGraph))
             self.updateAdjacentTable()
 
     @pyqtSlot()
@@ -533,7 +533,7 @@ class Window(QtWidgets.QMainWindow):
         cachedGraph = self._cache.getIncreasedState()
 
         if cachedGraph:
-            self._view.addGraph(cachedGraph)
+            self._view.addGraph(self._view.copyGraph(cachedGraph))
             self.updateAdjacentTable()
 
     def _authorDialog(self):

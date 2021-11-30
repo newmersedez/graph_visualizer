@@ -6,8 +6,6 @@ from utils.colorpalletes import *
 import main
 import sip
 
-main.singleton = 0
-
 
 class View(QtWidgets.QGraphicsView):
     def __init__(self, window):
@@ -43,8 +41,7 @@ class View(QtWidgets.QGraphicsView):
                 bfs(self._graph, vertex)
 
     def addGraph(self, graph: Graph):
-        for item in self._scene.items():
-            self._scene.removeItem(item)
+        self._scene.clear()
 
         self._graph = graph
 
@@ -68,17 +65,17 @@ class View(QtWidgets.QGraphicsView):
     def getGraph(self):
         return self._graph
 
-    def copyGraph(self):
-        graph = Graph(directed=self._graph.isDirected(), weighted=self._graph.isWeighted())
+    def copyGraph(self, srcGraph: Graph):
+        graph = Graph(directed=srcGraph.isDirected(), weighted=srcGraph.isWeighted())
 
-        for item in self._graph.getVertexList():
+        for item in srcGraph.getVertexList():
             vertex = Vertex(0, 0, name=item.getName(), color=item.getColor())
             x, y = item.getPos()
 
             vertex.setPos(self.mapToScene(x, y))
             graph.addVertex(vertex)
 
-        for item in self._graph.getEdgeList():
+        for item in srcGraph.getEdgeList():
             startVertex = graph.findVertexByName(item.getStartVertex().getName())
             endVertex = graph.findVertexByName(item.getEndVertex().getName())
 
@@ -111,11 +108,11 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        self._mainWindow.getCache().updateCache(self.copyGraph())
+        self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     def _contextMenuRemoveVertex(self, vertex):
         self._graph.removeVertex(vertex)
-        redrawGraph = self.copyGraph()
+        redrawGraph = self.copyGraph(self._graph)
         self._scene.clear()
 
         self._graph = redrawGraph
@@ -131,7 +128,7 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        self._mainWindow.getCache().updateCache(self.copyGraph())
+        self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     # Edge methods
     @staticmethod
@@ -197,7 +194,7 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        self._mainWindow.getCache().updateCache(self.copyGraph())
+        self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     def _contextMenuToggleDirection(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -223,7 +220,7 @@ class View(QtWidgets.QGraphicsView):
             self._mainWindow.updateAdjacentTable()
 
             # Update cache
-            self._mainWindow.getCache().updateCache(self.copyGraph())
+            self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     def _contextMenuSetWeight(self):
         inputDialog = QtWidgets.QDialog(self)
@@ -265,7 +262,7 @@ class View(QtWidgets.QGraphicsView):
             self._mainWindow.updateAdjacentTable()
 
             # Update cache
-            self._mainWindow.getCache().updateCache(self.copyGraph())
+            self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     def _contextMenuRemoveEdge(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -286,7 +283,7 @@ class View(QtWidgets.QGraphicsView):
             edge = self._graph.findEdgeByName(name)
             if edge is not None:
                 self._graph.removeEdge(edge)
-                redrawGraph = self.copyGraph()
+                redrawGraph = self.copyGraph(self._graph)
                 self._scene.clear()
 
                 self._graph = redrawGraph
@@ -301,7 +298,7 @@ class View(QtWidgets.QGraphicsView):
             self._mainWindow.updateAdjacentTable()
 
             # Update cache
-            self._mainWindow.getCache().updateCache(self.copyGraph())
+            self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     # Utils
     def _contextMenuClearScene(self):
@@ -313,7 +310,7 @@ class View(QtWidgets.QGraphicsView):
         self._mainWindow.updateAdjacentTable()
 
         # Update cache
-        self._mainWindow.getCache().updateCache(self.copyGraph())
+        self._mainWindow.getCache().updateCache(self.copyGraph(self._graph))
 
     # Events
     def contextMenuEvent(self, event):
@@ -407,7 +404,3 @@ class View(QtWidgets.QGraphicsView):
 
         self._scene.update()
         super(View, self).mouseReleaseEvent(event)
-
-    def mouseMoveEvent(self, event):
-        self._scene.update()
-        super(View, self).mouseMoveEvent(event)
