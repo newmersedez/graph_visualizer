@@ -14,6 +14,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._adjacentVertexList = list()
         self._adjacentEdgeList = list()
         self._isLoop = False
+        self._serviceValue = ""
 
         # Vertex settings
         self.setPos(x, y)
@@ -34,6 +35,9 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
     def getAdjacentVertexList(self):
         return self._adjacentVertexList
 
+    def getAdjacentEdgeList(self):
+        return self._adjacentEdgeList
+
     def getName(self):
         return self._name
 
@@ -42,6 +46,9 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
 
     def getColor(self):
         return self._color
+
+    def setColor(self, color):
+        self._color = color
 
     def isLoopExist(self):
         return self._isLoop
@@ -55,16 +62,20 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
                 return i.getWeight()
         return None
 
+    def setServiceValue(self, value: str):
+        self._serviceValue = value
+
     def paint(self, painter, option, widget=None):
+        print('aahahah')
         pen = QtGui.QPen()
         pen.setColor(QtCore.Qt.white)
         pen.setWidth(3)
         painter.setPen(pen)
 
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        painter.setBrush(QtGui.QColor(VERTEX_COLOR))
+        painter.setBrush(QtGui.QColor(self._color))
         painter.drawEllipse(self._x, self._y, VERTEX_SIZE, VERTEX_SIZE)
 
         painter.setFont(QtGui.QFont('Arial', 14))
         painter.drawText(self.rect(), QtCore.Qt.AlignCenter, str(self._name))
-        # painter.setBrush(QtCore.Qt.NoBrush)
+        painter.drawText(self._x + 25, self._y - 5, self._serviceValue)

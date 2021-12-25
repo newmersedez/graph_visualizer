@@ -126,6 +126,10 @@ class Window(QtWidgets.QMainWindow):
         algo.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algo)
 
+        test = QtWidgets.QAction('Test', self)
+        test.triggered.connect(self._view.func)
+        tasksMenu.addAction(test)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)

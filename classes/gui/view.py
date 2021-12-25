@@ -25,6 +25,16 @@ class View(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)
 
+    def func(self):
+        point = self.mapToScene(100, 100)
+        vertex = Vertex(point.x(), point.y(), '12', VERTEX_COLOR)
+
+        self._graph.addVertex(vertex)
+        self._scene.addItem(vertex)
+
+        self._graph.removeVertex(vertex)
+        self._scene.removeItem(vertex)
+
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
