@@ -4,7 +4,7 @@ from math import sqrt, sin, cos, acos, pi, radians, degrees
 
 class Edge(QtWidgets.QGraphicsLineItem):
 
-    def __init__(self, startVertex, endVertex, name='1', weight=1, direction=False, factor=0, parent=None):
+    def __init__(self, startVertex, endVertex, name='1', weight=1, color=QtCore.Qt.white, direction=False, factor=0, parent=None):
         super().__init__(parent)
 
         # Edge variables
@@ -12,8 +12,10 @@ class Edge(QtWidgets.QGraphicsLineItem):
         self._endVertex = endVertex
         self._name = name
         self._weight = weight
+        self._color = color
         self._curveFactor = factor
         self._isDirection = direction
+        self._serviceValue = ""
 
         if self._weight == 1:
             self._isWeight = False
@@ -44,6 +46,12 @@ class Edge(QtWidgets.QGraphicsLineItem):
 
     def getFactor(self):
         return self._curveFactor
+
+    def getColor(self):
+        return self._color
+
+    def setColor(self, color: str):
+        self._color = color
 
     def boundingRect(self):
         start_x, start_y = self._startVertex.pos().x(), self._startVertex.pos().y()
@@ -119,7 +127,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
             myPath.cubicTo(QtCore.QPointF(point1X, point1Y), QtCore.QPointF(point2X, point2Y), pointEnd)
 
             pen = QtGui.QPen()
-            pen.setColor(QtCore.Qt.white)
+            pen.setColor(self._color)
             pen.setWidth(VERGE_WIDTH)
             painter.setPen(pen)
             painter.drawPath(myPath)
@@ -150,7 +158,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
                 point3 = QtCore.QPointF(rightX, rightY)
 
                 newPen = QtGui.QPen()
-                newPen.setColor(QtCore.Qt.white)
+                newPen.setColor(self._color)
                 newPen.setWidth(ARROW_SIZE)
                 painter.setPen(newPen)
                 painter.drawPolygon(point2, point3, endPoint)
@@ -177,7 +185,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
                            pointEnd)
 
             pen = QtGui.QPen()
-            pen.setColor(QtCore.Qt.white)
+            pen.setColor(self._color)
             pen.setWidth(VERGE_WIDTH)
             painter.setPen(pen)
             painter.drawPath(myPath)
@@ -204,7 +212,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
                 point3 = QtCore.QPointF(rightX, rightY)
 
                 newPen = QtGui.QPen()
-                newPen.setColor(QtCore.Qt.white)
+                newPen.setColor(self._color)
                 newPen.setWidth(ARROW_SIZE)
                 painter.setPen(newPen)
                 painter.drawPolygon(point2, endPoint, point3)
