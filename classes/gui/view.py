@@ -48,7 +48,15 @@ class View(QtWidgets.QGraphicsView):
         if ok:
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
+                self.setDefaults()
                 bfs(self._graph, vertex)
+
+    def setDefaults(self):
+        for item in self._graph.getVertexList():
+            item.setColor(VERTEX_COLOR)
+        for item in self._graph.getEdgeList():
+            item.setColor(QtCore.Qt.white)
+        self._scene.update()
 
     def addGraph(self, graph: Graph):
         self._scene.clear()

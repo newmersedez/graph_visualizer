@@ -63,10 +63,20 @@ class Graph:
     def toggleEdgeDirection(self, edge: Edge):
         if edge in self._edgeList:
             edge.toggleDirection()
+        self._isDirectedGraph = False
+        for item in self._edgeList:
+            if item.isDirected():
+                self._isDirectedGraph = True
 
     def setEdgeWeight(self, edge: Edge, weight: int):
         if edge in self._edgeList:
             edge.setWeight(weight)
+
+    def setDirected(self, value: bool):
+        self._isDirectedGraph = value
+
+    def setWeighted(self, value: bool):
+        self._isWeightedGraph = value
 
     # Utils
     def getVertexList(self):

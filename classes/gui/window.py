@@ -184,8 +184,13 @@ class Window(QtWidgets.QMainWindow):
         button2.setFixedHeight(70)
         button2.clicked.connect(self._redoButtonAction)
 
+        button3 = QtWidgets.QPushButton('Set defaults', self)
+        button3.setFixedHeight(70)
+        button3.clicked.connect(self._view.setDefaults)
+
         self._buttonsLayout.addWidget(button1)
         self._buttonsLayout.addWidget(button2)
+        self._buttonsLayout.addWidget(button3)
 
     # Utils
     def getCache(self):

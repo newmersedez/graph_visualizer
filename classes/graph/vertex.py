@@ -62,11 +62,16 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
                 return i.getWeight()
         return None
 
+    def isReachable(self, end):
+        for i in self._adjacentEdgeList:
+            if i.getEndVertex() == end or (i.getStartVertex() == end and not i.isDirected()):
+                return True
+        return False
+
     def setServiceValue(self, value: str):
         self._serviceValue = value
 
     def paint(self, painter, option, widget=None):
-        print('aahahah')
         pen = QtGui.QPen()
         pen.setColor(QtCore.Qt.white)
         pen.setWidth(3)

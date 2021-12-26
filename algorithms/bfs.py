@@ -18,7 +18,7 @@ def bfs(graph: Graph, vertex: Vertex):
         tmp = []
         for i in adj_list:
             range_vertex = new_vertex.rangeToAdjNode(i)
-            if range_vertex is not None and shortest_ways[i] is None:
+            if range_vertex is not None and shortest_ways[i] is None and new_vertex.isReachable(i):
                 shortest_ways[i] = shortest_ways[new_vertex] + range_vertex
                 tmp.append(i)
                 nodes_to_visit.put(i)
