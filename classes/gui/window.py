@@ -1,5 +1,4 @@
 # View
-
 from PyQt5.QtCore import pyqtSlot
 from utils.colorpalletes import *
 from utils.windowtext import *
@@ -122,9 +121,13 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        algo = QtWidgets.QAction('BFS', self)
+        algo = QtWidgets.QAction('ЛР №2 - Поиска пути в ширину', self)
         algo.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algo)
+
+        algoComp = QtWidgets.QAction('ЛР №9 - Дополнение графа', self)  # Rina
+        algoComp.triggered.connect(self._view.viewComp)
+        tasksMenu.addAction(algoComp)
 
         test = QtWidgets.QAction('Test', self)
         test.triggered.connect(self._view.func)

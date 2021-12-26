@@ -2,6 +2,7 @@
 
 from classes.cache.cache import *
 from algorithms.bfs import *
+from algorithms.complete import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -25,6 +26,8 @@ class View(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)
 
+
+    # ALGOS
     def func(self):
         point = self.mapToScene(100, 100)
         vertex = Vertex(point.x(), point.y(), '12', VERTEX_COLOR)
@@ -38,7 +41,7 @@ class View(QtWidgets.QGraphicsView):
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
-        inputDialog.setWindowTitle('BFS')
+        inputDialog.setWindowTitle('ЛР №2 - Поиска пути в ширину')
         inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину обхода:')
@@ -50,6 +53,30 @@ class View(QtWidgets.QGraphicsView):
             if vertex is not None:
                 self.setDefaults()
                 bfs(self._graph, vertex)
+
+    def viewComp(self):  # Rina
+        matrix = self._graph.getAdjacentMatrix()
+        isfullgraph = 0
+        old_edge_list = []
+        for i in self._graph.getEdgeList():
+            old_edge_list.append(i)
+        for x in range(len(matrix)):
+            for y in range(len(matrix[x])):
+                isfullgraph += matrix[x][y]
+        if isfullgraph >= (len(matrix) ** 2 - len(matrix)):
+            messageDialod = QtWidgets.QMessageBox(self)
+            messageDialod.setWindowTitle("ЛР №9 - Дополнение графа")
+            messageDialod.setStyleSheet(WINDOW_DARK)
+            messageDialod.setText('Текущий граф является полным.       ')
+            messageDialod.exec_()
+        else:
+            editing_graph = self.copyGraph(self._graph)
+            complete(editing_graph)
+            for edge in old_edge_list:
+                tmp = editing_graph.findEdgeByVertexes(edge.getStartVertex(), edge.getEndVertex())
+
+                editing_graph.removeEdge(tmp)
+            self.addGraph(editing_graph)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():

@@ -78,6 +78,11 @@ class Graph:
     def setWeighted(self, value: bool):
         self._isWeightedGraph = value
 
+    def findEdgeByVertexes(self, start: int, end: int):
+        for edge in self._edgeList:
+            if edge.getStartVertex() == start and edge.getEndVertex() == end:
+                return edge
+
     # Utils
     def getVertexList(self):
         return self._vertexList
@@ -100,6 +105,35 @@ class Graph:
 
     def empty(self):
         return len(self._vertexList) == 0 and len(self._edgeList) == 0
+
+    def setEdgesFromAdjacentMatrix(self, adjMatrix):  # Rina
+        self._edgeList.clear()
+        vertexList = self.getVertexList()
+        vertexListSize = len(vertexList)
+
+        for i in range(vertexListSize):
+            for j in range(i, vertexListSize):
+                if i == j and adjMatrix[i][j] != 0:
+                    edge = Edge(vertexList[i], vertexList[j],
+                                name=str(len(self.getEdgeList()) + 1),
+                                weight=int(adjMatrix[i][j]))
+                    self.addEdge(edge)
+                else:
+                    if adjMatrix[i][j] == adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                        edge = Edge(vertexList[i], vertexList[j],
+                                    name=str(len(self.getEdgeList()) + 1),
+                                    weight=int(adjMatrix[i][j]),
+                                    direction=False)
+                        self.addEdge(edge)
+
+        for i in range(vertexListSize):
+            for j in range(vertexListSize):
+                if i != j and adjMatrix[i][j] != adjMatrix[j][i] and adjMatrix[i][j] != 0:
+                    edge = Edge(vertexList[i], vertexList[j],
+                                name=str(len(self.getEdgeList()) + 1),
+                                weight=int(adjMatrix[i][j]),
+                                direction=True)
+                    self.addEdge(edge)
 
     def getAdjacentMatrix(self):
         m = len(self._vertexList)

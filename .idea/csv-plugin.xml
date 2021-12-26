@@ -122,6 +122,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/examples/lab9/Lab9 adjacent full graph.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/examples/lab9/adjacent matrix 4v2e.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/examples/lab9/incidence Matrix ring perimetr 5.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
