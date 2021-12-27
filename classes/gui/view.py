@@ -44,7 +44,7 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                bfs(self._graph, vertex)
+                setVisualForBFS(bfs(self._graph, vertex))
 
     def viewComp(self):
         matrix = self._graph.getAdjacentMatrix()
@@ -92,7 +92,7 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                dijkstra_algo(self._graph, vertex)
+                setVusialForDijkstra(dijkstra_algo(self._graph, vertex))
 
     def setDefaults(self):
         for item in self._graph.getVertexList():

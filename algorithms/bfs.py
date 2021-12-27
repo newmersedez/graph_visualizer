@@ -29,10 +29,11 @@ def bfs(graph: Graph, vertex: Vertex):
                 nodes_to_visit.put(i)
         if len(tmp) > 0:
             bfs_steps.append(tmp)
+    return depth
 
-    for i in shortest_ways.keys():
+
+def setVisualForBFS(depth):
+    for i in depth.keys():
         if (depth[i] != 0):
             i.setColor("red")
             i.setServiceValue("n=" + str(depth[i]))
-
-    return shortest_ways

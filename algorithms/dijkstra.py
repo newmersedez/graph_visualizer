@@ -40,3 +40,10 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
     ranges = [i for i in ranges_to_nodes.values()]
     print(names)
     print(ranges)
+
+    return (ranges_to_nodes)
+
+def setVusialForDijkstra(ranges_to_nodes):
+    for i in ranges_to_nodes.keys():
+        if ranges_to_nodes[i] is not None and ranges_to_nodes[i] != 0:
+            i.setServiceValue("r=" + str(ranges_to_nodes[i]))
