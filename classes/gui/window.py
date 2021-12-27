@@ -121,17 +121,17 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        algo = QtWidgets.QAction('ЛР №2 - Поиска пути в ширину', self)
-        algo.triggered.connect(self._view.viewBFS)
-        tasksMenu.addAction(algo)
+        algoBfs = QtWidgets.QAction('ЛР №2 - Поиска пути в ширину', self)
+        algoBfs.triggered.connect(self._view.viewBFS)
+        tasksMenu.addAction(algoBfs)
 
         algoComp = QtWidgets.QAction('ЛР №9 - Дополнение графа', self)  # Rina
         algoComp.triggered.connect(self._view.viewComp)
         tasksMenu.addAction(algoComp)
 
-        test = QtWidgets.QAction('Test', self)
-        test.triggered.connect(self._view.func)
-        tasksMenu.addAction(test)
+        algoKruskal = QtWidgets.QAction('ЛР №13 - Минимальное остовное дерево', self)  # Rina
+        algoKruskal.triggered.connect(self._view.viewKruskal)
+        tasksMenu.addAction(algoKruskal)
 
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)

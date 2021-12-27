@@ -3,6 +3,7 @@
 from classes.cache.cache import *
 from algorithms.bfs import *
 from algorithms.complete import *
+from algorithms.kruskal import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -26,18 +27,7 @@ class View(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)
 
-
     # ALGOS
-    def func(self):
-        point = self.mapToScene(100, 100)
-        vertex = Vertex(point.x(), point.y(), '12', VERTEX_COLOR)
-
-        self._graph.addVertex(vertex)
-        self._scene.addItem(vertex)
-
-        self._graph.removeVertex(vertex)
-        self._scene.removeItem(vertex)
-
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
@@ -52,9 +42,9 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                bfs(self._graph, vertex)
+                algorithms.bfs(self._graph, vertex)
 
-    def viewComp(self):  # Rina
+    def viewComp(self):
         matrix = self._graph.getAdjacentMatrix()
         isfullgraph = 0
         old_edge_list = []
@@ -77,6 +67,9 @@ class View(QtWidgets.QGraphicsView):
 
                 editing_graph.removeEdge(tmp)
             self.addGraph(editing_graph)
+
+    def viewKruskal(self):
+        kruskal(self._graph)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():
