@@ -31,8 +31,8 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
                 continue
             if ranges_to_nodes[tmp_end_node] is None:
                 ranges_to_nodes[tmp_end_node] = tmp_range_from_node + i.getWeight()
-            elif int(ranges_to_nodes[tmp_end_node]) > int(tmp_range_from_node + i.getWeight()):
-                ranges_to_nodes[tmp_end_node] = int(tmp_range_from_node + i.getWeight())
+            elif ranges_to_nodes[tmp_end_node] > tmp_range_from_node + i.getWeight():
+                ranges_to_nodes[tmp_end_node] = tmp_range_from_node + i.getWeight()
             if not checked_nodes[tmp_end_node]:
                 nodes_to_visit.put(tmp_end_node)
         checked_nodes[checking_node] = True
