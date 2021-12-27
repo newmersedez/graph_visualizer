@@ -81,7 +81,7 @@ class View(QtWidgets.QGraphicsView):
     def viewDijkstra(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
-        inputDialog.setWindowTitle('ЛР № 4. Алгоритм Дейкстры')
+        inputDialog.setWindowTitle('ЛР №4. Алгоритм Дейкстры')
         inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину:')
@@ -92,7 +92,7 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                dijkstra_algo(self._graph)
+                dijkstra_algo(self._graph, vertex)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():

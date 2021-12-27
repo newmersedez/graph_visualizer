@@ -16,7 +16,7 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
     for i in graph.getVertexList():
         checked_nodes[i] = False
         ranges_to_nodes[i] = None
-    ranges_to_nodes[vertex] = 0
+    ranges_to_nodes[vertex]: int = 0
     nodes_to_visit = Queue()
     nodes_to_visit.put(vertex)
     while nodes_to_visit.qsize() > 0:
@@ -26,7 +26,12 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
 
         reachable_edges = [i for i in checking_node.getAdjacentEdgeList()
                            if (i.getStartVertex() == checking_node or not i.isDirected())]
-        reachable_edges = sorted(reachable_edges, key=(lambda x: x.getWeight()))
+
+        print("jahsjgjhashhfkbsafhaguksbjflhafkbjnlhgvas ")
+        for item in reachable_edges:
+            print(item.getWeight())
+
+        reachable_edges = sorted(reachable_edges, key=(lambda x: int(x.getWeight())))
         print("reachable (sorted by edge weight) nodes - ",
               [get_end_node(checking_node, i).getName() for i in reachable_edges])
         for i in reachable_edges:
@@ -40,8 +45,7 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
             print("tmp range is ", tmp_range_from_node)
             if ranges_to_nodes[tmp_end_node] is None:
                 ranges_to_nodes[tmp_end_node] = i.getWeight()
-            print("here 2.2")
-            if ranges_to_nodes[tmp_end_node] > (tmp_range_from_node + i.getWeight()):
+            elif int(ranges_to_nodes[tmp_end_node]) > tmp_range_from_node + i.getWeight():
                 ranges_to_nodes[tmp_end_node] = tmp_range_from_node + i.getWeight()
             print("here 2.3")
             if not checked_nodes[tmp_end_node]:

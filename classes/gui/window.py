@@ -125,8 +125,8 @@ class Window(QtWidgets.QMainWindow):
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)
 
-        algoDijkstra = QtWidgets.QAction('ЛР № 4. Алгоритм Дейкстры', self)
-        algoDijkstra.triggered.connect(self._view.viewBFS)
+        algoDijkstra = QtWidgets.QAction('ЛР №4. Алгоритм Дейкстры', self)
+        algoDijkstra.triggered.connect(self._view.viewDijkstra)
         tasksMenu.addAction(algoDijkstra)
 
         algoComp = QtWidgets.QAction('ЛР №9. Дополнение графа', self)  # Rina
