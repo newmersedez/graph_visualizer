@@ -224,5 +224,5 @@ class Edge(QtWidgets.QGraphicsLineItem):
                 painter.setPen(newPen)
                 painter.setFont(QtGui.QFont('Arial', 14))
                 textOffset = VERTEX_SIZE / 4
-                painter.drawText(point3X + factor * cos(-angle2), point3Y + factor * sin(-angle2) - textOffset,
+                painter.drawText(point3X + int(factor * cos(-angle2)), point3Y + int(factor * sin(-angle2)) - textOffset,
                                  self._name + ': ' + str(self._weight))
