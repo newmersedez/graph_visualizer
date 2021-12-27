@@ -10,7 +10,7 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self._x = x
         self._y = y
         self._name: str = name
-        self._color: str = color
+        self._color = color
         self._adjacentVertexList = list()
         self._adjacentEdgeList = list()
         self._isLoop = False

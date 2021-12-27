@@ -3,10 +3,8 @@ from queue import Queue
 
 
 def bfs(graph: Graph, vertex: Vertex):
-    visited_nodes = [False] * len(graph.getVertexList())
     shortest_ways = {}
     depth = {}
-    bfs_steps = []
 
     for i in graph.getVertexList():
         shortest_ways[i] = None
@@ -27,8 +25,6 @@ def bfs(graph: Graph, vertex: Vertex):
                 depth[i] = depth[new_vertex] + 1
                 tmp.append(i)
                 nodes_to_visit.put(i)
-        if len(tmp) > 0:
-            bfs_steps.append(tmp)
     return depth
 
 

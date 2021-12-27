@@ -12,7 +12,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
         self._endVertex = endVertex
         self._name: str = name
         self._weight: int = weight
-        self._color: str = color
+        self._color = color
         self._curveFactor = factor
         self._isDirection = direction
         self._serviceValue = ""

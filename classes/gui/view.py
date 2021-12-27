@@ -62,13 +62,14 @@ class View(QtWidgets.QGraphicsView):
             messageDialod.setText('Текущий граф является полным.       ')
             messageDialod.exec_()
         else:
-            self.setDefaults()
-            editing_graph = self.copyGraph(self._graph)
-            complete(editing_graph)
-            for edge in old_edge_list:
-                tmp = editing_graph.findEdgeByVertexes(edge.getStartVertex(), edge.getEndVertex())
-                editing_graph.removeEdge(tmp)
-            self.addGraph(editing_graph)
+            # setTextelf.setDefaults()
+            # editing_graph = self.copyGraph(self._graph)
+            cpy = self.copyGraph(self._graph)
+            setVisualForComplete(cpy, complete(cpy))
+            # for edge in old_edge_list:
+            #     tmp = editing_graph.findEdgeByVertexes(edge.getStartVertex(), edge.getEndVertex())
+            #     editing_graph.removeEdge(tmp)
+            self.addGraph(cpy)
 
     def viewKruskal(self):
         self.setDefaults()
@@ -76,7 +77,7 @@ class View(QtWidgets.QGraphicsView):
 
     def viewColorize(self):
         self.setDefaults()
-        colorize(self._graph)
+        setVisualForColorize(colorize(self._graph))
 
     def viewDijkstra(self):
         inputDialog = QtWidgets.QInputDialog(self)
@@ -92,7 +93,7 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                setVusialForDijkstra(dijkstra_algo(self._graph, vertex))
+                setVisualForDijkstra(dijkstra_algo(self._graph, vertex))
 
     def setDefaults(self):
         for item in self._graph.getVertexList():
