@@ -9,12 +9,12 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         # Vertex variables
         self._x = x
         self._y = y
-        self._name = name
-        self._color = color
+        self._name: str = name
+        self._color: str = color
         self._adjacentVertexList = list()
         self._adjacentEdgeList = list()
         self._isLoop = False
-        self._serviceValue = ""
+        self._serviceValue: str = ""
 
         # Vertex settings
         self.setPos(x, y)

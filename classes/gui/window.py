@@ -133,6 +133,10 @@ class Window(QtWidgets.QMainWindow):
         algoKruskal.triggered.connect(self._view.viewKruskal)
         tasksMenu.addAction(algoKruskal)
 
+        algoColorize = QtWidgets.QAction('ЛР №15 - Раскраска графа', self)  # Rina
+        algoColorize.triggered.connect(self._view.viewColorize)
+        tasksMenu.addAction(algoColorize)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)

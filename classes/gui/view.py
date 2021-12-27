@@ -4,6 +4,7 @@ from classes.cache.cache import *
 from algorithms.bfs import *
 from algorithms.complete import *
 from algorithms.kruskal import *
+from algorithms.colorize import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -42,7 +43,7 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                algorithms.bfs(self._graph, vertex)
+                bfs(self._graph, vertex)
 
     def viewComp(self):
         matrix = self._graph.getAdjacentMatrix()
@@ -60,20 +61,26 @@ class View(QtWidgets.QGraphicsView):
             messageDialod.setText('Текущий граф является полным.       ')
             messageDialod.exec_()
         else:
+            self.setDefaults()
             editing_graph = self.copyGraph(self._graph)
             complete(editing_graph)
             for edge in old_edge_list:
                 tmp = editing_graph.findEdgeByVertexes(edge.getStartVertex(), edge.getEndVertex())
-
                 editing_graph.removeEdge(tmp)
             self.addGraph(editing_graph)
 
     def viewKruskal(self):
+        self.setDefaults()
         kruskal(self._graph)
+
+    def viewColorize(self):
+        self.setDefaults()
+        colorize(self._graph)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():
             item.setColor(VERTEX_COLOR)
+            item.setServiceValue("")
         for item in self._graph.getEdgeList():
             item.setColor(QtCore.Qt.white)
         self._scene.update()

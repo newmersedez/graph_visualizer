@@ -10,9 +10,9 @@ class Edge(QtWidgets.QGraphicsLineItem):
         # Edge variables
         self._startVertex = startVertex
         self._endVertex = endVertex
-        self._name = name
-        self._weight = weight
-        self._color = color
+        self._name: str = name
+        self._weight: int = weight
+        self._color: str = color
         self._curveFactor = factor
         self._isDirection = direction
         self._serviceValue = ""
