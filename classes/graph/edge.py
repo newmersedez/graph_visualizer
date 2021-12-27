@@ -32,7 +32,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
         self._weight = weight
         self._isWeight = True
 
-    def getWeight(self):
+    def getWeight(self) -> int:
         return self._weight
 
     def getStartVertex(self):
