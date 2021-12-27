@@ -27,9 +27,8 @@ def bfs(graph: Graph, vertex: Vertex):
                 nodes_to_visit.put(i)
     return depth
 
-
 def setVisualForBFS(depth):
     for i in depth.keys():
-        if (depth[i] != 0):
+        if depth[i] != 0 and depth[i] is not None:
             i.setColor("red")
             i.setServiceValue("n=" + str(depth[i]))
