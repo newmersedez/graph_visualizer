@@ -121,19 +121,23 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        algoBfs = QtWidgets.QAction('ЛР №2 - Поиска пути в ширину', self)
+        algoBfs = QtWidgets.QAction('ЛР №2. Поиска пути в ширину', self)
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)
 
-        algoComp = QtWidgets.QAction('ЛР №9 - Дополнение графа', self)  # Rina
+        algoDijkstra = QtWidgets.QAction('ЛР № 4. Алгоритм Дейкстры', self)
+        algoDijkstra.triggered.connect(self._view.viewBFS)
+        tasksMenu.addAction(algoDijkstra)
+
+        algoComp = QtWidgets.QAction('ЛР №9. Дополнение графа', self)  # Rina
         algoComp.triggered.connect(self._view.viewComp)
         tasksMenu.addAction(algoComp)
 
-        algoKruskal = QtWidgets.QAction('ЛР №13 - Минимальное остовное дерево', self)  # Rina
+        algoKruskal = QtWidgets.QAction('ЛР №13. Минимальное остовное дерево', self)  # Rina
         algoKruskal.triggered.connect(self._view.viewKruskal)
         tasksMenu.addAction(algoKruskal)
 
-        algoColorize = QtWidgets.QAction('ЛР №15 - Раскраска графа', self)  # Rina
+        algoColorize = QtWidgets.QAction('ЛР №15. Раскраска графа', self)  # Rina
         algoColorize.triggered.connect(self._view.viewColorize)
         tasksMenu.addAction(algoColorize)
 

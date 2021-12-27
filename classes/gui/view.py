@@ -5,6 +5,7 @@ from algorithms.bfs import *
 from algorithms.complete import *
 from algorithms.kruskal import *
 from algorithms.colorize import *
+from algorithms.dijkstra import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -32,7 +33,7 @@ class View(QtWidgets.QGraphicsView):
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
-        inputDialog.setWindowTitle('ЛР №2 - Поиска пути в ширину')
+        inputDialog.setWindowTitle('ЛР №2. Поиска пути в ширину')
         inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину обхода:')
@@ -56,7 +57,7 @@ class View(QtWidgets.QGraphicsView):
                 isfullgraph += matrix[x][y]
         if isfullgraph >= (len(matrix) ** 2 - len(matrix)):
             messageDialod = QtWidgets.QMessageBox(self)
-            messageDialod.setWindowTitle("ЛР №9 - Дополнение графа")
+            messageDialod.setWindowTitle("ЛР №9. Дополнение графа")
             messageDialod.setStyleSheet(WINDOW_DARK)
             messageDialod.setText('Текущий граф является полным.       ')
             messageDialod.exec_()
@@ -76,6 +77,22 @@ class View(QtWidgets.QGraphicsView):
     def viewColorize(self):
         self.setDefaults()
         colorize(self._graph)
+
+    def viewDijkstra(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('ЛР № 4. Алгоритм Дейкстры')
+        inputDialog.setStyleSheet(WINDOW_DARK)
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Выберите начальную вершину:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        if ok:
+            vertex = self._graph.findVertexByName(name)
+            if vertex is not None:
+                self.setDefaults()
+                dijkstra_algo(self._graph)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():

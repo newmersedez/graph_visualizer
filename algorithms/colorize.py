@@ -5,4 +5,4 @@ def colorize(graph: Graph):
     sorted_vertex = graph.getVertexList();
 
     for item in sorted_vertex:
-        print(len(item.getAdjacentVertexList()))
+        print("vertex {} = {}".format(item.getName(), len(item.getAdjacentVertexList())))
