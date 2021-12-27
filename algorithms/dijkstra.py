@@ -27,6 +27,10 @@ def dijkstra_algo(graph: Graph, vertex: Vertex):
         for i in reachable_edges:
             tmp_range_from_node = ranges_to_nodes[checking_node]  # inf == None
             tmp_end_node = get_end_node(checking_node, i)
+            x = i.getWeight()
+            print(type(i))
+            print(type(x))
+            print(x)
             if not tmp_end_node:
                 continue
             if ranges_to_nodes[tmp_end_node] is None:

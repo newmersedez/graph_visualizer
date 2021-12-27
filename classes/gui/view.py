@@ -315,7 +315,7 @@ class View(QtWidgets.QGraphicsView):
 
         if ok:
             name = textBox1.text()
-            weight = textBox2.text()
+            weight = int(textBox2.text())
             edge = self._graph.findEdgeByName(name)
             self._graph.setEdgeWeight(edge, weight)
             self._scene.update()

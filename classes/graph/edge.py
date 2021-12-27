@@ -28,7 +28,7 @@ class Edge(QtWidgets.QGraphicsLineItem):
     def isDirected(self):
         return self._isDirection
 
-    def setWeight(self, weight):
+    def setWeight(self, weight : int):
         self._weight = weight
         self._isWeight = True
 
