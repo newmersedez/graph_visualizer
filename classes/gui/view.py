@@ -6,6 +6,7 @@ from algorithms.complete import *
 from algorithms.kruskal import *
 from algorithms.colorize import *
 from algorithms.dijkstra import *
+from algorithms.min_cycle import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -78,6 +79,11 @@ class View(QtWidgets.QGraphicsView):
     def viewColorize(self):
         self.setDefaults()
         setVisualForColorize(colorize(self._graph))
+
+    def viewCycle(self):
+        self.setDefaults()
+        if is_search_min_cycle_applicable(self._graph):
+            search_min_cycle(self._graph)
 
     def viewDijkstra(self):
         inputDialog = QtWidgets.QInputDialog(self)

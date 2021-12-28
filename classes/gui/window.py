@@ -133,11 +133,15 @@ class Window(QtWidgets.QMainWindow):
         algoComp.triggered.connect(self._view.viewComp)
         tasksMenu.addAction(algoComp)
 
-        algoKruskal = QtWidgets.QAction('ЛР №13. Минимальное остовное дерево', self)  # Rina
+        algoKruskal = QtWidgets.QAction('ЛР №13. Минимальное остовное дерево', self)
         algoKruskal.triggered.connect(self._view.viewKruskal)
         tasksMenu.addAction(algoKruskal)
 
-        algoColorize = QtWidgets.QAction('ЛР №15. Раскраска графа', self)  # Rina
+        algoCycle = QtWidgets.QAction('ЛР №14. Задача о цикле', self)
+        algoCycle.triggered.connect(self._view.viewCycle)
+        tasksMenu.addAction(algoCycle)
+
+        algoColorize = QtWidgets.QAction('ЛР №15. Раскраска графа', self)
         algoColorize.triggered.connect(self._view.viewColorize)
         tasksMenu.addAction(algoColorize)
 
