@@ -1,4 +1,5 @@
 from algorithms.bfs import bfs
+from algorithms.connected import *
 from classes.graph.graph import *
 from queue import Queue
 
@@ -76,4 +77,4 @@ def centre_search(graph: Graph):
             pair[0].setServiceValue("d = " + str(min_depth))
 
 def is_search_min_cycle_applicable(graph: Graph):
-    return not graph.isDirected()
+    return not graph.isDirected() and isConnected(graph)

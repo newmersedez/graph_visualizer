@@ -84,6 +84,12 @@ class View(QtWidgets.QGraphicsView):
         self.setDefaults()
         if is_search_min_cycle_applicable(self._graph):
             search_min_cycle(self._graph)
+        else:
+            messageDialod = QtWidgets.QMessageBox(self)
+            messageDialod.setWindowTitle("Ошибка")
+            messageDialod.setStyleSheet(WINDOW_DARK)
+            messageDialod.setText('Граф должен быть связным и ненаправленным')
+            messageDialod.exec_()
 
     def viewDijkstra(self):
         inputDialog = QtWidgets.QInputDialog(self)
