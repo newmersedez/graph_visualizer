@@ -5,7 +5,9 @@ def getColorFromColorNumber(color : int):
     red = (int)(9 * (1 - t) * pow(t, 3) * 255)
     green = (int)(15 * pow((1 - t), 2) * pow(t, 2) * 255)
     blue = (int)(8.5 * pow((1 - t), 3) * t * 255)
-    return QtGui.QColor(red, green, blue)
+
+
+    return QtGui.QColor(255 - red, green, blue)
 
 def get_end_node(begin: Vertex, edge: Edge):
     tmp_end_node = edge.getEndVertex()
@@ -52,4 +54,5 @@ def colorize(graph: Graph):
 
 def setVisualForColorize(colors_of_nodes : dict):
     for i in colors_of_nodes.keys():
-        i.setColor(getColorFromColorNumber(colors_of_nodes[i] * 10))
+        i.setColor(getColorFromColorNumber(colors_of_nodes[i] * 3))
+        i.setServiceValue("c=" + str(colors_of_nodes[i]))
