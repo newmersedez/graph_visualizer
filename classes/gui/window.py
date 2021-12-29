@@ -145,6 +145,10 @@ class Window(QtWidgets.QMainWindow):
         algoColorize.triggered.connect(self._view.viewColorize)
         tasksMenu.addAction(algoColorize)
 
+        algoAStar = QtWidgets.QAction('ЛР хз какая, пофиксить потом. А*', self)
+        algoAStar.triggered.connect(self._view.viewAStar)
+        tasksMenu.addAction(algoAStar)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)

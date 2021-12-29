@@ -7,6 +7,7 @@ from algorithms.kruskal import *
 from algorithms.colorize import *
 from algorithms.dijkstra import *
 from algorithms.min_cycle import *
+from algorithms.astar import *
 from utils.colorpalletes import *
 import main
 import sip
@@ -111,6 +112,27 @@ class View(QtWidgets.QGraphicsView):
             if vertex is not None:
                 self.setDefaults()
                 setVisualForDijkstra(dijkstra_algo(self._graph, vertex))
+
+    def viewAStar(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        # inputDialog.setWindowTitle('ЛР №2. Поиска пути в ширину')
+        inputDialog.setStyleSheet(WINDOW_DARK)
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Выберите начальную вершину:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        inputDialog.setLabelText('Выберите начальную вершину:')
+        ok2 = inputDialog.exec_()
+        name2 = inputDialog.textValue()
+
+        if ok and ok2:
+            begin_vertex = self._graph.findVertexByName(name)
+            end_vertex = self._graph.findVertexByName(name2)
+            if begin_vertex is not None and end_vertex is not None:
+                self.setDefaults()
+                astar(self._graph, begin_vertex, end_vertex)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():
