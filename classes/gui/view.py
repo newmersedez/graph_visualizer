@@ -48,7 +48,7 @@ class View(QtWidgets.QGraphicsView):
                 setVisualForBFS(bfs(self._graph, vertex))
 
     def viewComp(self):
-        matrix = self._graph.getAdjacentMatrix()        #Edit
+        matrix = self._graph.getAdjacentMatrix()
         isfullgraph = 0
         old_edge_list = []
         for i in self._graph.getEdgeList():
