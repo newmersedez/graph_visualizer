@@ -48,15 +48,20 @@ class View(QtWidgets.QGraphicsView):
                 setVisualForBFS(bfs(self._graph, vertex))
 
     def viewComp(self):
-        matrix = self._graph.getAdjacentMatrix()
+        matrix = self._graph.getAdjacentMatrix()        #Edit
         isfullgraph = 0
         old_edge_list = []
         for i in self._graph.getEdgeList():
             old_edge_list.append(i)
         for x in range(len(matrix)):
             for y in range(len(matrix[x])):
-                isfullgraph += matrix[x][y]
-        if isfullgraph >= (len(matrix) ** 2 - len(matrix)):
+                if (matrix[x][y] >= 1 and matrix[y][x] == 0) or (matrix[y][x] >= 1 and matrix[x][y] == 0):
+                    matrix[y][x] = matrix[x][y] = 1
+                if matrix[x][y] >= 1:
+                    isfullgraph += 1
+        n = (len(matrix)*(len(matrix)-1))
+        #print(matrix)
+        if isfullgraph >= (len(matrix)*(len(matrix)-1)):
             messageDialod = QtWidgets.QMessageBox(self)
             messageDialod.setWindowTitle("ЛР №9. Дополнение графа")
             messageDialod.setStyleSheet(WINDOW_DARK)
