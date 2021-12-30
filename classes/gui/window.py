@@ -149,6 +149,10 @@ class Window(QtWidgets.QMainWindow):
         algoAStar.triggered.connect(self._view.viewAStar)
         tasksMenu.addAction(algoAStar)
 
+        algoWeight = QtWidgets.QAction('ЛР №6. Вес, радиус диаметр и степени', self)
+        algoWeight.triggered.connect(self._view.viewWeight)
+        tasksMenu.addAction(algoWeight)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)

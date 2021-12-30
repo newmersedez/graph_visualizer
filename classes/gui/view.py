@@ -9,6 +9,7 @@ from algorithms.dijkstra import *
 from algorithms.min_cycle import *
 from algorithms.astar import *
 from utils.colorpalletes import *
+from algorithms.get_weight_vertex import *
 import main
 import sip
 
@@ -133,6 +134,11 @@ class View(QtWidgets.QGraphicsView):
             if begin_vertex is not None and end_vertex is not None:
                 self.setDefaults()
                 astar(self._graph, begin_vertex, end_vertex)
+
+    def viewWeight(self):
+        getWeightVertex(self._graph)
+        getRadiusDiameter(self._graph)
+        getVectDegree(self._graph)
 
     def setDefaults(self):
         for item in self._graph.getVertexList():
