@@ -8,6 +8,7 @@ from algorithms.colorize import *
 from algorithms.dijkstra import *
 from algorithms.min_cycle import *
 from algorithms.astar import *
+from algorithms.best_first import *
 from algorithms.isomorphism import *
 from utils.colorpalletes import *
 from algorithms.get_weight_vertex import *
@@ -118,14 +119,14 @@ class View(QtWidgets.QGraphicsView):
     def viewAStar(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
-        # inputDialog.setWindowTitle('ЛР №2. Поиска пути в ширину')
+        inputDialog.setWindowTitle('A*')
         inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину:')
         ok = inputDialog.exec_()
         name = inputDialog.textValue()
 
-        inputDialog.setLabelText('Выберите начальную вершину:')
+        inputDialog.setLabelText('Выберите конечную вершину:')
         ok2 = inputDialog.exec_()
         name2 = inputDialog.textValue()
 
@@ -134,7 +135,28 @@ class View(QtWidgets.QGraphicsView):
             end_vertex = self._graph.findVertexByName(name2)
             if begin_vertex is not None and end_vertex is not None:
                 self.setDefaults()
-                astar(self._graph, begin_vertex, end_vertex)
+                setVisualForAStar(astar(self._graph, begin_vertex, end_vertex))
+
+    def viewBestFirst(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('Best First')
+        inputDialog.setStyleSheet(WINDOW_DARK)
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Выберите начальную вершину:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        inputDialog.setLabelText('Выберите конечную вершину:')
+        ok2 = inputDialog.exec_()
+        name2 = inputDialog.textValue()
+
+        if ok and ok2:
+            begin_vertex = self._graph.findVertexByName(name)
+            end_vertex = self._graph.findVertexByName(name2)
+            if begin_vertex is not None and end_vertex is not None:
+                self.setDefaults()
+                setVisualForBestFirst(best_first_search(self._graph, begin_vertex, end_vertex))
 
     def viewWeight(self):
         getWeightVertex(self._graph)

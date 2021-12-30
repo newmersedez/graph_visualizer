@@ -157,6 +157,10 @@ class Window(QtWidgets.QMainWindow):
         algoIso.triggered.connect(self._view.viewIso)
         tasksMenu.addAction(algoIso)
 
+        algoBestFirst = QtWidgets.QAction('ЛР №3 - best first', self)  # Rina
+        algoBestFirst.triggered.connect(self._view.viewBestFirst)
+        tasksMenu.addAction(algoBestFirst)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)

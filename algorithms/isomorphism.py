@@ -96,6 +96,7 @@ def checkIsomorphismMatrix(a : np.array, b : np.array):
             if not flag:
                 break
         if flag:
+            print(perm)
             return True
     return False
 
