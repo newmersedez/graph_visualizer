@@ -8,6 +8,7 @@ from algorithms.colorize import *
 from algorithms.dijkstra import *
 from algorithms.min_cycle import *
 from algorithms.astar import *
+from algorithms.isomorphism import *
 from utils.colorpalletes import *
 from algorithms.get_weight_vertex import *
 import main
@@ -139,6 +140,29 @@ class View(QtWidgets.QGraphicsView):
         getWeightVertex(self._graph)
         getRadiusDiameter(self._graph)
         getVectDegree(self._graph)
+
+    def viewIso(self):  # Rina
+        matrix = self._graph.getAdjacentMatrix()
+        isIsomorph = isomorph(self._graph)
+        if isIsomorph is None:
+            messageDialod = QtWidgets.QMessageBox(self)
+            messageDialod.setWindowTitle("ЛР №7. Изоморфизм графа")
+            messageDialod.setStyleSheet(WINDOW_DARK)
+            messageDialod.setText('Задан один/более двух подграфов.       ')
+            messageDialod.exec()
+        else:
+            if isIsomorph is True:
+                messageDialodITrue = QtWidgets.QMessageBox(self)
+                messageDialodITrue.setWindowTitle("ЛР №7. Изоморфизм графа")
+                messageDialodITrue.setStyleSheet(WINDOW_DARK)
+                messageDialodITrue.setText('Графы изоморфны.       ')
+                messageDialodITrue.exec()
+            else:
+                messageDialodIFaulse = QtWidgets.QMessageBox(self)
+                messageDialodIFaulse.setWindowTitle("ЛР №7. Изоморфизм графа")
+                messageDialodIFaulse.setStyleSheet(WINDOW_DARK)
+                messageDialodIFaulse.setText('Графы не изоморфны.       ')
+                messageDialodIFaulse.exec()
 
     def setDefaults(self):
         for item in self._graph.getVertexList():

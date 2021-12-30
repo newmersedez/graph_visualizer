@@ -153,6 +153,10 @@ class Window(QtWidgets.QMainWindow):
         algoWeight.triggered.connect(self._view.viewWeight)
         tasksMenu.addAction(algoWeight)
 
+        algoIso = QtWidgets.QAction('ЛР №7 - Изоморфизм', self)  # Rina
+        algoIso.triggered.connect(self._view.viewIso)
+        tasksMenu.addAction(algoIso)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)
