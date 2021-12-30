@@ -17,7 +17,7 @@ def getWeightVertex(graph: Graph):
         for edge in vertex.getAdjacentEdgeList():
             if vertex == edge.getEndVertex() or not edge.isDirected():
                 weight += edge.getWeight()
-        vertex.setServiceValue("deg(" + vertex.getName() + ") = " + str(weight))
+        vertex.setServiceValue("w(" + vertex.getName() + ") = " + str(weight))
 
 def getRadiusDiameter(graph: Graph):
     dijkstraMax = {}
