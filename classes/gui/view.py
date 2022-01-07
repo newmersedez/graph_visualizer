@@ -13,6 +13,7 @@ from algorithms.isomorphism import *
 from utils.colorpalletes import *
 from algorithms.get_weight_vertex import *
 from algorithms.connected import *
+from algorithms.weddings import *
 import main
 import sip
 
@@ -141,6 +142,33 @@ class View(QtWidgets.QGraphicsView):
             if begin_vertex is not None and end_vertex is not None:
                 self.setDefaults()
                 setVisualForAStar(astar(self._graph, begin_vertex, end_vertex))
+
+
+    def viewMarrige(self):  # Rina
+        matrix = self._graph.getAdjacentMatrix()
+        ismarrige = wedding(self._graph)
+        if ismarrige is None:
+            messageDialod = QtWidgets.QMessageBox(self)
+            messageDialod.setWindowTitle("ЛР №16. Задача о свадьбах")
+            messageDialod.setStyleSheet(WINDOW_DARK)
+            messageDialod.setText('Граф задан не верно для данной задачи       ')
+            messageDialod.exec()
+        else:
+            if ismarrige is True:
+                messageDialodITrue = QtWidgets.QMessageBox(self)
+                messageDialodITrue.setWindowTitle("ЛР №16. Задача о свадьбах")
+                messageDialodITrue.setStyleSheet(WINDOW_DARK)
+                messageDialodITrue.setText('Задача о свадьбах имеет решение!       ')
+                messageDialodITrue.exec()
+            elif ismarrige is False:
+                messageDialodIFaulse = QtWidgets.QMessageBox(self)
+                messageDialodIFaulse.setWindowTitle("ЛР №16. Задача о свадьбах")
+                messageDialodIFaulse.setStyleSheet(WINDOW_DARK)
+                messageDialodIFaulse.setText('Задача о свадьбах не имеет решения на текущем графе       ')
+                messageDialodIFaulse.exec()
+            else:
+                setVisualForWedding(ismarrige)
+
 
     def viewBestFirst(self):
         inputDialog = QtWidgets.QInputDialog(self)

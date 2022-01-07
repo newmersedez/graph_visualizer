@@ -125,6 +125,12 @@ class Window(QtWidgets.QMainWindow):
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)
 
+
+        algoMarrige = QtWidgets.QAction('ЛР №16 - Задача о свадьбах', self)  # Rina
+        algoMarrige.triggered.connect(self._view.viewMarrige)
+        tasksMenu.addAction(algoMarrige)
+
+
         algoDijkstra = QtWidgets.QAction('ЛР №4. Алгоритм Дейкстры', self)
         algoDijkstra.triggered.connect(self._view.viewDijkstra)
         tasksMenu.addAction(algoDijkstra)
@@ -145,7 +151,7 @@ class Window(QtWidgets.QMainWindow):
         algoColorize.triggered.connect(self._view.viewColorize)
         tasksMenu.addAction(algoColorize)
 
-        algoAStar = QtWidgets.QAction('ЛР хз какая, пофиксить потом. А*', self)
+        algoAStar = QtWidgets.QAction('ЛР №5. А*', self)
         algoAStar.triggered.connect(self._view.viewAStar)
         tasksMenu.addAction(algoAStar)
 
@@ -161,7 +167,7 @@ class Window(QtWidgets.QMainWindow):
         algoBestFirst.triggered.connect(self._view.viewBestFirst)
         tasksMenu.addAction(algoBestFirst)
 
-        algoConnected = QtWidgets.QAction('ЛР 8', self)
+        algoConnected = QtWidgets.QAction('ЛР №8', self)
         algoConnected.triggered.connect(self._view.viewConnected)
         tasksMenu.addAction(algoConnected)
 
