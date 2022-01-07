@@ -12,6 +12,7 @@ from algorithms.best_first import *
 from algorithms.isomorphism import *
 from utils.colorpalletes import *
 from algorithms.get_weight_vertex import *
+from algorithms.connected import *
 import main
 import sip
 
@@ -84,6 +85,10 @@ class View(QtWidgets.QGraphicsView):
     def viewKruskal(self):
         self.setDefaults()
         kruskal(self._graph)
+
+    def viewConnected(self):
+        self.setDefaults()
+        setVisualForConnected(self._graph)
 
     def viewColorize(self):
         self.setDefaults()

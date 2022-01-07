@@ -161,6 +161,10 @@ class Window(QtWidgets.QMainWindow):
         algoBestFirst.triggered.connect(self._view.viewBestFirst)
         tasksMenu.addAction(algoBestFirst)
 
+        algoConnected = QtWidgets.QAction('ЛР 8', self)
+        algoConnected.triggered.connect(self._view.viewConnected)
+        tasksMenu.addAction(algoConnected)
+
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
         settingsChangeTheme.triggered.connect(self._changeTheme)
