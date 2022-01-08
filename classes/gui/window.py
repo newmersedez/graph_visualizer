@@ -159,6 +159,15 @@ class Window(QtWidgets.QMainWindow):
         algoWeight.triggered.connect(self._view.viewWeight)
         tasksMenu.addAction(algoWeight)
 
+        algoVec = QtWidgets.QAction('ЛР №11 - Восстановление графа из вектора', self)  # Rina
+        algoVec.triggered.connect(self._view.viewFromVector)
+        tasksMenu.addAction(algoVec)
+
+        algoIdeal = QtWidgets.QAction('ЛР №11.1 - Проверка графа на совершенство и экстримальность', self)  # Rina
+        algoIdeal.triggered.connect(self._view.viewIdeal)
+        tasksMenu.addAction(algoIdeal)
+
+
         algoIso = QtWidgets.QAction('ЛР №7 - Изоморфизм', self)  # Rina
         algoIso.triggered.connect(self._view.viewIso)
         tasksMenu.addAction(algoIso)

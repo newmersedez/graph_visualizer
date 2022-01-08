@@ -14,6 +14,7 @@ from utils.colorpalletes import *
 from algorithms.get_weight_vertex import *
 from algorithms.connected import *
 from algorithms.weddings import *
+from algorithms.graph_from_vector import *
 import main
 import sip
 
@@ -121,6 +122,55 @@ class View(QtWidgets.QGraphicsView):
             if vertex is not None:
                 self.setDefaults()
                 setVisualForDijkstra(dijkstra_algo(self._graph, vertex))
+
+    def viewFromVector(self):  # Rina
+        self.setDefaults()
+        inputDialog1 = QtWidgets.QInputDialog(self)
+        inputDialog1.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog1.setWindowTitle('ЛР №11 - Восстановление графа из вектора')
+        inputDialog1.setStyleSheet(WINDOW_DARK)
+        inputDialog1.setFont(QtGui.QFont('Arial', 15))
+        inputDialog1.setLabelText('Задайте вектор в формате:  1,2,3')
+        ok = inputDialog1.exec_()
+        inp = inputDialog1.textValue()
+        vect = inp.split(',')
+
+        messageDialod = QtWidgets.QMessageBox(self)
+        messageDialod.setWindowTitle("ЛР №11 - Восстановление графа из вектора")
+        messageDialod.setStyleSheet(WINDOW_DARK)
+        messageDialod.setText('Текущий граф будет стёрт, продолжить?       ')
+        messageDialod.exec()
+        if ok:
+            self._scene.clear()
+            self.addGraph(Graph())
+            for i in range(0, len(vect)):
+                cordX = random.randint(0, FIELD_WIDTH - VERTEX_SIZE)
+                cordY = random.randint(0, FIELD_HEIGHT - VERTEX_SIZE)
+                self._contextMenuAddVertex(cordX, cordY)
+            cpy = self.copyGraph(self._graph)
+
+            ispossible = setVisualForVector(cpy, graphFromVector(self, cpy, vect))  # 4,4,3,3,3,2,2,1
+
+            self.addGraph(cpy)
+            extra_ideal_check(self._graph, False)
+
+            if ispossible is False:
+                self._scene.clear()
+                self.addGraph(Graph())
+                messageDialod = QtWidgets.QMessageBox(self)
+                messageDialod.setWindowTitle("ЛР №11 - Восстановление графа из вектора")
+                messageDialod.setStyleSheet(WINDOW_DARK)
+                messageDialod.setText('Для такого вектора графа не существует.       ')
+                messageDialod.exec()
+
+    def viewIdeal(self):  # Rina
+        self.setDefaults()
+        text = extra_ideal_check(self._graph, True)
+        messageDialod = QtWidgets.QMessageBox(self)
+        messageDialod.setWindowTitle("ЛР №11.1 - Проверка на совершенство и экстримальность")
+        messageDialod.setStyleSheet(WINDOW_DARK)
+        messageDialod.setText(text)
+        messageDialod.exec()
 
     def viewAStar(self):
         inputDialog = QtWidgets.QInputDialog(self)

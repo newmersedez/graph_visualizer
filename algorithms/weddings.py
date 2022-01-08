@@ -20,7 +20,7 @@ def wedding(graph: Graph):  # Rina
     else:
         man = groupOne
         woman = groupTwo
-    for ver in graph.getVertexList():
+    for ver in man:
         if len(ver.getAdjacentEdgeList()) == 0:
             return False
     allSubset = []
