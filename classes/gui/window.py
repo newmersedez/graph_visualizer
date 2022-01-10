@@ -8,7 +8,6 @@ import random
 import pandas as pd
 import re
 
-
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
@@ -121,6 +120,10 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
+        algoTest = QtWidgets.QAction('test', self)
+        algoTest.triggered.connect(self._view.viewTest)
+        tasksMenu.addAction(algoTest)
+
         algoBfs = QtWidgets.QAction('ЛР №2. Поиска пути в ширину', self)
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)

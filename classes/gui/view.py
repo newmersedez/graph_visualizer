@@ -15,6 +15,8 @@ from algorithms.get_weight_vertex import *
 from algorithms.connected import *
 from algorithms.weddings import *
 from algorithms.graph_from_vector import *
+from algorithms.tsp import *
+
 import main
 import sip
 
@@ -38,6 +40,26 @@ class View(QtWidgets.QGraphicsView):
         self.setMouseTracking(True)
 
     # ALGOS
+    def viewTest(self):
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('ЛР №4. Алгоритм Дейкстры')
+        inputDialog.setStyleSheet(WINDOW_DARK)
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Выберите начальную вершину:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+
+        if ok:
+            vertex = self._graph.findVertexByName(name)
+            if vertex is not None:
+                self.setDefaults()
+                dijkstra_algo_for_tsp(self._graph, vertex)
+
+
+
+
+
     def viewBFS(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
