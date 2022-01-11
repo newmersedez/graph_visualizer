@@ -120,9 +120,9 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        algoTest = QtWidgets.QAction('test', self)
-        algoTest.triggered.connect(self._view.viewTest)
-        tasksMenu.addAction(algoTest)
+        viewTSP = QtWidgets.QAction('ЛР №20. Коммивояжер', self)
+        viewTSP.triggered.connect(self._view.viewTSP)
+        tasksMenu.addAction(viewTSP)
 
         algoBfs = QtWidgets.QAction('ЛР №2. Поиска пути в ширину', self)
         algoBfs.triggered.connect(self._view.viewBFS)

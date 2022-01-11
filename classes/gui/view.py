@@ -40,7 +40,7 @@ class View(QtWidgets.QGraphicsView):
         self.setMouseTracking(True)
 
     # ALGOS
-    def viewTest(self):
+    def viewTSP(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
         inputDialog.setWindowTitle('TSP')
