@@ -43,7 +43,7 @@ class View(QtWidgets.QGraphicsView):
     def viewTest(self):
         inputDialog = QtWidgets.QInputDialog(self)
         inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
-        inputDialog.setWindowTitle('ЛР №4. Алгоритм Дейкстры')
+        inputDialog.setWindowTitle('TSP')
         inputDialog.setStyleSheet(WINDOW_DARK)
         inputDialog.setFont(QtGui.QFont('Arial', 15))
         inputDialog.setLabelText('Выберите начальную вершину:')
@@ -54,8 +54,20 @@ class View(QtWidgets.QGraphicsView):
             vertex = self._graph.findVertexByName(name)
             if vertex is not None:
                 self.setDefaults()
-                dijkstra_algo_for_tsp(self._graph, vertex)
-
+                # dijkstra_algo_for_tsp(self._graph, vertex)
+                if tspCheckGraph(self._graph, vertex):
+                    path, len_of_path = setVisualForTSP(self._graph, vertex)
+                    messageDialod = QtWidgets.QMessageBox(self)
+                    messageDialod.setWindowTitle("Коммивояжер")
+                    messageDialod.setStyleSheet(WINDOW_DARK)
+                    messageDialod.setText(f'длина пути - {len_of_path}, путь - {[i.getName() for i in path]}')
+                    messageDialod.exec_()
+                else:
+                    messageDialod = QtWidgets.QMessageBox(self)
+                    messageDialod.setWindowTitle("Коммивояжер")
+                    messageDialod.setStyleSheet(WINDOW_DARK)
+                    messageDialod.setText('Граф должен быть неориентированным и связным, к тому же мультиграфы не поддерживаются')
+                    messageDialod.exec_()
 
 
 
