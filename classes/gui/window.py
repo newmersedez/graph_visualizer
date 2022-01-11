@@ -194,6 +194,10 @@ class Window(QtWidgets.QMainWindow):
         qaAuthorAction.triggered.connect(self._authorDialog)
         qaMenu.addAction(qaAuthorAction)
 
+        hahaAuthorAction = QtWidgets.QAction('&Пасхалка', self)
+        hahaAuthorAction.triggered.connect(self._easterEggDialog)
+        qaMenu.addAction(hahaAuthorAction)
+
         return menuBar
 
     @staticmethod
@@ -597,6 +601,24 @@ class Window(QtWidgets.QMainWindow):
 
     def _authorDialog(self):
         self._messageDialog('Об авторе', AUTHOR)
+
+    def _easterEggDialog(self):
+        dialog = QtWidgets.QDialog(self)
+        dialog.setWindowTitle('Easter Egg')
+        dialog.setFont(QtGui.QFont('Arial', 15))
+
+        if self._darkTheme:
+            dialog.setStyleSheet(WINDOW_DARK)
+        else:
+            dialog.setStyleSheet(WINDOW_BRIGHT)
+
+        form = QtWidgets.QFormLayout(dialog)
+        label = QtWidgets.QLabel()
+        pixmap = QtGui.QPixmap('utils/image/graphoid.png')
+        label.setPixmap(pixmap)
+        form.addWidget(label)
+
+        dialog.exec_()
 
     def _instructionDialog(self):
         self._messageDialog('О программе', INSTRUCTION)
