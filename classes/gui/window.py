@@ -120,27 +120,45 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        viewTSP = QtWidgets.QAction('ЛР №20. Коммивояжер', self)
-        viewTSP.triggered.connect(self._view.viewTSP)
-        tasksMenu.addAction(viewTSP)
-
         algoBfs = QtWidgets.QAction('ЛР №2. Поиска пути в ширину', self)
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)
 
-
-        algoMarrige = QtWidgets.QAction('ЛР №16 - Задача о свадьбах', self)  # Rina
-        algoMarrige.triggered.connect(self._view.viewMarrige)
-        tasksMenu.addAction(algoMarrige)
-
+        algoBestFirst = QtWidgets.QAction('ЛР №3. Best first search', self)  # Rina
+        algoBestFirst.triggered.connect(self._view.viewBestFirst)
+        tasksMenu.addAction(algoBestFirst)
 
         algoDijkstra = QtWidgets.QAction('ЛР №4. Алгоритм Дейкстры', self)
         algoDijkstra.triggered.connect(self._view.viewDijkstra)
         tasksMenu.addAction(algoDijkstra)
 
+        algoAStar = QtWidgets.QAction('ЛР №5. А*', self)
+        algoAStar.triggered.connect(self._view.viewAStar)
+        tasksMenu.addAction(algoAStar)
+
+        algoWeight = QtWidgets.QAction('ЛР №6. Вес, радиус диаметр и степени', self)
+        algoWeight.triggered.connect(self._view.viewWeight)
+        tasksMenu.addAction(algoWeight)
+
+        algoIso = QtWidgets.QAction('ЛР №7. Изоморфизм', self)  # Rina
+        algoIso.triggered.connect(self._view.viewIso)
+        tasksMenu.addAction(algoIso)
+
+        algoConnected = QtWidgets.QAction('ЛР №8', self)
+        algoConnected.triggered.connect(self._view.viewConnected)
+        tasksMenu.addAction(algoConnected)
+
         algoComp = QtWidgets.QAction('ЛР №9. Дополнение графа', self)  # Rina
         algoComp.triggered.connect(self._view.viewComp)
         tasksMenu.addAction(algoComp)
+
+        algoVec = QtWidgets.QAction('ЛР №11. Восстановление графа из вектора', self)  # Rina
+        algoVec.triggered.connect(self._view.viewFromVector)
+        tasksMenu.addAction(algoVec)
+
+        algoIdeal = QtWidgets.QAction('ЛР №11.1. Проверка графа на совершенство и экстримальность', self)  # Rina
+        algoIdeal.triggered.connect(self._view.viewIdeal)
+        tasksMenu.addAction(algoIdeal)
 
         algoKruskal = QtWidgets.QAction('ЛР №13. Минимальное остовное дерево', self)
         algoKruskal.triggered.connect(self._view.viewKruskal)
@@ -154,34 +172,13 @@ class Window(QtWidgets.QMainWindow):
         algoColorize.triggered.connect(self._view.viewColorize)
         tasksMenu.addAction(algoColorize)
 
-        algoAStar = QtWidgets.QAction('ЛР №5. А*', self)
-        algoAStar.triggered.connect(self._view.viewAStar)
-        tasksMenu.addAction(algoAStar)
+        algoMarrige = QtWidgets.QAction('ЛР №16. Задача о свадьбах', self)  # Rina
+        algoMarrige.triggered.connect(self._view.viewMarrige)
+        tasksMenu.addAction(algoMarrige)
 
-        algoWeight = QtWidgets.QAction('ЛР №6. Вес, радиус диаметр и степени', self)
-        algoWeight.triggered.connect(self._view.viewWeight)
-        tasksMenu.addAction(algoWeight)
-
-        algoVec = QtWidgets.QAction('ЛР №11 - Восстановление графа из вектора', self)  # Rina
-        algoVec.triggered.connect(self._view.viewFromVector)
-        tasksMenu.addAction(algoVec)
-
-        algoIdeal = QtWidgets.QAction('ЛР №11.1 - Проверка графа на совершенство и экстримальность', self)  # Rina
-        algoIdeal.triggered.connect(self._view.viewIdeal)
-        tasksMenu.addAction(algoIdeal)
-
-
-        algoIso = QtWidgets.QAction('ЛР №7 - Изоморфизм', self)  # Rina
-        algoIso.triggered.connect(self._view.viewIso)
-        tasksMenu.addAction(algoIso)
-
-        algoBestFirst = QtWidgets.QAction('ЛР №3 - best first', self)  # Rina
-        algoBestFirst.triggered.connect(self._view.viewBestFirst)
-        tasksMenu.addAction(algoBestFirst)
-
-        algoConnected = QtWidgets.QAction('ЛР №8', self)
-        algoConnected.triggered.connect(self._view.viewConnected)
-        tasksMenu.addAction(algoConnected)
+        viewTSP = QtWidgets.QAction('ЛР №20. Коммивояжер', self)
+        viewTSP.triggered.connect(self._view.viewTSP)
+        tasksMenu.addAction(viewTSP)
 
         # Settings menu
         settingsChangeTheme = QtWidgets.QAction('&Сменить тему', self)
