@@ -120,11 +120,9 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-
         viewPathTest = QtWidgets.QAction('Тест алгоритмов поиска путей', self)
         viewPathTest.triggered.connect(self._view.viewAlgoFindTest)
         tasksMenu.addAction(viewPathTest)
-
 
         viewTSP = QtWidgets.QAction('ЛР №20. Коммивояжер', self)
         viewTSP.triggered.connect(self._view.viewTSP)
@@ -134,11 +132,9 @@ class Window(QtWidgets.QMainWindow):
         algoBfs.triggered.connect(self._view.viewBFS)
         tasksMenu.addAction(algoBfs)
 
-
         algoMarrige = QtWidgets.QAction('ЛР №16 - Задача о свадьбах', self)  # Rina
         algoMarrige.triggered.connect(self._view.viewMarrige)
         tasksMenu.addAction(algoMarrige)
-
 
         algoDijkstra = QtWidgets.QAction('ЛР №4. Алгоритм Дейкстры', self)
         algoDijkstra.triggered.connect(self._view.viewDijkstra)
@@ -176,7 +172,6 @@ class Window(QtWidgets.QMainWindow):
         algoIdeal.triggered.connect(self._view.viewIdeal)
         tasksMenu.addAction(algoIdeal)
 
-
         algoIso = QtWidgets.QAction('ЛР №7 - Изоморфизм', self)  # Rina
         algoIso.triggered.connect(self._view.viewIso)
         tasksMenu.addAction(algoIso)
@@ -202,6 +197,10 @@ class Window(QtWidgets.QMainWindow):
         qaAuthorAction = QtWidgets.QAction('&Об авторе', self)
         qaAuthorAction.triggered.connect(self._authorDialog)
         qaMenu.addAction(qaAuthorAction)
+
+        hahaAuthorAction = QtWidgets.QAction('&Пасхалка', self)
+        hahaAuthorAction.triggered.connect(self._easterEggDialog)
+        qaMenu.addAction(hahaAuthorAction)
 
         return menuBar
 
@@ -606,6 +605,24 @@ class Window(QtWidgets.QMainWindow):
 
     def _authorDialog(self):
         self._messageDialog('Об авторе', AUTHOR)
+
+    def _easterEggDialog(self):
+        dialog = QtWidgets.QDialog(self)
+        dialog.setWindowTitle('Easter Egg')
+        dialog.setFont(QtGui.QFont('Arial', 15))
+
+        if self._darkTheme:
+            dialog.setStyleSheet(WINDOW_DARK)
+        else:
+            dialog.setStyleSheet(WINDOW_BRIGHT)
+
+        form = QtWidgets.QFormLayout(dialog)
+        label = QtWidgets.QLabel()
+        pixmap = QtGui.QPixmap('utils/image/graphoid.png')
+        label.setPixmap(pixmap)
+        form.addWidget(label)
+
+        dialog.exec_()
 
     def _instructionDialog(self):
         self._messageDialog('О программе', INSTRUCTION)
