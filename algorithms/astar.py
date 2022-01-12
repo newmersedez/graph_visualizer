@@ -8,13 +8,23 @@ import heapq
 
 
 def h(vertex: Vertex, end_vertex: Vertex):
-    return sqrt((vertex.x() - end_vertex.x())**2 + (vertex.y() - end_vertex.y())**2) / 120
+    return sqrt((vertex.x() - end_vertex.x())**2 + (vertex.y() - end_vertex.y())**2)
+
+class comparable_node:
+    def __init__(self, priority, value):
+        self.data = (priority, value)
+
+    def __lt__(self, other):
+        return self.data[0] < other.data[0]
+
+    def get_value(self):
+        return self.data[1]
 
 
 def astar(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
     q = []
     # heapq.heapify(q)
-    heapq.heappush(q, (0, begin_vertex))
+    heapq.heappush(q, comparable_node(0, begin_vertex))
     came_from = {}
     cost_so_far = {}
 
@@ -22,7 +32,7 @@ def astar(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
     cost_so_far[begin_vertex] = 0
 
     while q.__len__() > 0:
-        current = heapq.heappop(q)[1]
+        current = heapq.heappop(q).get_value()
         if current == end_vertex:
             break
 
@@ -34,7 +44,7 @@ def astar(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 cost_so_far[next] = new_cost
                 priority = new_cost + h(next, end_vertex)
-                heapq.heappush(q, (priority, next))
+                heapq.heappush(q, comparable_node(priority, next))
                 came_from[next] = (current, edge)
 
     len = 0

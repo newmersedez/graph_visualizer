@@ -13,11 +13,12 @@ class comparable_node:
     def __init__(self, priority, value):
         self.data = (priority, value)
 
+    def __lt__(self, other):
+        return self.data[0] < other.data[0]
+
     def get_value(self):
         return self.data[1]
 
-    def __lt__(self, other):
-        return self.data[0] < other.data[0]
 
 
 def best_first_search(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):

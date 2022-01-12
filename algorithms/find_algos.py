@@ -12,11 +12,13 @@ def getRange(i, j):
 def getPOfConnect(range: int, scale: int):
     return 0.01 * (0.5 ** (range/scale))
 
+
 def get_end_node(begin: Vertex, edge: Edge):
     tmp_end_node = edge.getEndVertex()
     if tmp_end_node == begin:
         tmp_end_node = edge.getStartVertex()
     return tmp_end_node
+
 
 def getPathFromPrevNodeAndEdge(prev_node_and_edge, node_to: Vertex):
     path = []
@@ -41,14 +43,12 @@ def dijkstra_with_path(graph: Graph, vertex: Vertex):
     for n in range(len(graph.getVertexList())):
         curr = None
         for i in ranges_to_nodes.keys():
-            if not visited[i] and (ranges_to_nodes[i] is not None and (curr is None or\
-                                                                       ranges_to_nodes[i] < ranges_to_nodes[curr])):
+            if not visited[i] and (ranges_to_nodes[i] is not None and
+                                   (curr is None or ranges_to_nodes[i] < ranges_to_nodes[curr])):
                 curr = i
         if curr is vertex and visited[curr]:
-            print("but why??...")
             break
         visited[curr] = True
-        print("curr_name = ", curr.getName())
         for i in curr.getAdjacentEdgeList():
             end_node = get_end_node(curr, i)
             if ranges_to_nodes[end_node] is None:
@@ -58,6 +58,7 @@ def dijkstra_with_path(graph: Graph, vertex: Vertex):
                 ranges_to_nodes[end_node] = i.getWeight() + ranges_to_nodes[curr]
                 prev_node_and_edge[end_node] = (curr, i)
     return ranges_to_nodes, prev_node_and_edge
+
 
 def bfs_with_path(graph: Graph, vertex: Vertex):
     shortest_ways = {vertex: 0}
@@ -79,21 +80,16 @@ def bfs_with_path(graph: Graph, vertex: Vertex):
                 nodes_to_visit.put(end_node)
     return shortest_ways, prev_node_and_edge
 
-def generate_graph():
-    nodes_number = 500
 
+def generate_graph():
+    nodes_number = 1000
     xmax = 1000
     ymax = 1000
-    # set_coords = set()
     graph = Graph()
 
     for i in range(nodes_number):
         x = int(random.uniform(0, 1) * xmax)
         y = int(random.uniform(0, 1) * ymax)
-        # if (x, y) in set_coords:
-        #     continue
-        # set_coords.add((x, y))
-        # vertex =
         graph.addVertex(Vertex(x, y, str(i), VERTEX_COLOR))
 
     name = 1
@@ -107,6 +103,7 @@ def generate_graph():
                 name += 1
                 graph.addEdge(Edge(startVertex=i, endVertex=j, name=str(name), weight=getRange(i, j)))
     return graph
+
 
 def generate_pairs(graph: Graph):
     pairs = {"4_6": None, "5_2": None, "1_9": None, "any": (graph.getVertexList()[1], graph.getVertexList()[-1])}
@@ -151,10 +148,11 @@ def testDijkstra(graph, pair):
 
     return (path, len_of_path, end_time - start_time)
 
+
 def testBestFirst(graph, pair):
     start_time = time()
     path = best_first_search(graph, pair[0], pair[1])
-    print("best first done")
+    print("best first done!")
     len_of_path = sum([i.getWeight() for i in path])
     end_time = time()
 
@@ -187,35 +185,35 @@ def testAlgos(graph, pairs, filename):
             f.write(f"{names[i]}:\n time = {result_lst[i][2]}\n" + \
                     f"path = {[k.getName() for k in result_lst[i][0]]}\n" + \
                     f"len of this path = {result_lst[i][1]}\n\n")
-            # f.write(f"path = {}, ")
         f.write("\n____________________\n\n")
     f.close()
 
 
 def find_algos_test():
-    graph = generate_graph()
-    test = isConnected(graph)
-    print("try generate graph")
-    lst = []
-    number = 1
-    print(max(test.values()))
-    while number != max(test.values()):
-        for i in test.keys():
-            if test[i] == number:
-                lst.append(i)
-                number += 1
-    for i in range(len(lst) - 1):
-        graph.addEdge(Edge(lst[i], lst[i + 1], name=str(len(graph.getEdgeList()) + 1),
-                            weight=getRange(lst[i], lst[i+1])))
-    if max(isConnected(graph).values()) != 1:
-        print("я хуй знает что произошло")
+    for i in range(50):
+        graph = generate_graph()
+        test = isConnected(graph)
+        print("try generate graph")
+        lst = []
+        number = 1
+        print(max(test.values()))
+        while number <= max(test.values()):
+            for i in test.keys():
+                if test[i] == number:
+                    lst.append(i)
+                    number += 1
+        for i in range(len(lst) - 1):
+            graph.addEdge(Edge(lst[i], lst[i + 1], name=str(len(graph.getEdgeList()) + 1),
+                                weight=getRange(lst[i], lst[i+1])))
+        if max(isConnected(graph).values()) != 1:
+            print("я х*й знает что произошло")
 
 
 
-    print(graph.getAdjacentMatrix())
-    pairs = generate_pairs(graph)
-    print("graph and pairs generated")
-    testAlgos(graph, pairs, "test.txt")
+        print(graph.getAdjacentMatrix())
+        pairs = generate_pairs(graph)
+        print("graph and pairs generated")
+        testAlgos(graph, pairs, "test.txt")
 
 
 
