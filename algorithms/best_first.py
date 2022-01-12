@@ -36,19 +36,15 @@ def best_first_search(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
             priority = h(next, end_vertex)
             heapq.heappush(q, (priority, next))
             came_from[next] = (current, edge)
-        print(q)
 
     len = 0
     path = []
     i = end_vertex
     while came_from[i] is not None:
-        print('{}->{}'.format(i.getName(), came_from[i][0].getName()))
         tmp = came_from[i]
         len += tmp[1].getWeight()
         path.append(tmp[1])
         i = tmp[0]
-    print("path = ", [i.getName() for i in path])
-    print("len of path = ", len)
     return path
 
 def setVisualForBestFirst(path):

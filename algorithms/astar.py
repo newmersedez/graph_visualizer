@@ -36,7 +36,6 @@ def astar(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
                 priority = new_cost + h(next, end_vertex)
                 heapq.heappush(q, (priority, next))
                 came_from[next] = (current, edge)
-        print(q)
 
     len = 0
     path = []
@@ -46,8 +45,6 @@ def astar(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
         len += tmp[1].getWeight()
         path.append(tmp[1])
         i = tmp[0]
-    print("path = ", [i.getName() for i in path])
-    print("len of path = ", len)
     return path
 
 def setVisualForAStar(path):

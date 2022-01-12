@@ -23,6 +23,11 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
         self.setFlag(QtWidgets.QGraphicsLineItem.ItemSendsGeometryChanges)
         self.setAcceptHoverEvents(True)
 
+    def x(self):
+        return self._x
+    def y(self):
+        return self._y
+
     def addAdjacentVertex(self, vertex, edge):
         self._adjacentVertexList.append(vertex)
         self._adjacentEdgeList.append(edge)

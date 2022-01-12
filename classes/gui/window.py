@@ -120,6 +120,12 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
+
+        viewPathTest = QtWidgets.QAction('Тест алгоритмов поиска путей', self)
+        viewPathTest.triggered.connect(self._view.viewAlgoFindTest)
+        tasksMenu.addAction(viewPathTest)
+
+
         viewTSP = QtWidgets.QAction('ЛР №20. Коммивояжер', self)
         viewTSP.triggered.connect(self._view.viewTSP)
         tasksMenu.addAction(viewTSP)

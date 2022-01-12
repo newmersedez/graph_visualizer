@@ -16,6 +16,7 @@ from algorithms.connected import *
 from algorithms.weddings import *
 from algorithms.graph_from_vector import *
 from algorithms.tsp import *
+from algorithms.find_algos import *
 
 import main
 import sip
@@ -69,6 +70,12 @@ class View(QtWidgets.QGraphicsView):
                     messageDialod.setText('Граф должен быть неориентированным и связным, к тому же мультиграфы не поддерживаются')
                     messageDialod.exec_()
 
+
+
+    def viewAlgoFindTest(self):
+        self.setDefaults()
+        find_algos_test()
+        pass
 
 
 
