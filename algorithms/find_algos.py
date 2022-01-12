@@ -4,7 +4,7 @@ from utils.colorpalletes import *
 import random
 import numpy as np
 from algorithms.connected import *
-
+from time import time
 
 def getRange(i, j):
     return int(np.sqrt((i.x() - j.x())**2 + (i.y() - j.y())**2))
@@ -143,35 +143,43 @@ def generate_pairs(graph: Graph):
 
 
 def testAStar(graph, pair):
+    start_time = time()
     path = astar(graph, pair[0], pair[1])
     print("astar done!")
     len_of_path = sum([i.getWeight() for i in path])
+    end_time = time()
 
-    return (path, len_of_path)
+    return (path, len_of_path, end_time - start_time)
 
 def testDijkstra(graph, pair):
+    start_time = time()
     _, prev_node_and_edge = dijkstra_with_path(graph, pair[0])
     print("dijkstra done")
     path = getPathFromPrevNodeAndEdge(prev_node_and_edge, pair[1])
     len_of_path = sum([i.getWeight() for i in path])
+    end_time = time()
 
-    return (path, len_of_path)
+    return (path, len_of_path, end_time - start_time)
 
 def testBestFirst(graph, pair):
+    start_time = time()
     path = best_first_search(graph, pair[0], pair[1])
     print("best first done")
     len_of_path = sum([i.getWeight() for i in path])
+    end_time = time()
 
-    return (path, len_of_path)
+    return (path, len_of_path, end_time - start_time)
 
 
 def testBFS(graph, pair):
+    start_time = time()
     tmp, prev_node_and_edge = bfs_with_path(graph, pair[0])
     path = getPathFromPrevNodeAndEdge(prev_node_and_edge, pair[1])
     print("bfs done!")
     len_of_path = sum([i.getWeight() for i in path])
+    end_time = time()
 
-    return (path, len_of_path)
+    return (path, len_of_path, end_time - start_time)
 
 
 def testAlgos(graph, pairs, filename):
@@ -179,16 +187,18 @@ def testAlgos(graph, pairs, filename):
     names = ["bfs", "dijksta", "best first", "A*"]
     for key in pairs.keys():
         print("at key ", key)
-        f.write("test for situation " + key + "\n")
+        f.write("TEST FOR SITUATION " + key + "\n")
         nodes_pair = pairs[key]
         result_lst = [testBFS(graph, nodes_pair),
                       testDijkstra(graph, nodes_pair),
                       testBestFirst(graph, nodes_pair),
                       testAStar(graph, nodes_pair)]
         for i in range(len(names)):
-            f.write(f"{names[i]}:\n path = {[k.getName() for k in result_lst[i][0]]}, len of this path = {result_lst[i][1]}\n")
+            f.write(f"{names[i]}:\n time = {result_lst[i][2]}\n" + \
+                    f"path = {[k.getName() for k in result_lst[i][0]]}\n" + \
+                    f"len of this path = {result_lst[i][1]}\n\n")
             # f.write(f"path = {}, ")
-        f.write("\n")
+        f.write("\n____________________\n\n")
     f.close()
 
 

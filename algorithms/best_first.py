@@ -9,19 +9,29 @@ import heapq
 def h(vertex: Vertex, end_vertex: Vertex):
     return sqrt((vertex.x() - end_vertex.x())**2 + (vertex.y() - end_vertex.y())**2) / 120
 
+class comparable_node:
+    def __init__(self, priority, value):
+        self.data = (priority, value)
+
+    def get_value(self):
+        return self.data[1]
+
+    def __lt__(self, other):
+        return self.data[0] < other.data[0]
+
 
 def best_first_search(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
     if (begin_vertex == end_vertex):
         return {}
     q = []
-    # heapq.heapify(q)
-    heapq.heappush(q, (0, begin_vertex))
+    heapq.heapify(q)
+    heapq.heappush(q, comparable_node(0, begin_vertex))
     came_from = {}
     visited_edges = {}
     came_from[begin_vertex] = None
 
     while q.__len__() > 0:
-        current = heapq.heappop(q)[1]
+        current = heapq.heappop(q).get_value()
         if current == end_vertex:
             break
 
@@ -34,7 +44,7 @@ def best_first_search(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
                 continue
             visited_edges[edge] = True
             priority = h(next, end_vertex)
-            heapq.heappush(q, (priority, next))
+            heapq.heappush(q, comparable_node(priority, next))
             came_from[next] = (current, edge)
 
     len = 0
