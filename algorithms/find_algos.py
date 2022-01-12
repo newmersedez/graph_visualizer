@@ -30,43 +30,33 @@ def getPathFromPrevNodeAndEdge(prev_node_and_edge, node_to: Vertex):
     return path
 
 def dijkstra_with_path(graph: Graph, vertex: Vertex):
-    checked_nodes = {}
+    visited = {}
     prev_node_and_edge = {}
     ranges_to_nodes = {}
     for i in graph.getVertexList():
-        checked_nodes[i] = False
+        visited[i] = False
         ranges_to_nodes[i] = None
-    ranges_to_nodes[vertex]: int = 0
+    ranges_to_nodes[vertex] = 0
     prev_node_and_edge[vertex] = None
-    nodes_to_visit = Queue()
-    nodes_to_visit.put(vertex)
-    # q = []
-    # # heapq.heapify(q)
-    # heapq.heappush(q, (0, vertex))
-    while nodes_to_visit.qsize() > 0:
-        # print(nodes_to_visit.qsize())
-        checking_node: Vertex = nodes_to_visit.get()
-        checked_nodes[checking_node] = True
-        reachable_edges = [i for i in checking_node.getAdjacentEdgeList()
-                           if (i.getStartVertex() == checking_node or not i.isDirected())]
-
-        reachable_edges = sorted(reachable_edges, key=(lambda x: int(x.getWeight())))
-        for i in reachable_edges:
-            tmp_range_from_node = ranges_to_nodes[checking_node]  # inf == None
-            tmp_end_node = get_end_node(checking_node, i)
-            if not tmp_end_node:
-                continue
-            if ranges_to_nodes[tmp_end_node] is None:
-                ranges_to_nodes[tmp_end_node] = tmp_range_from_node + i.getWeight()
-                prev_node_and_edge[tmp_end_node] = (checking_node, i)
-            elif ranges_to_nodes[tmp_end_node] > tmp_range_from_node + i.getWeight():
-                ranges_to_nodes[tmp_end_node] = tmp_range_from_node + i.getWeight()
-                prev_node_and_edge[tmp_end_node] = (checking_node, i)
-            if not checked_nodes[tmp_end_node]:
-                checked_nodes[tmp_end_node] = True
-                nodes_to_visit.put(tmp_end_node)
-
-    # print("maybe dij done???????")
+    for n in range(len(graph.getVertexList())):
+        curr = None
+        for i in ranges_to_nodes.keys():
+            if not visited[i] and (ranges_to_nodes[i] is not None and (curr is None or\
+                                                                       ranges_to_nodes[i] < ranges_to_nodes[curr])):
+                curr = i
+        if curr is vertex and visited[curr]:
+            print("but why??...")
+            break
+        visited[curr] = True
+        print("curr_name = ", curr.getName())
+        for i in curr.getAdjacentEdgeList():
+            end_node = get_end_node(curr, i)
+            if ranges_to_nodes[end_node] is None:
+                ranges_to_nodes[end_node] = i.getWeight() + ranges_to_nodes[curr]
+                prev_node_and_edge[end_node] = (curr, i)
+            elif ranges_to_nodes[end_node] > i.getWeight() + ranges_to_nodes[curr]:
+                ranges_to_nodes[end_node] = i.getWeight() + ranges_to_nodes[curr]
+                prev_node_and_edge[end_node] = (curr, i)
     return ranges_to_nodes, prev_node_and_edge
 
 def bfs_with_path(graph: Graph, vertex: Vertex):
@@ -90,7 +80,7 @@ def bfs_with_path(graph: Graph, vertex: Vertex):
     return shortest_ways, prev_node_and_edge
 
 def generate_graph():
-    nodes_number = 1000
+    nodes_number = 500
 
     xmax = 1000
     ymax = 1000
