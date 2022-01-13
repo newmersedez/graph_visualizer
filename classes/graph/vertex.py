@@ -67,6 +67,9 @@ class Vertex(QtWidgets.QGraphicsEllipseItem):
                 return i.getWeight()
         return None
 
+    def getColor(self):
+        return self._color
+
     def isReachable(self, end):
         for i in self._adjacentEdgeList:
             if i.getEndVertex() == end or (i.getStartVertex() == end and not i.isDirected()):

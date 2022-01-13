@@ -56,6 +56,7 @@ def best_first_search(graph: Graph, begin_vertex: Vertex, end_vertex: Vertex):
         len += tmp[1].getWeight()
         path.append(tmp[1])
         i = tmp[0]
+    path.reverse()
     return path
 
 def setVisualForBestFirst(path):

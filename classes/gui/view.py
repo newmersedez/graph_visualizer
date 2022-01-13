@@ -17,6 +17,8 @@ from algorithms.weddings import *
 from algorithms.graph_from_vector import *
 from algorithms.tsp import *
 from algorithms.find_algos import *
+from algorithms.planarity import *
+from algorithms.two_complex_complement import *
 
 import main
 import sip
@@ -70,7 +72,25 @@ class View(QtWidgets.QGraphicsView):
                     messageDialod.setText('Граф должен быть неориентированным и связным, к тому же мультиграфы не поддерживаются')
                     messageDialod.exec_()
 
+    def viewTest(self):
+        self.setDefaults()
+        isPlanarSubgraphs(self._graph)
 
+    def viewCompleteTwoComplex(self):
+        self.setDefaults()
+
+        inputDialog = QtWidgets.QInputDialog(self)
+        inputDialog.setInputMode(QtWidgets.QInputDialog.TextInput)
+        inputDialog.setWindowTitle('ЛР №17')
+        inputDialog.setStyleSheet(WINDOW_DARK)
+        inputDialog.setFont(QtGui.QFont('Arial', 15))
+        inputDialog.setLabelText('Введите имя файла, содержащего тензор:')
+        ok = inputDialog.exec_()
+        name = inputDialog.textValue()
+    
+        if ok:
+            two_complex_complement(name)
+            
 
     def viewAlgoFindTest(self):
         self.setDefaults()

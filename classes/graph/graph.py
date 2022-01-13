@@ -54,6 +54,8 @@ class Graph:
             self._edgeList.remove(edge)
             startVertex.removeAdjacentVertex(endVertex)
             endVertex.removeAdjacentVertex(startVertex)
+            startVertex.getAdjacentEdgeList().remove(edge)
+            endVertex.getAdjacentEdgeList().remove(edge)
 
     def findEdgeByName(self, name: str):
         for edge in self._edgeList:

@@ -120,7 +120,16 @@ class Window(QtWidgets.QMainWindow):
         fileMenu.addAction(fileExitAction)
 
         # Tasks menu
-        viewPathTest = QtWidgets.QAction('Тест алгоритмов поиска путей', self)
+        viewTest1 = QtWidgets.QAction('Тестовая планарность', self)
+        viewTest1.triggered.connect(self._view.viewTest)
+        # tasksMenu.addAction(viewTest1)
+
+        viewTest17 = QtWidgets.QAction('ЛР 17', self)
+        viewTest17.triggered.connect(self._view.viewCompleteTwoComplex)
+        tasksMenu.addAction(viewTest17)
+
+
+        viewPathTest = QtWidgets.QAction('ЛР №21. Тестирование алгоритмов поиска путей', self)
         viewPathTest.triggered.connect(self._view.viewAlgoFindTest)
         tasksMenu.addAction(viewPathTest)
 
